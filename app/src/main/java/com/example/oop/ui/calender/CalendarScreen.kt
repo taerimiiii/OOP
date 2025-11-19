@@ -17,7 +17,4 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
     ) {
         CalendarTitleCard(text = "약먹자 님의 섭취 기록", height = 40.dp)
     }
-
-
-
 }
