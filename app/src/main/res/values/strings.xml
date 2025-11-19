@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">OOP</string>
+
+    <string name="keyword_letter">앞면이나 뒷면의 <b>각인</b>을 입력해주세요</string>
+    <string name="keyword_type"><b>제형</b>을 선택해주세요</string>
+    <string name="keyword_shape"><b>모양</b>을 선택해주세요</string>
+    <string name="keyword_color"><b>색상</b>을 선택해주세요</string>
 </resources>
