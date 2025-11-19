@@ -35,30 +35,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.oop.R
 
-sealed class BottomNavDestination(
-    val route: String,
-    val icon: androidx.compose.ui.graphics.vector.ImageVector,
-    val contentDescription: String
-) {
-    data object Search : BottomNavDestination(
-        route = "search",
-        icon = Icons.Default.Search,
-        contentDescription = "Search"
-    )
-
-    data object Home : BottomNavDestination(
-        route = "home",
-        icon = Icons.Default.Home,
-        contentDescription = "Home"
-    )
-
-    data object Calendar : BottomNavDestination(
-        route = "calendar",
-        icon = Icons.Default.DateRange,
-        contentDescription = "Calendar"
-    )
-}
-
 // 상단 바
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,70 +79,73 @@ fun PillTopBar(
 }
 
 // 하단 바
-// NavHost를 사용하는 Compose Navigation을 도입함.
 @Composable
 fun BottomNavBar(
-    navController: NavHostController,           // 네비게이션 이동에 사용되는 NavController
-    destinations: List<BottomNavDestination>    // BottomNav 에 표시할 아이콘/라우트 목록
+    selectedItem: Int,
+    onItemClick: (Int) -> Unit
 ) {
     val greenColor = Color(0xFF71E000)
     val grayColor = Color(0xFFCDCDCD)
     val whiteColor = Color(0xFFFFFFFF)
 
-    // 현재 Navigation 상태(현재 어떤 화면이 활성화인지 확인)
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-
-    // 현재 화면의 NavDestination
-    val currentDestination = navBackStackEntry?.destination
-
-    Column(
-        modifier = Modifier.background(whiteColor)
-    ) {
-        // 상단 구분선
+    Column(modifier = Modifier.background(whiteColor)) {
         HorizontalDivider(
-            color = Color.LightGray.copy(alpha = 0.5f),
+            color = grayColor.copy(alpha = 0.5f),
             thickness = 1.dp
         )
 
         NavigationBar(
             modifier = Modifier.height(80.dp),
             containerColor = whiteColor,
+            tonalElevation = 0.dp
         ) {
-            // 전달받은 destination 리스트만큼 NavigationBarItem 반복 생성
-            destinations.forEach { destination ->
-
-                // 현재 화면이 destination.route 와 일치하는지 확인
-                val selected = currentDestination?.hierarchy?.any { it.route == destination.route } == true
-
-                // Bottom Navigation 단일 아이템
-                NavigationBarItem(
-                    selected = selected,
-                    onClick = {
-                        if (!selected) { // 이미 선택된 화면이면 이동하지 않음
-                            navController.navigate(destination.route) {
-                                // 시작 목적지까지 pop 하여 중복 쌓임 방지 + 상태 저장
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true  // 동일 루트 중복 방지
-                                restoreState = true     // 이전 상태 복원
-                            }
-                        }
-                    },
-                    icon = {
-                        Icon(
-                            destination.icon,
-                            destination.contentDescription,
-                            modifier = Modifier.size(33.dp)
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = greenColor,     // 선택한 아이콘의 색
-                        unselectedIconColor = grayColor,    // 선택 안 한 아이콘의 색
-                        indicatorColor = Color.Transparent  // 뒷 배경 제거
-                    )
+            NavigationBarItem(
+                selected = (selectedItem == 0),
+                onClick = { onItemClick(0) },
+                icon = {
+                    Icon(
+                    Icons.Default.Search,
+                    "Search",
+                    modifier = Modifier.size(33.dp)
+                    )},
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = greenColor,     // 선택한 아이콘의 색
+                    unselectedIconColor = grayColor,    // 선택 안 한 아이콘의 색
+                    indicatorColor = Color.Transparent  // 뒷 배경 제거
                 )
-            }
+            )
+
+            NavigationBarItem(
+                selected = (selectedItem == 1),
+                onClick = { onItemClick(1) },
+                icon = {
+                    Icon(
+                        Icons.Default.Home,
+                        "Home",
+                        modifier = Modifier.size(33.dp)
+                    )},
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = greenColor,
+                    unselectedIconColor = grayColor,
+                    indicatorColor = Color.Transparent
+                )
+            )
+
+            NavigationBarItem(
+                selected = (selectedItem == 2),
+                onClick = { onItemClick(2) },
+                icon = {
+                    Icon(
+                        Icons.Default.DateRange,
+                        "Calendar",
+                        modifier = Modifier.size(33.dp)
+                    )},
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = greenColor,
+                    unselectedIconColor = grayColor,
+                    indicatorColor = Color.Transparent
+                )
+            )
         }
     }
 }
