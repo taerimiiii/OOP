@@ -1,4 +1,4 @@
-package com.example.oop.ui.calender
+package com.example.oop.ui.calendar
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -118,12 +117,15 @@ fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
     }
 }
 
-// 월 달력
+// 월간 캘린더
 @Composable
-fun MonthCalendar() {
+fun MonthCalendar(
+    modifier: Modifier = Modifier,
+    onDateSelected: (LocalDate) -> Unit,
+) {
     val currentMonth = remember { YearMonth.now() }
-    val startMonth = remember { currentMonth.minusMonths(5) } // Adjust as needed
-    val endMonth = remember { currentMonth.plusMonths(5) } // Adjust as needed
+    val startMonth = remember { currentMonth.minusMonths(10) } // Adjust as needed
+    val endMonth = remember { currentMonth.plusMonths(10) } // Adjust as needed
     val daysOfWeek = remember { daysOfWeek() }
     val selectedDate = remember { mutableStateOf<LocalDate?>(null) }
     val monthFormatter = remember { DateTimeFormatter.ofPattern("yyyy년 M월", Locale.getDefault()) }
@@ -140,7 +142,7 @@ fun MonthCalendar() {
         derivedStateOf { state.firstVisibleMonth.yearMonth }
     }
 
-    Column {
+    Column(modifier = modifier) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -187,7 +189,8 @@ fun MonthCalendar() {
             state = state,
             dayContent = { day ->
                 Day(day, isSelected = selectedDate.value == day.date) { day ->
-                    selectedDate.value = if (selectedDate.value == day.date) null else day.date
+                    selectedDate.value = day.date
+                    onDateSelected(day.date)
                 }
             },
         )
