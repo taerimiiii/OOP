@@ -62,6 +62,7 @@ fun Search_bar(modifier : Modifier = Modifier){
                 text = "제품명을 입력해주세요",
                 modifier = Modifier.offset(x = 5.dp, y = 115.dp)
             )
+            //검색 버튼
             Image(
                 painter = painterResource(R.drawable.search_mark),
                 contentDescription = "search mark",
@@ -88,6 +89,7 @@ fun Search_delete(modifier : Modifier = Modifier){
             fontSize = 13.sp
         )
         Spacer(Modifier.width(270.dp))
+        //비우기 기능
         Text(
             text = "비우기",
             modifier = Modifier.offset(y = 250.dp),
