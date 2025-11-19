@@ -18,7 +18,7 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxSize().padding(horizontal = 5.dp, vertical = 15.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CalendarTitleCard(text = "약먹자 님의 섭취 기록", height = 40.dp)
+        CalendarTitleCard(text = "약먹자 님의 섭취 기록", height = 40.dp) // 사용자 이름으로 변경 필요
         MonthCalendar()
     }
 }
