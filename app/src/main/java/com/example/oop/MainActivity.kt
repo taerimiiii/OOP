@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.oop.ui.BottomNavBar
 import com.example.oop.ui.PillTopBar
 import com.example.oop.ui.Search.SearchScreen
-import com.example.oop.ui.calender.CalendarScreen
+import com.example.oop.ui.calendar.CalendarScreen
 import com.example.oop.ui.home.HomeScreen
 import com.example.oop.ui.theme.OOPTheme
 
