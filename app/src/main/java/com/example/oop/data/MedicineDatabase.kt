@@ -16,6 +16,7 @@ data class Medicine(
 @Dao
 interface MedicineDao {
     // 즐겨찾기 상태 확인
+    // sql 사용
     @Query("SELECT isFavorite FROM medicines WHERE medicineId = :id")
     suspend fun isFavorite(id: String): Boolean?
 
