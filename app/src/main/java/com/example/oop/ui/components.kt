@@ -42,6 +42,7 @@ fun PillTopBar(
     modifier: Modifier = Modifier,
     useGreenBackground: Boolean = true, // 연두색 바탕은 true, 하얀색 바탕은 false
 ) {
+    // 컬러 변수 선언
     val lightGreenColor = Color(0xFFE1EFC7)
     val whiteColor = Color(0xFFFFFFFF)
     val containerColor = if (useGreenBackground) {
