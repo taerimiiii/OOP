@@ -3,8 +3,8 @@
 ### 📌 브랜치 규칙 및 네이밍 (Branch Rules & Naming)
 
 1. 모든 기능 개발은 별도의 브랜치에서 시작
-2. 작업 시작 전, 항상 최신 `main 브랜치` 내용 받아오기 (`git pull origin main`)
-3. 작업 완료 후, `main 브랜치`로 Pull Request(PR) 생성
+2. 작업 시작 전, 항상 최신 `develop 브랜치` 내용 받아오기 (`git pull origin develop`)
+3. 작업 완료 후, `develop 브랜치`로 Pull Request(PR) 생성
 4. PR에 학습 내용 간단히 작성 후 오류가 안 뜰시(중요!!) 머지
 
 ### 🎯 커밋 컨벤션 (Commit Convention)
