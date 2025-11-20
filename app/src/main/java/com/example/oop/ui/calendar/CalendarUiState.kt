@@ -1,4 +1,4 @@
-package com.example.oop.ui.calender
+package com.example.oop.ui.calendar
 
 import java.time.LocalDate
 

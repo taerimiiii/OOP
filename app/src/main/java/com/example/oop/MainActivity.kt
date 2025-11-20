@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.oop.ui.BottomNavBar
 import com.example.oop.ui.PillTopBar
 import com.example.oop.ui.Search.SearchScreen
-import com.example.oop.ui.calender.CalendarScreen
+import com.example.oop.ui.calendar.CalendarScreen
 import com.example.oop.ui.home.HomeScreen
 import com.example.oop.ui.theme.OOPTheme
 
@@ -66,7 +66,7 @@ fun Content(
         0 -> SearchScreen(modifier = modifier)
         1 -> HomeScreen(modifier = modifier)
         2 -> CalendarScreen(modifier = modifier)
-        else -> HomeScreen(modifier = modifier) // 혹시나 모를 잘못된 값 방지..
+        else -> HomeScreen(modifier = modifier) // 이거 맘에 안 듦.
     }
 }
 

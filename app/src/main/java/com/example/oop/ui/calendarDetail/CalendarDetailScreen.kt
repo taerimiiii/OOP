@@ -1,6 +1,6 @@
+package com.example.oop.ui.calendarDetail
 
-package com.example.oop.ui.calender
-
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -8,18 +8,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.kizitonwose.calendar.core.daysOfWeek
+import com.example.oop.ui.calendar.CalendarTitleCard
+import java.time.LocalDate
 
-// UI 화면을 구성하는 Composable 함수
 @Composable
-fun CalendarScreen(modifier: Modifier = Modifier) {
-    val daysOfWeek = daysOfWeek()
-
+fun CalendarDetailScreen(
+    selectedDate: LocalDate,
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit = {},
+) {
+    BackHandler(onBack = onBack)
     Column(
         modifier = modifier.fillMaxSize().padding(horizontal = 5.dp, vertical = 15.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CalendarTitleCard(text = "약먹자 님의 섭취 기록", height = 40.dp)
-        MonthCalendar()
+        CalendarTitleCard(text = "일일 복용 약 확인", height = 40.dp)
+        WeekCalendar(targetDate = selectedDate)
     }
 }
