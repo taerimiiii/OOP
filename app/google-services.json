@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "445335969128",
+    "project_id": "oop-pill",
+    "storage_bucket": "oop-pill.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445335969128:android:71d0f8b8e3a44d342fcadd",
+        "android_client_info": {
+          "package_name": "com.example.oop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDTlsW07SPdhGSfWVT7li9zFD8AZncUOf8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
