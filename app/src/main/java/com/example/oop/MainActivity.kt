@@ -12,6 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.oop.ui.theme.OOPTheme
+import com.example.oop.ui.theme.keyword.Decide_reset
+import com.example.oop.ui.theme.keyword.Keyword_color
+import com.example.oop.ui.theme.keyword.Keyword_letter
+import com.example.oop.ui.theme.keyword.Keyword_shape
+import com.example.oop.ui.theme.keyword.Keyword_type
+import com.example.oop.ui.theme.keyword.Search_select2
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,10 +26,28 @@ class MainActivity : ComponentActivity() {
         setContent {
             OOPTheme(darkTheme = false) {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                    Search_select2(
                         modifier = Modifier.padding(innerPadding)
                     )
+                    Keyword_letter(
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                    Keyword_type(
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                    Keyword_shape(
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                    Keyword_color(
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                    Decide_reset(
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                    //Greeting(
+                    //    name = "Android",
+                    //   modifier = Modifier.padding(innerPadding)
+                    //)
                 }
             }
         }
