@@ -66,7 +66,6 @@ fun Content(
         0 -> SearchScreen(modifier = modifier)
         1 -> HomeScreen(modifier = modifier)
         2 -> CalendarScreen(modifier = modifier)
-        //2 -> CalendarDetailScreen(modifier = modifier)
         else -> HomeScreen(modifier = modifier) // 이거 맘에 안 듦.
     }
 }
