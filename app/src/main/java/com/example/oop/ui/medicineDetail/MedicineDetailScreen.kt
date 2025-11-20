@@ -1,4 +1,4 @@
-package com.example.oop.ui.view
+package com.example.oop.ui.medicineDetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,9 +37,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oop.R
 import com.example.oop.ui.viewmodel.MedicineDetailViewModel
 
-// 뷰로 보기
 @Composable
-fun MedicineDetailView(
+fun MedicineDetailScreen(
     medicineId: String = "medicine_001", // 약품 ID
     onBackClick: () -> Unit = {}, // 뒤로가기 콜백
     viewModel: MedicineDetailViewModel = viewModel() // ViewModel
@@ -54,21 +53,12 @@ fun MedicineDetailView(
 
     var selectedItem by rememberSaveable { mutableIntStateOf(1) }
 
-    Scaffold(
-        bottomBar = {
-            MyBottomNavBar(
-                selectedItem = selectedItem,
-                onItemClick = { selectedItem = it }
-            )
-        }
-    ) { contentPadding ->
-        val scrollState = rememberScrollState()
+    val scrollState = rememberScrollState()
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .padding(contentPadding)
                 .verticalScroll(scrollState)
         ) {
             Box(
@@ -192,61 +182,7 @@ fun MedicineDetailView(
                 }
             }
         }
-    }
-}
 
-@Composable
-fun MyBottomNavBar(
-    selectedItem: Int,
-    onItemClick: (Int) -> Unit
-) {
-    val greenColor = Color(0xFF71E000)
-
-    Column(modifier = Modifier.background(Color.White)) {
-        HorizontalDivider(
-            color = Color.LightGray.copy(alpha = 0.5f),
-            thickness = 1.dp
-        )
-
-        NavigationBar(
-            modifier = Modifier.height(56.dp),
-            containerColor = Color.White,
-            tonalElevation = 0.dp
-        ) {
-            NavigationBarItem(
-                selected = (selectedItem == 0),
-                onClick = { onItemClick(0) },
-                icon = { Icon(Icons.Default.Search, "Search") },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = greenColor,
-                    unselectedIconColor = greenColor,
-                    indicatorColor = Color.Transparent
-                )
-            )
-
-            NavigationBarItem(
-                selected = (selectedItem == 1),
-                onClick = { onItemClick(1) },
-                icon = { Icon(Icons.Default.Home, "Home") },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = greenColor,
-                    unselectedIconColor = greenColor,
-                    indicatorColor = Color.Transparent
-                )
-            )
-
-            NavigationBarItem(
-                selected = (selectedItem == 2),
-                onClick = { onItemClick(2) },
-                icon = { Icon(Icons.Default.DateRange, "Calendar") },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = greenColor,
-                    unselectedIconColor = greenColor,
-                    indicatorColor = Color.Transparent
-                )
-            )
-        }
-    }
 }
 
 @Composable
@@ -259,5 +195,5 @@ fun InfoRow(label: String, value: String, isLast: Boolean = false) {
 @Preview(showBackground = true)
 @Composable
 fun DetailScreenPreview() {
-    MedicineDetailView()
+    MedicineDetailScreen()
 }
