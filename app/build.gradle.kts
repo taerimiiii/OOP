@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp") version "2.0.21-1.0.27"
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -97,4 +98,13 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
+
+    // Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+
+    // 인증 (회원가입/로그인)
+    implementation("com.google.firebase:firebase-auth")
+
+    // Cloud Firestore (유저, 즐겨찾기 의약품, 캘린더 복용 여부 등 저장)
+    implementation("com.google.firebase:firebase-firestore")
 }
