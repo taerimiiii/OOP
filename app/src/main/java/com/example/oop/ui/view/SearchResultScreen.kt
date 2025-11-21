@@ -143,7 +143,7 @@ fun SearchTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White)
-            .padding(16.dp)
+            .padding(top = 50.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
     ) {
         // 로고
         Image(
