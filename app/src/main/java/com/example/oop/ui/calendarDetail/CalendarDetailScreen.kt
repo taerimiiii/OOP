@@ -9,6 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.oop.ui.calendar.CalendarTitleCard
+import com.example.oop.ui.calendarDetail.component.WeekCalendar
 import java.time.LocalDate
 
 @Composable
@@ -16,6 +17,7 @@ fun CalendarDetailScreen(
     selectedDate: LocalDate,
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
+    onDateSelected: (LocalDate) -> Unit = {},
 ) {
     BackHandler(onBack = onBack)
     Column(
@@ -23,6 +25,10 @@ fun CalendarDetailScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CalendarTitleCard(text = "일일 복용 약 확인", height = 40.dp)
-        WeekCalendar(targetDate = selectedDate)
+        WeekCalendar(
+            targetDate = selectedDate,
+            selectedDate = selectedDate,
+            onDateSelected = onDateSelected,
+        )
     }
 }

@@ -17,10 +17,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,12 +41,15 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
-// 상단 제목 박스 컴포넌트
+/**
+ * 상단 제목 박스 컴포넌트
+ * - 둘레, 배경, 텍스트 스타일만 캡슐화해 재사용
+ */
 @Composable
 fun CalendarTitleCard(
     text: String,
@@ -69,7 +72,6 @@ fun CalendarTitleCard(
                 color = whiteColor,
                 shape = RoundedCornerShape(percent = 50)
             ),
-        //.padding(horizontal = 16.dp, vertical = 1.dp),
         contentAlignment = Alignment.Center // 가운데 정렬
     ) {
         Text(
@@ -81,7 +83,11 @@ fun CalendarTitleCard(
     }
 }
 
-// 요일 하나 박스
+/**
+ * 월간 캘린더 내부 원형 날짜 셀.
+ * @param day Kizitonwose 캘린더가 제공하는 날짜 메타 정보
+ * @param isSelected 현재 선택된 날짜 여부
+ */
 @Composable
 fun Day(day: CalendarDay, isSelected: Boolean, onClick: (CalendarDay) -> Unit) {
     Box(
@@ -102,7 +108,9 @@ fun Day(day: CalendarDay, isSelected: Boolean, onClick: (CalendarDay) -> Unit) {
     }
 }
 
-// 월화수목금토일
+/**
+ * 월화수목금토일 헤더 영역
+ */
 @Composable
 fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
     Row(modifier = Modifier.fillMaxWidth()) {
@@ -117,29 +125,44 @@ fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
     }
 }
 
-// 월간 캘린더
+/**
+ * 월간 캘린더
+ *
+ * 상태는 전부 외부(ViewModel)에서 주입되며,
+ * 내부에서는 Kizitonwose 캘린더가 제공하는 스크롤 상태를
+ * snapshotFlow 로 관찰해 가시 월 변화를 콜백으로 전달한다.
+ */
 @Composable
 fun MonthCalendar(
     modifier: Modifier = Modifier,
+    selectedDate: LocalDate?,
+    visibleMonth: YearMonth,
     onDateSelected: (LocalDate) -> Unit,
+    onVisibleMonthChange: (YearMonth) -> Unit,
 ) {
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { currentMonth.minusMonths(10) } // Adjust as needed
     val endMonth = remember { currentMonth.plusMonths(10) } // Adjust as needed
     val daysOfWeek = remember { daysOfWeek() }
-    val selectedDate = remember { mutableStateOf<LocalDate?>(null) }
-    val monthFormatter = remember { DateTimeFormatter.ofPattern("yyyy년 M월", Locale.getDefault()) }
     val coroutineScope = rememberCoroutineScope()
 
     val state = rememberCalendarState(
         startMonth = startMonth,
         endMonth = endMonth,
-        firstVisibleMonth = currentMonth,
+        firstVisibleMonth = visibleMonth,
         firstDayOfWeek = daysOfWeek.first()
     )
 
-    val visibleMonth by remember {
-        derivedStateOf { state.firstVisibleMonth.yearMonth }
+    LaunchedEffect(visibleMonth) {
+        if (state.firstVisibleMonth.yearMonth != visibleMonth) {
+            state.animateScrollToMonth(visibleMonth)
+        }
+    }
+
+    LaunchedEffect(state) {
+        snapshotFlow { state.firstVisibleMonth.yearMonth }
+            .distinctUntilChanged()
+            .collect { month -> onVisibleMonthChange(month) }
     }
 
     Column(modifier = modifier) {
@@ -152,7 +175,7 @@ fun MonthCalendar(
             IconButton(
                 onClick = {
                     coroutineScope.launch {
-                        state.animateScrollToMonth(visibleMonth.minusMonths(1))
+                        state.animateScrollToMonth(state.firstVisibleMonth.yearMonth.minusMonths(1))
                     }
                 }
             ) {
@@ -165,14 +188,14 @@ fun MonthCalendar(
             Text(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
-                text = visibleMonth.format(monthFormatter),
+                text = visibleMonth.displayText(short = false),
                 fontSize = 18.sp
             )
 
             IconButton(
                 onClick = {
                     coroutineScope.launch {
-                        state.animateScrollToMonth(visibleMonth.plusMonths(1))
+                        state.animateScrollToMonth(state.firstVisibleMonth.yearMonth.plusMonths(1))
                     }
                 }
             ) {
@@ -188,9 +211,8 @@ fun MonthCalendar(
         HorizontalCalendar(
             state = state,
             dayContent = { day ->
-                Day(day, isSelected = selectedDate.value == day.date) { day ->
-                    selectedDate.value = day.date
-                    onDateSelected(day.date)
+                Day(day, isSelected = selectedDate == day.date) { clickedDay ->
+                    onDateSelected(clickedDay.date)
                 }
             },
         )
