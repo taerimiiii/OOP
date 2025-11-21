@@ -65,11 +65,11 @@ fun CalendarTitleCard(
                 border = BorderStroke(3.dp, greenColor),
                 shape = RoundedCornerShape(percent = 50)
             )
+            .padding(vertical = 5.dp)
             .background(
                 color = whiteColor,
                 shape = RoundedCornerShape(percent = 50)
             ),
-        //.padding(horizontal = 16.dp, vertical = 1.dp),
         contentAlignment = Alignment.Center // 가운데 정렬
     ) {
         Text(
@@ -146,7 +146,7 @@ fun MonthCalendar(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
+                .padding(top = 15.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             IconButton(
