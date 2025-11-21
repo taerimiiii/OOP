@@ -6,8 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,7 +43,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 fun YearMonth.displayText(short: Boolean = false): String {
-    return "${this.month.displayText(short = short)} ${this.year}"
+    return "${this.year} ${this.month.displayText(short = short)}"
 }
 
 fun Month.displayText(short: Boolean = false): String {
@@ -70,7 +72,7 @@ fun WeekCalendar(
 
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
             .background(whiteColor)
             .padding(vertical = 8.dp),
     ) {
@@ -84,8 +86,8 @@ fun WeekCalendar(
         val visibleYearMonth = remember(targetMonth) { targetMonth }
         Text(
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(bottom = 8.dp),
+                .fillMaxWidth()
+                .padding(start = 8.dp, bottom = 4.dp, top = 10.dp),
             text = visibleYearMonth.displayText(),
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
@@ -172,6 +174,146 @@ private fun Day(
                 )
             }
         }
+    }
+}
+
+
+// 즐겨찾기 의약품 컴포넌트
+// 회원 정보 DB에 즐겨찾기 의약품 등록해둔 itme_seq(품목일련번호)로 API에서 정보 불러오기.
+// 근데 이게 날짜마다 복용/미복용 상태를 관리해야 함.
+@Composable
+fun MedicineTakeCard(
+    itemName: String = "ITEM_NAME",
+    entpName: String = "ENTP_NAME",
+    chart: String = "CHART",
+    itemClassName: String = "CLASS_NAME",
+    modifier: Modifier = Modifier
+) {
+    var isTaken by remember { mutableStateOf(false) } // false = 빨강, true = 초록
+    val redColor = Color(0xFFD21818)
+    val greenColor = Color(0xFF38B000)
+    val lightGrayColor = Color(0xFFE5E5E5)
+    val darkGrayColor = Color(0xFFCCCCCC)
+    val blackColor = Color(0xFF000000)
+    val grayTextColor = Color(0xFF666666)
+    
+    Column(
+        modifier = modifier
+            .fillMaxWidth(0.96f)
+            .height(180.dp)
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { isTaken = !isTaken }
+    ) {
+        // 상단 정보 영역 (회색 배경)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+                .background(lightGrayColor)
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // 왼쪽 이미지 공간 (회색 박스)
+                Box(
+                    modifier = Modifier
+                        .width(80.dp)
+                        .height(100.dp)
+                        .background(darkGrayColor)
+                        .clip(RoundedCornerShape(8.dp)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "i m g",
+                        color = blackColor,
+                        fontSize = 12.sp
+                    )
+                }
+                
+                // 오른쪽 텍스트 정보
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    // ITEM_NAME
+                    Text(
+                        text = itemName,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = blackColor
+                    )
+                    
+                    // 회사명 ENTP_NAME
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            text = "회사명",
+                            fontSize = 14.sp,
+                            color = blackColor,
+                            modifier = Modifier.width(60.dp)
+                        )
+                        Text(
+                            text = entpName,
+                            fontSize = 14.sp,
+                            color = grayTextColor
+                        )
+                    }
+                    
+                    // 외형 CHART
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            text = "외형",
+                            fontSize = 14.sp,
+                            color = blackColor,
+                            modifier = Modifier.width(60.dp)
+                        )
+                        Text(
+                            text = chart,
+                            fontSize = 14.sp,
+                            color = grayTextColor
+                        )
+                    }
+                    
+                    // 제형타입 CLASS_NAME(itemClassName)
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Text(
+                            text = "분류명",
+                            fontSize = 14.sp,
+                            color = blackColor,
+                            modifier = Modifier.width(60.dp)
+                        )
+                        Text(
+                            text = itemClassName,
+                            fontSize = 14.sp,
+                            color = grayTextColor
+                        )
+                    }
+                }
+            }
+        }
+        
+        // 하단 색상 바
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(40.dp)
+                .background(
+                    color = if (isTaken) greenColor else redColor,
+                    shape = RoundedCornerShape(
+                        topStart = 0.dp,
+                        topEnd = 0.dp,
+                        bottomStart = 12.dp,
+                        bottomEnd = 12.dp
+                    )
+                )
+        )
     }
 }
 

@@ -19,10 +19,22 @@ fun CalendarDetailScreen(
 ) {
     BackHandler(onBack = onBack)
     Column(
-        modifier = modifier.fillMaxSize().padding(horizontal = 5.dp, vertical = 15.dp),
+        modifier = modifier.fillMaxSize().padding(start = 5.dp, top = 17.dp, end = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CalendarTitleCard(text = "일일 복용 약 확인", height = 40.dp)
         WeekCalendar(targetDate = selectedDate)
+        MedicineTakeCard(
+            itemName = "가나릴정 [Ganaril Tab]",
+            entpName = "영풍제약",
+            chart = "흰색의 원형 구강붕해정제",
+            itemClassName = "정제"
+        )
+        MedicineTakeCard(
+            itemName = "가나릴정 [Ganaril Tab]",
+            entpName = "영풍제약",
+            chart = "흰색의 원형 구강붕해정제",
+            itemClassName = "정제"
+        )
     }
 }
