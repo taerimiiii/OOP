@@ -111,8 +111,8 @@ fun SearchResultScreen(
                 .fillMaxSize()
                 .background(Color.White)
                 .padding(contentPadding)
-                .padding(horizontal = 16.dp, vertical = 8.dp), //vertical 12 -> 8
-            verticalArrangement = Arrangement.spacedBy(12.dp) //16 -> 12
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             items(medicines) { medicine ->
                 MedicineResultCard(
