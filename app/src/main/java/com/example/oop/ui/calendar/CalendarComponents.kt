@@ -38,10 +38,10 @@ import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.daysOfWeek
+import com.example.oop.ui.calendar.CalendarUtils
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
-import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 import kotlinx.coroutines.launch
@@ -123,12 +123,11 @@ fun MonthCalendar(
     modifier: Modifier = Modifier,
     onDateSelected: (LocalDate) -> Unit,
 ) {
-    val currentMonth = remember { YearMonth.now() }
+    val currentMonth = remember { CalendarUtils.getCurrentMonth() }
     val startMonth = remember { currentMonth.minusMonths(10) } // Adjust as needed
     val endMonth = remember { currentMonth.plusMonths(10) } // Adjust as needed
     val daysOfWeek = remember { daysOfWeek() }
     val selectedDate = remember { mutableStateOf<LocalDate?>(null) }
-    val monthFormatter = remember { DateTimeFormatter.ofPattern("yyyy년 M월", Locale.getDefault()) }
     val coroutineScope = rememberCoroutineScope()
 
     val state = rememberCalendarState(
@@ -152,12 +151,12 @@ fun MonthCalendar(
             IconButton(
                 onClick = {
                     coroutineScope.launch {
-                        state.animateScrollToMonth(visibleMonth.minusMonths(1))
+                        state.animateScrollToMonth(CalendarUtils.getPreviousMonth(visibleMonth))
                     }
                 }
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack, // 경고? 떠서 마우스 갔다 대면 바꾸라는 걸로 바꾸긴 함.
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Previous month"
                 )
             }
@@ -165,19 +164,19 @@ fun MonthCalendar(
             Text(
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
-                text = visibleMonth.format(monthFormatter),
+                text = CalendarUtils.formatMonth(visibleMonth),
                 fontSize = 18.sp
             )
 
             IconButton(
                 onClick = {
                     coroutineScope.launch {
-                        state.animateScrollToMonth(visibleMonth.plusMonths(1))
+                        state.animateScrollToMonth(CalendarUtils.getNextMonth(visibleMonth))
                     }
                 }
             ) {
                 Icon(
-                    imageVector = Icons.Default.ArrowForward, // 예도 경고가 뜨긴 하는데 잘 돌아감. 왜지?
+                    imageVector = Icons.Default.ArrowForward,
                     contentDescription = "Next month"
                 )
             }
