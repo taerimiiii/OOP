@@ -4,6 +4,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -33,20 +35,23 @@ fun CalendarDetailScreen(
     }
     
     val uiState by viewModel.uiState.collectAsState()
-    val scrollState = rememberScrollState()
     
-    Column(
+    LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .padding(start = 5.dp, top = 17.dp, end = 5.dp)
-            .verticalScroll(scrollState),
+            .padding(start = 5.dp, top = 17.dp, end = 5.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CalendarTitleCard(text = "일일 복용 약 확인", height = 40.dp)
-        WeekCalendar(targetDate = selectedDate)
+        item {
+            CalendarTitleCard(text = "일일 복용 약 확인", height = 40.dp)
+        }
+        
+        item {
+            WeekCalendar(targetDate = selectedDate)
+        }
         
         // Favorite 리스트를 기반으로 MedicineTakeCard 생성
-        uiState.favorites.forEach { favorite ->
+        items(uiState.favorites) { favorite ->
             val medicine = uiState.medicines[favorite.itemSeq]
             val isTaken = uiState.medicineTakenStatus[favorite.itemSeq] ?: false
             val isLoading = uiState.isLoading && medicine == null
