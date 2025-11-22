@@ -55,7 +55,7 @@ fun MedicineDetailScreen(
 
     val scrollState = rememberScrollState()
 
-        Column(
+    Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
