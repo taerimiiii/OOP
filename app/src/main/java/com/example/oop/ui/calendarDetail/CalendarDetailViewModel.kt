@@ -3,7 +3,6 @@ package com.example.oop.ui.calendarDetail
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.oop.ui.calendarDetail.repository.CalendarDetailRepository
-import com.example.oop.ui.calendarDetail.repository.FirebaseDebugHelper
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,14 +27,6 @@ class CalendarDetailViewModel(
      */
     fun initialize(selectedDate: LocalDate) {
         _uiState.update { it.copy(selectedDate = selectedDate) }
-        
-        // 디버깅: DB 데이터 확인
-        viewModelScope.launch {
-            FirebaseDebugHelper.printCollectionStructure(userId)
-            FirebaseDebugHelper.printAllFavorites(userId)
-            FirebaseDebugHelper.printAllDailyLogs(userId)
-        }
-        
         loadFavorites()
     }
 
@@ -89,15 +80,14 @@ class CalendarDetailViewModel(
 
     /**
      * 의약품 복용 상태 로드
+     * 임시로 항상 false로 초기화 (DB 완성 전까지)
      */
     private fun loadMedicineTakenStatus(itemSeq: String) {
         viewModelScope.launch {
-            val dateString = CalendarDetailUtils.formatDate(_uiState.value.selectedDate)
-            val isTaken = repository.getMedicineTakenStatus(userId, itemSeq, dateString)
-            
+            // DB 완성 전까지는 항상 false로 초기화
             _uiState.update { state ->
                 state.copy(
-                    medicineTakenStatus = state.medicineTakenStatus + (itemSeq to isTaken)
+                    medicineTakenStatus = state.medicineTakenStatus + (itemSeq to false)
                 )
             }
         }
@@ -132,13 +122,11 @@ class CalendarDetailViewModel(
 
     /**
      * 의약품 복용 상태 업데이트
+     * 로컬 상태만 업데이트 (DB 완성 전까지)
      */
     private fun updateMedicineTakenStatus(itemSeq: String, isTaken: Boolean) {
         viewModelScope.launch {
-            val dateString = CalendarDetailUtils.formatDate(_uiState.value.selectedDate)
-            
-            repository.updateMedicineTakenStatus(userId, itemSeq, dateString, isTaken)
-            
+            // DB 완성 전까지는 로컬 상태만 업데이트
             _uiState.update { state ->
                 state.copy(
                     medicineTakenStatus = state.medicineTakenStatus + (itemSeq to isTaken)

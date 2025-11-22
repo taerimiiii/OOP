@@ -1,24 +1,18 @@
 package com.example.oop.ui.calendar
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.oop.ui.calendar.repository.CalendarRepository
+import com.example.oop.ui.calendarDetail.repository.TempData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 //  ViewModel 상속
-class CalendarViewModel(
-    private val repository: CalendarRepository = CalendarRepository()
-) : ViewModel() {
+class CalendarViewModel : ViewModel() {
     
     private val _uiState = MutableStateFlow(CalendarUiState())
     val uiState: StateFlow<CalendarUiState> = _uiState.asStateFlow()
-
-    private val userId = "current_user_id" // TODO: 실제 사용자 ID로 변경
 
     init {
         loadInitialData()
@@ -26,39 +20,37 @@ class CalendarViewModel(
 
     /**
      * 초기 데이터 로드
+     * 임시 데이터 사용 (DB 완성 전까지)
      */
     private fun loadInitialData() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            
-            try {
-                val today = LocalDate.now()
-                val currentMonth = CalendarUtils.formatYearMonth(CalendarUtils.getCurrentMonth())
-                val lastMonth = CalendarUtils.formatYearMonth(CalendarUtils.getPreviousMonth(CalendarUtils.getCurrentMonth()))
-                
-                val monthlyAttendance = repository.getMonthlyAttendance(userId, currentMonth)
-                val lastMonthAttendance = repository.getMonthlyAttendance(userId, lastMonth)
-                val todayDateString = CalendarUtils.formatDate(today)
-                val todayTakenMedicines = repository.getTakenMedicines(userId, todayDateString)
-                
-                _uiState.update {
-                    it.copy(
-                        todayDate = today,
-                        monthlyAttendance = monthlyAttendance,
-                        lastMonthAttendance = lastMonthAttendance,
-                        todayMedicineTaken = todayTakenMedicines.isNotEmpty(),
-                        isLoading = false,
-                        errorMessage = null
-                    )
-                }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = e.message
-                    )
-                }
-            }
+        val today = LocalDate.now()
+        val todayDateString = CalendarUtils.formatDate(today)
+        val currentMonth = CalendarUtils.formatYearMonth(CalendarUtils.getCurrentMonth())
+        val lastMonth = CalendarUtils.formatYearMonth(CalendarUtils.getPreviousMonth(CalendarUtils.getCurrentMonth()))
+        
+        // 오늘 복용 여부 확인
+        val todayLog = TempData.logs.find { it.date == todayDateString }
+        val todayMedicineTaken = todayLog?.items?.values?.any { it.taken } ?: false
+        
+        // 현재 월 출석 횟수 계산 (복용한 날짜 수)
+        val monthlyAttendance = TempData.logs.count { log ->
+            log.date.startsWith(currentMonth) && log.items.values.any { it.taken }
+        }
+        
+        // 지난달 출석 횟수 계산
+        val lastMonthAttendance = TempData.logs.count { log ->
+            log.date.startsWith(lastMonth) && log.items.values.any { it.taken }
+        }
+        
+        _uiState.update {
+            it.copy(
+                todayDate = today,
+                monthlyAttendance = monthlyAttendance,
+                lastMonthAttendance = lastMonthAttendance,
+                todayMedicineTaken = todayMedicineTaken,
+                isLoading = false,
+                errorMessage = null
+            )
         }
     }
 
