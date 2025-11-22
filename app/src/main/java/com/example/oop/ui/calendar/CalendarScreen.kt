@@ -18,9 +18,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,14 +30,18 @@ import androidx.compose.ui.zIndex
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.oop.ui.calendar.CalendarEvent
+import com.example.oop.ui.calendar.CalendarUtils
 import com.example.oop.ui.calendarDetail.CalendarDetailScreen
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 // UI 화면을 구성하는 Composable 함수
 @Composable
-fun CalendarScreen(modifier: Modifier = Modifier) {
+fun CalendarScreen(
+    modifier: Modifier = Modifier,
+    viewModel: CalendarViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }
     var showDetailScreen by remember { mutableStateOf(false) }
 
@@ -53,7 +58,10 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
         ) {
             CalendarTitleCard(text = "약먹자 님의 섭취 기록", height = 40.dp) // 사용자 이름으로 변경 필요
             MonthCalendar(
-                onDateSelected = { date -> selectedDate = date }
+                onDateSelected = { date ->
+                    selectedDate = date
+                    viewModel.handleEvent(CalendarEvent.OnDateSelected(date))
+                }
             )
             
             // 날짜 정보 박스들
@@ -70,7 +78,7 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
                     // 오늘의 날짜 박스 (앞으로 보내기)
                     DateInfoBox(
                         title = "오늘의 날짜",
-                        date = LocalDate.now(),
+                        date = uiState.todayDate,
                         modifier = Modifier
                             .width(185.dp)
                             .height(80.dp)
@@ -79,6 +87,9 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
 
                     // 사용자 정보 박스 (뒤로 보내기)
                     UserInfoBox(
+                        monthlyAttendance = uiState.monthlyAttendance,
+                        lastMonthAttendance = uiState.lastMonthAttendance,
+                        todayMedicineTaken = uiState.todayMedicineTaken,
                         modifier = Modifier
                             .width(185.dp)
                             .height(350.dp)
@@ -94,7 +105,7 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
                     // 선택한 날짜 박스
                     DateInfoBox(
                         title = "선택한 날짜",
-                        date = selectedDate,
+                        date = uiState.selectedDate,
                         modifier = Modifier
                             .width(185.dp)
                             .height(80.dp)
@@ -102,8 +113,11 @@ fun CalendarScreen(modifier: Modifier = Modifier) {
                     
                     // 상세 화면으로 이동하는 버튼
                     CheckButton(
-                        selectedDate = selectedDate,
-                        onClick = { showDetailScreen = true },
+                        selectedDate = uiState.selectedDate,
+                        onClick = {
+                            showDetailScreen = true
+                            viewModel.handleEvent(CalendarEvent.OnCheckButtonClicked)
+                        },
                         modifier = Modifier
                             .width(170.dp)
                             .height(200.dp)
@@ -125,7 +139,6 @@ private fun DateInfoBox(
     val borderColor = Color(0xFFD6F4B6)
     val whiteColor = Color(0xFFFFFFFF)
     val blackColor = Color(0xFF000000)
-    val dateFormatter = remember { DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.getDefault()) }
     
     Box(
         modifier = modifier
@@ -150,7 +163,7 @@ private fun DateInfoBox(
                 textAlign = TextAlign.Center
             )
             Text(
-                text = if (date != null) dateFormatter.format(date) else "없음",
+                text = if (date != null) CalendarUtils.formatDisplayDate(date) else "없음",
                 fontSize = 18.sp,
                 color = blackColor,
                 textAlign = TextAlign.Center,
@@ -163,6 +176,9 @@ private fun DateInfoBox(
 // 사용자 정보를 표시하는 박스 컴포넌트
 @Composable
 private fun UserInfoBox(
+    monthlyAttendance: Int,
+    lastMonthAttendance: Int,
+    todayMedicineTaken: Boolean,
     modifier: Modifier = Modifier
 ) {
     val borderColor = Color(0xFFD6F4B6)
@@ -198,17 +214,17 @@ private fun UserInfoBox(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "월간 출석 : 00회",
+                text = "월간 출석 : ${monthlyAttendance}회",
                 fontSize = 18.sp,
                 color = blackColor
             )
             Text(
-                text = "지난달 출석 : 00회",
+                text = "지난달 출석 : ${lastMonthAttendance}회",
                 fontSize = 18.sp,
                 color = blackColor
             )
             Text(
-                text = "오늘의 약 복용 : X",
+                text = "오늘의 약 복용 : ${if (todayMedicineTaken) "O" else "X"}",
                 fontSize = 18.sp,
                 color = blackColor
             )
@@ -223,7 +239,6 @@ private fun CheckButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val dateFormatter = remember { DateTimeFormatter.ofPattern("M월 d일", Locale.getDefault()) }
     val blackColor = Color(0xFF000000)
     val greenColor = Color(0xFF71E000)
     val darkGrayColor = Color(0xFFD9D9D9)
@@ -246,7 +261,7 @@ private fun CheckButton(
         ) {
             if (selectedDate != null) {
                 Text(
-                    text = dateFormatter.format(selectedDate),
+                    text = CalendarUtils.formatShortDate(selectedDate),
                     fontSize = 18.sp,
                     color = blackColor,
                     modifier = Modifier.padding(bottom = 2.dp)
