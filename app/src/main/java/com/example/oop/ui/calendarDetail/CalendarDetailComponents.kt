@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,6 +18,7 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,13 +27,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import com.example.oop.data.api.MedicineApiDataSource
+import com.example.oop.data.model.Medicine
 import com.kizitonwose.calendar.compose.WeekCalendar as KizWeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import java.time.DayOfWeek
@@ -179,17 +186,40 @@ private fun Day(
 
 
 // 즐겨찾기 의약품 컴포넌트
-// 회원 정보 DB에 즐겨찾기 의약품 등록해둔 itme_seq(품목일련번호)로 API에서 정보 불러오기.
+// 회원 정보 DB에 즐겨찾기 의약품 등록해둔 item_seq(품목일련번호)로 API에서 정보 불러오기.
 // 근데 이게 날짜마다 복용/미복용 상태를 관리해야 함.
 @Composable
 fun MedicineTakeCard(
-    itemName: String = "ITEM_NAME",
-    entpName: String = "ENTP_NAME",
-    chart: String = "CHART",
-    itemClassName: String = "CLASS_NAME",
+    itemSeq: String,
     modifier: Modifier = Modifier
 ) {
     var isTaken by remember { mutableStateOf(false) } // false = 빨강, true = 초록
+    var medicine by remember { mutableStateOf<Medicine?>(null) }
+    var isLoading by remember { mutableStateOf(true) }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
+    var showImageDialog by remember { mutableStateOf(false) }
+    
+    val apiDataSource = remember { MedicineApiDataSource() }
+    
+    // API 호출
+    LaunchedEffect(itemSeq) {
+        isLoading = true
+        errorMessage = null
+        
+        apiDataSource.getMedicines(
+            pageNo = 1,
+            numOfRows = 200,
+            type = "json",
+            itemSeq = itemSeq
+        ).onSuccess { medicines ->
+            medicine = medicines.firstOrNull()
+            isLoading = false
+        }.onFailure { error ->
+            errorMessage = error.message
+            isLoading = false
+        }
+    }
+    
     val redColor = Color(0xFFD21818)
     val greenColor = Color(0xFF38B000)
     val lightGrayColor = Color(0xFFE5E5E5)
@@ -200,7 +230,7 @@ fun MedicineTakeCard(
     Column(
         modifier = modifier
             .fillMaxWidth(0.96f)
-            .height(180.dp)
+            .height(200.dp)
             .clip(RoundedCornerShape(12.dp))
             .clickable { isTaken = !isTaken }
     ) {
@@ -212,88 +242,138 @@ fun MedicineTakeCard(
                 .background(lightGrayColor)
                 .padding(16.dp)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // 왼쪽 이미지 공간 (회색 박스)
+            if (isLoading) {
+                // 로딩 중
                 Box(
-                    modifier = Modifier
-                        .width(80.dp)
-                        .height(100.dp)
-                        .background(darkGrayColor)
-                        .clip(RoundedCornerShape(8.dp)),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "i m g",
-                        color = blackColor,
-                        fontSize = 12.sp
+                        text = "로딩 중...",
+                        fontSize = 14.sp,
+                        color = grayTextColor
                     )
                 }
-                
-                // 오른쪽 텍스트 정보
-                Column(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
+            } else if (errorMessage != null) {
+                // 에러 발생
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    // ITEM_NAME
                     Text(
-                        text = itemName,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = blackColor
+                        text = "오류: $errorMessage",
+                        fontSize = 14.sp,
+                        color = redColor
                     )
-                    
-                    // 회사명 ENTP_NAME
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                }
+            } else if (medicine == null) {
+                // 데이터 없음
+                Box(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "의약품 정보를 찾을 수 없습니다",
+                        fontSize = 14.sp,
+                        color = grayTextColor
+                    )
+                }
+            } else {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // 왼쪽 이미지 공간 (이미지의 왼쪽 절반만 표시)
+                    Box(
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(120.dp)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(darkGrayColor), //lightGrayColor
+                        contentAlignment = Alignment.CenterStart
                     ) {
-                        Text(
-                            text = "회사명",
-                            fontSize = 14.sp,
-                            color = blackColor,
-                            modifier = Modifier.width(60.dp)
-                        )
-                        Text(
-                            text = entpName,
-                            fontSize = 14.sp,
-                            color = grayTextColor
-                        )
+                        if (!medicine?.itemImage.isNullOrEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .width(80.dp) // 원본 이미지의 2배 크기
+                                    .height(120.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                            ) {
+                                AsyncImage(
+                                    model = medicine?.itemImage,
+                                    contentDescription = "의약품 이미지",
+                                    modifier = Modifier
+                                        .width(80.dp)
+                                        .fillMaxHeight(),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
+                        }
                     }
-                    
-                    // 외형 CHART
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+
+                    // 오른쪽 텍스트 정보
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(1.dp)
                     ) {
+                        // ITEM_NAME
                         Text(
-                            text = "외형",
-                            fontSize = 14.sp,
-                            color = blackColor,
-                            modifier = Modifier.width(60.dp)
+                            text = medicine?.itemName ?: "ITEM_NAME",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = blackColor
                         )
-                        Text(
-                            text = chart,
-                            fontSize = 14.sp,
-                            color = grayTextColor
-                        )
-                    }
-                    
-                    // 제형타입 CLASS_NAME(itemClassName)
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Text(
-                            text = "분류명",
-                            fontSize = 14.sp,
-                            color = blackColor,
-                            modifier = Modifier.width(60.dp)
-                        )
-                        Text(
-                            text = itemClassName,
-                            fontSize = 14.sp,
-                            color = grayTextColor
-                        )
+
+                        // 회사명 ENTP_NAME
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(
+                                text = "회사명",
+                                fontSize = 14.sp,
+                                color = blackColor,
+                                modifier = Modifier.width(60.dp)
+                            )
+                            Text(
+                                text = medicine?.entpName ?: "ENTP_NAME",
+                                fontSize = 14.sp,
+                                color = grayTextColor
+                            )
+                        }
+
+                        // 외형 CHART
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(
+                                text = "외형",
+                                fontSize = 14.sp,
+                                color = blackColor,
+                                modifier = Modifier.width(60.dp)
+                            )
+                            Text(
+                                text = medicine?.chart ?: "CHART",
+                                fontSize = 14.sp,
+                                color = grayTextColor
+                            )
+                        }
+
+                        // 분류명 CLASS_NAME
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Text(
+                                text = "분류명",
+                                fontSize = 14.sp,
+                                color = blackColor,
+                                modifier = Modifier.width(60.dp)
+                            )
+                            Text(
+                                text = medicine?.className ?: "CLASS_NAME",
+                                fontSize = 14.sp,
+                                color = grayTextColor
+                            )
+                        }
                     }
                 }
             }
