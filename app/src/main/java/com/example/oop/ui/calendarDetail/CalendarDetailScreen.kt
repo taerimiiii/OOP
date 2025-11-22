@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.oop.ui.calendar.CalendarTitleCard
+import com.example.oop.ui.calendar.components.CalendarTitleCard
 import com.example.oop.ui.calendarDetail.components.MedicineTakeCard
 import com.example.oop.ui.calendarDetail.components.WeekCalendar
 import java.time.LocalDate
