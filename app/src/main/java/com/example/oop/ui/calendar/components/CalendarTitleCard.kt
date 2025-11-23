@@ -22,8 +22,9 @@ import androidx.compose.ui.unit.sp
 fun CalendarTitleCard(
     text: String,
     modifier: Modifier = Modifier,
-    height: Dp = 120.dp,
+    height: Dp = 120.dp,    // 기본값
 ) {
+    // 색 테마 상속 받아서 쓰기??
     val greenColor = Color(0xFF71E000)
     val whiteColor = Color(0xFFFFFFFF)
     val blackColor = Color(0xFF000000)
@@ -36,17 +37,12 @@ fun CalendarTitleCard(
                 border = BorderStroke(3.dp, greenColor),
                 shape = RoundedCornerShape(percent = 50)
             )
-            .padding(vertical = 5.dp)
-            .background(
-                color = whiteColor,
-                shape = RoundedCornerShape(percent = 50)
-            ),
-        contentAlignment = Alignment.Center
+            .padding(vertical = 5.dp),   // 위아래 요소와 5dp
+        contentAlignment = Alignment.Center // 밗스 내부 요소들 중앙 정렬
     ) {
         Text(
             text = text,
             color = blackColor,
-            textAlign = TextAlign.Center,
             fontSize = 16.sp
         )
     }

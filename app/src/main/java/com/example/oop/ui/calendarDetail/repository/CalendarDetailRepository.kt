@@ -22,7 +22,7 @@ class CalendarDetailRepository(
      * @return Medicine 객체
      */
     suspend fun getMedicine(itemSeq: String): Result<Medicine> {
-        return apiDataSource.getMedicines(
+        return apiDataSource.getTakeMedicines(
             pageNo = 1,
             numOfRows = 200,
             type = "json",

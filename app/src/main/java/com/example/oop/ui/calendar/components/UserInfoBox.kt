@@ -6,7 +6,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,8 +20,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun UserInfoBox(
-    monthlyAttendance: Int,
-    lastMonthAttendance: Int,
+    monthCount: Int,
+    lastMonthCount: Int,
     todayMedicineTaken: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -29,6 +31,8 @@ fun UserInfoBox(
 
     Box(
         modifier = modifier
+            .width(185.dp)
+            .height(350.dp)
             .border(
                 border = BorderStroke(3.dp, borderColor),
                 shape = RoundedCornerShape(
@@ -55,12 +59,12 @@ fun UserInfoBox(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "월간 출석 : ${monthlyAttendance}회",
+                text = "월간 출석 : ${monthCount}회",
                 fontSize = 18.sp,
                 color = blackColor
             )
             Text(
-                text = "지난달 출석 : ${lastMonthAttendance}회",
+                text = "지난달 출석 : ${lastMonthCount}회",
                 fontSize = 18.sp,
                 color = blackColor
             )

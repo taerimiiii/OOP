@@ -2,7 +2,9 @@ package com.example.oop.ui.calendar.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -16,11 +18,12 @@ import com.example.oop.ui.calendar.CalendarUtils
 import java.time.LocalDate
 
 @Composable
-fun CheckButton(
-    selectedDate: LocalDate?,
-    onClick: () -> Unit,
+fun MoveDetailPageButton(
+    selectedDate: LocalDate?,       // 년월일, 맨 처음 캘린더 페이지 접속 시 null
+    onClick: () -> Unit,            // 매개변수X, 반환값X
     modifier: Modifier = Modifier
 ) {
+    // 나중에 색상 테마 만들어서 사용하기.
     val blackColor = Color(0xFF000000)
     val greenColor = Color(0xFF71E000)
     val darkGrayColor = Color(0xFFD9D9D9)
@@ -28,8 +31,11 @@ fun CheckButton(
 
     Button(
         onClick = onClick,
-        enabled = selectedDate != null,
-        modifier = modifier,
+        enabled = selectedDate != null, // 비/활성화 여부
+        modifier = modifier
+            .width(170.dp)
+            .height(200.dp)
+            .padding(vertical = 20.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = greenColor,
             contentColor = whiteColor,
@@ -38,12 +44,12 @@ fun CheckButton(
         )
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            horizontalAlignment = Alignment.CenterHorizontally, // 가로 중앙
+            verticalArrangement = Arrangement.Center            // 세로 중앙
         ) {
             if (selectedDate != null) {
                 Text(
-                    text = CalendarUtils.formatShortDate(selectedDate),
+                    text = CalendarUtils.formatOutMonthDate(selectedDate),
                     fontSize = 18.sp,
                     color = blackColor,
                     modifier = Modifier.padding(bottom = 2.dp)

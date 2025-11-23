@@ -7,63 +7,46 @@ import java.util.Locale
 
 // 날짜 계산/서식 helper는 object로 관리하기.
 object CalendarUtils {
-    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
-    private val monthFormatter = DateTimeFormatter.ofPattern("yyyy년 M월", Locale.getDefault())
-    private val displayDateFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.getDefault())
-    private val shortDateFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.getDefault())
+    // 한국 시간 기준으로 날짜 형식 변환
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.KOREA)
+    private val outYearMonthFormatter = DateTimeFormatter.ofPattern("yyyy년 M월", Locale.KOREA)
+    private val outYearMonthDateFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREA)
+    private val outMonthDateFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREA)
 
-    /**
-     * LocalDate를 "yyyy-MM-dd" 형식 문자열로 변환
-     */
+
     fun formatDate(date: LocalDate): String {
         return date.format(dateFormatter)
     }
 
-    /**
-     * YearMonth를 "yyyy년 M월" 형식 문자열로 변환
-     */
-    fun formatMonth(yearMonth: YearMonth): String {
-        return yearMonth.format(monthFormatter)
+    // 월간 캘린더 타이틀에서 연도랑 월만 사용해서 일 떼어 진 거 필요.
+    fun formatOutYearMonth(yearMonth: YearMonth): String {
+        return yearMonth.format(outYearMonthFormatter)
     }
 
-    /**
-     * LocalDate를 "yyyy년 M월 d일" 형식 문자열로 변환
-     */
-    fun formatDisplayDate(date: LocalDate): String {
-        return date.format(displayDateFormatter)
+    fun formatOutYearMonthDate(date: LocalDate): String {
+        return date.format(outYearMonthDateFormatter)
     }
 
-    /**
-     * LocalDate를 "M월 d일" 형식 문자열로 변환
-     */
-    fun formatShortDate(date: LocalDate): String {
-        return date.format(shortDateFormatter)
+    fun formatOutMonthDate(date: LocalDate): String {
+        return date.format(outMonthDateFormatter)
     }
 
-    /**
-     * YearMonth를 "yyyy-MM" 형식 문자열로 변환
-     */
+    // 출석 계산할 때 쓸 지난달 이번달 년월 계산에 사용.
     fun formatYearMonth(yearMonth: YearMonth): String {
         return yearMonth.format(DateTimeFormatter.ofPattern("yyyy-MM", Locale.getDefault()))
     }
 
-    /**
-     * 현재 월의 YearMonth 반환
-     */
+    // 현재 월의 년월 반환
     fun getCurrentMonth(): YearMonth {
         return YearMonth.now()
     }
 
-    /**
-     * 이전 월 반환
-     */
+    // 이전 월 반환
     fun getPreviousMonth(yearMonth: YearMonth): YearMonth {
         return yearMonth.minusMonths(1)
     }
 
-    /**
-     * 다음 월 반환
-     */
+    // 다음 월 반환
     fun getNextMonth(yearMonth: YearMonth): YearMonth {
         return yearMonth.plusMonths(1)
     }
