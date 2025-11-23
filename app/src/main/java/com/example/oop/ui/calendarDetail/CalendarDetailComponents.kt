@@ -206,7 +206,7 @@ fun MedicineTakeCard(
         isLoading = true
         errorMessage = null
         
-        apiDataSource.getMedicines(
+        apiDataSource.getTakeMedicines(
             pageNo = 1,
             numOfRows = 200,
             type = "json",
