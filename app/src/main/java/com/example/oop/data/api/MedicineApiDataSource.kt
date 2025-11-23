@@ -10,16 +10,31 @@ class MedicineApiDataSource {
 
     // 의약품 목록 조회
     // 원본 API 응답 반환
+    // 각자 만들 조회 리턴에 넣고 필요한 데이터만 뽑아서 사용하기
     suspend fun getMedicineList(
         pageNo: Int = 1,
-        numOfRows: Int = 50,
+        numOfRows: Int = 100,
         type: String = "json",
         itemName: String? = null,
         entpName: String? = null,
         itemSeq: String? = null,
-        imgRegistTs: String? = null,
-        ediCode: String? = null,
-        brizrno: String? = null
+        chart: String? = null,
+        itemImage: String? = null,
+        printFront: String? = null,
+        printBack: String? = null,
+        drugShape: String? = null,
+        colorClass1: String? = null,
+        lineFront: String? = null,
+        lineBack: String? = null,
+        lengLong: String? = null,
+        lengShort: String? = null,
+        thick: String? = null,
+        className: String? = null,
+        etcOtcName: String? = null,
+        formCodeName: String? = null,
+        markCodeFrontImg: String? = null,
+        markCodeBackImg: String? = null,
+        itemEngName: String? = null,
     ): Result<MedicineApiResponse> {
         return try {
             // API_KEY 확인
@@ -27,7 +42,7 @@ class MedicineApiDataSource {
             if (apiKey.isBlank()) {
                 return Result.failure(Exception("API_KEY가 설정되지 않았습니다. local.properties 파일에 API_KEY를 추가해주세요."))
             }
-            
+
             val response = apiService.getMedicineList(
                 serviceKey = apiKey,
                 pageNo = pageNo,
@@ -36,11 +51,25 @@ class MedicineApiDataSource {
                 itemName = itemName,
                 entpName = entpName,
                 itemSeq = itemSeq,
-                imgRegistTs = imgRegistTs,
-                ediCode = ediCode,
-                brizrno = brizrno
+                chart = chart,
+                itemImage = itemImage,
+                printFront = printFront,
+                printBack = printBack,
+                drugShape = drugShape,
+                colorClass1 = colorClass1,
+                lineFront = lineFront,
+                lineBack = lineBack,
+                lengLong = lengLong,
+                lengShort = lengShort,
+                thick = thick,
+                className = className,
+                etcOtcName = etcOtcName,
+                formCodeName = formCodeName,
+                markCodeFrontImg = markCodeFrontImg,
+                markCodeBackImg = markCodeBackImg,
+                itemEngName = itemEngName,
             )
-            
+
             if (response.header.resultCode == "00") {
                 Result.success(response)
             } else {
@@ -60,7 +89,7 @@ class MedicineApiDataSource {
     // 즐겨찾기한 의약품 조회
     suspend fun getTakeMedicines(
         pageNo: Int = 1,
-        numOfRows: Int = 50,
+        numOfRows: Int = 100,
         type: String = "json",
         itemSeq: String? = null
     ): Result<List<Medicine>> {
@@ -77,4 +106,3 @@ class MedicineApiDataSource {
     // 이 밑으로 각자 조회 API 작성해서 사용!!
 
 }
-
