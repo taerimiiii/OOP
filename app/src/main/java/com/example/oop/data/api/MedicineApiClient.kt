@@ -16,6 +16,7 @@ object MedicineApiClient {
     }
 
     // 응답 지연 대응 로직(30초)
+    // 공공데이터 포털 API라 응답 느린 편 + 노트북 스펙 딸려서 힘들어함 이슈로 응답 시간을 늘리고자 사용.
     private val okHttpClient = OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -31,4 +32,3 @@ object MedicineApiClient {
 
     val apiService: MedicineApiService = retrofit.create(MedicineApiService::class.java)
 }
-
