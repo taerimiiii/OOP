@@ -13,7 +13,7 @@ class CalendarViewModel : ViewModel() {
     
     // mutableStateOf 사용 (블로그에서 찾아본 StateFlow 너무 어려워서..)
     // useState와 비슷. 상태가 변경되면 리랜더링한다고 생각.
-    // _uiState는 내부에서만 수정 가능하고, uiState는 외부에서 읽기만 가능.
+    // mutableUiState는 내부에서만 수정 가능하고, uiState는 외부에서 읽기만 가능.
     private val mutableUiState = mutableStateOf(CalendarUiState())
     val uiState: State<CalendarUiState> = mutableUiState    // Screen 에서 읽어서 사용함.
 

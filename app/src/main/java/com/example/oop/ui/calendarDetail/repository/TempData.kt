@@ -5,10 +5,7 @@ import com.example.oop.data.model.DailyLogItem
 import com.example.oop.data.model.Favorite
 import com.example.oop.data.model.User
 
-/**
- * 임시 데이터 저장소
- * DB 완성 전까지 사용
- */
+// 임시 데이터
 object TempData {
     // 임시 유저 데이터
     val user = User(

@@ -28,7 +28,7 @@ class CalendarDetailRepository(
             type = "json",
             itemSeq = itemSeq
         ).map { medicines ->
-            medicines.firstOrNull() ?: throw Exception("의약품 정보를 찾을 수 없습니다")
+            medicines.firstOrNull() ?: throw Exception("에러발생. 의약품 정보를 찾을 수 없습니다")
         }
     }
 

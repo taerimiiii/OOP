@@ -8,10 +8,7 @@ import java.time.LocalDate
 data class CalendarDetailUiState(
     val selectedDate: LocalDate,
     val favorites: List<Favorite> = emptyList(),
-    val medicines: Map<String, Medicine> = emptyMap(), // itemSeq -> Medicine
+    val medicines: Map<String, Medicine> = emptyMap(),          // itemSeq -> Medicine
     val medicineTakenStatus: Map<String, Boolean> = emptyMap(), // itemSeq -> isTaken
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null,
-    val showImageDialog: Boolean = false,
-    val selectedImageItemSeq: String? = null
+    val errorMessage: String? = null
 )
