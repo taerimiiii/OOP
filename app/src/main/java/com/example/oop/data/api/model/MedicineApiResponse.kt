@@ -59,27 +59,19 @@ data class MedicineItem(
     @SerializedName("STD_CD") val stdCd: String? = null
 ) {
 
-    // MedicineItem을 Medicine 모델로 변환
-    // 이후 수정 할 것.
-    fun toMedicine(): com.example.oop.data.model.Medicine {
+    // 태림양꺼 응답 모델
+    // 즐겨찾기한 의약품 조회
+    fun tofavoriteMedicine(): com.example.oop.data.model.Medicine {
         return com.example.oop.data.model.Medicine(
             itemSeq = itemSeq,
             itemName = itemName,
             entpName = entpName,
-            itemEngName = itemEngName,
-            etcOtcName = etcOtcName,
             className = className,
-            drugShape = drugShape,
-            color1 = colorClass1,
-            printFront = printFront,
-            printBack = printBack,
             chart = chart,
             itemImage = itemImage,
-            ediCode = ediCode,
-            bizrno = bizrno,
-            stdCd = stdCd,
-            imgRegistTs = imgRegistTs
         )
     }
+
+    // 이 밑으로 각자 사용할 API 응답 모델 선언해서 사용하기!!
 }
 
