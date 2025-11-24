@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.oop.ui.BottomNavBar
 import com.example.oop.ui.PillTopBar
 import com.example.oop.ui.Search.SearchScreen
+import com.example.oop.ui.Search.SearchScreen1 //임시
 import com.example.oop.ui.calendar.CalendarScreen
 import com.example.oop.ui.home.HomeScreen
 import com.example.oop.ui.theme.OOPTheme
@@ -63,7 +64,7 @@ fun Content(
     modifier: Modifier = Modifier
 ) {
     when (selectedItem) {
-        0 -> SearchScreen(modifier = modifier)
+        0 -> SearchScreen1(modifier = modifier)
         1 -> HomeScreen(modifier = modifier)
         2 -> CalendarScreen(modifier = modifier)
         else -> HomeScreen(modifier = modifier) // 이거 맘에 안 듦.
