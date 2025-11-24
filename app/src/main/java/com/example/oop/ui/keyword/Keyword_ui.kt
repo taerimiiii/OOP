@@ -1,4 +1,4 @@
-package com.example.oop.ui.theme.keyword
+package com.example.oop.ui.keyword
 
 import android.os.Bundle
 import android.view.Surface
