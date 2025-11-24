@@ -22,8 +22,8 @@ object TempData {
         Favorite(itemSeq = "200809076")
     )
 
-    // 복용 기록 데이터
-    val logs = listOf(
+    // 복용 기록 데이터 (날짜 순으로 오름차순 정렬 유지)
+    val logs = mutableListOf(
         DailyLog(
             date = "2025-10-20",
             items = mapOf(
@@ -70,5 +70,10 @@ object TempData {
             )
         )
     )
+
+    // logs를 날짜 순으로 오름차순 정렬
+    fun sortLogs() {
+        logs.sortBy { it.date }
+    }
 }
 

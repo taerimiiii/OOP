@@ -7,20 +7,16 @@ import com.example.oop.data.model.Medicine
 class CalendarDetailRepository(
     private val apiDataSource: MedicineApiDataSource = MedicineApiDataSource()
 ) {
-    /**
-     * 사용자의 즐겨찾기 의약품 목록 가져오기
-     * 임시 데이터 반환 (DB 완성 전까지)
-     */
+    // 사용자의 즐겨찾기 의약품 목록 가져오기
+    // 임시 데이터 반환 (DB 완성 전까지)
     suspend fun getFavorites(userId: String): List<Favorite> {
         // 임시 데이터 반환
         return TempData.favorites
     }
 
-    /**
-     * 의약품 정보 가져오기 (API 호출)
-     * @param itemSeq 품목일련번호
-     * @return Medicine 객체
-     */
+    // 의약품 정보 가져오기 (API 호출)
+    // @param itemSeq 품목일련번호
+    // @return Medicine 객체
     suspend fun getMedicine(itemSeq: String): Result<Medicine> {
         return apiDataSource.getTakeMedicines(
             pageNo = 1,
@@ -32,10 +28,8 @@ class CalendarDetailRepository(
         }
     }
 
-    /**
-     * 특정 날짜의 복용 상태 저장/업데이트
-     * 임시로 로컬 상태만 관리 (DB 완성 전까지)
-     */
+    // 특정 날짜의 복용 상태 저장/업데이트
+    // 임시로 로컬 상태만 관리 (DB 완성 전까지)
     suspend fun updateMedicineTakenStatus(
         userId: String,
         itemSeq: String,
@@ -47,10 +41,8 @@ class CalendarDetailRepository(
         // 임시 데이터는 TempData.logs에 하드코딩되어 있음
     }
 
-    /**
-     * 특정 날짜의 복용 상태 가져오기
-     * 임시 데이터에서 조회 (DB 완성 전까지)
-     */
+    // 특정 날짜의 복용 상태 가져오기
+    // 임시 데이터에서 조회 (DB 완성 전까지)
     suspend fun getMedicineTakenStatus(
         userId: String,
         itemSeq: String,
