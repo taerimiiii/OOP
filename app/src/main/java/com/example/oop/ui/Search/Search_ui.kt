@@ -1,21 +1,9 @@
 package com.example.oop
 
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Divider
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,14 +11,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.oop.ui.theme.OOPTheme
+import androidx.compose.ui.Alignment
 
 
 @Composable//검색의 종류를 고르는 ui
-fun Search_select(modifier : Modifier = Modifier) {
+fun SearchSelect(modifier : Modifier = Modifier) {
     Row(
         modifier = modifier.padding(40.dp).offset(x = 30.dp)
     ) {
@@ -53,7 +40,7 @@ fun Search_select(modifier : Modifier = Modifier) {
 }
 
 @Composable//검색 바 ui
-fun Search_bar(modifier : Modifier = Modifier){
+fun SearchBar(modifier : Modifier = Modifier){
     Column(
         modifier = modifier.padding(40.dp)
     ) {
@@ -81,7 +68,7 @@ fun Search_bar(modifier : Modifier = Modifier){
 }
 
 @Composable//최근검색어 글씨와 비우기 기능
-fun Search_delete(modifier : Modifier = Modifier){
+fun SearchDelete(modifier : Modifier = Modifier){
     Row{
         Text(
             text = "최근검색어",
@@ -99,15 +86,21 @@ fun Search_delete(modifier : Modifier = Modifier){
 }
 
 @Composable// 검색 내역
-fun Search_history(modifier : Modifier = Modifier){
-    Column{
+fun SearchHistory(modifier : Modifier = Modifier){
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 10.dp), // 좌우 패딩으로 위치 조정
+        horizontalArrangement = Arrangement.SpaceBetween, // 양 끝으로 요소 정렬
+        verticalAlignment = Alignment.CenterVertically
+    ){
         Text(
-            text = "history1",
+            text = "history",
             modifier = Modifier.offset(x = 40.dp,y = 300.dp),
             fontSize = 13.sp
         )
         Text(
-            text = "history2",
+            text = "history",
             modifier = Modifier.offset(x = 40.dp,y = 320.dp),
             fontSize = 13.sp
         )
