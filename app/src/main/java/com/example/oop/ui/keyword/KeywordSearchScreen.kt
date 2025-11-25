@@ -1,19 +1,21 @@
 package com.example.oop.ui.keyword
 
-import android.widget.Button
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -26,10 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -66,48 +65,60 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
 
 
         else -> {
-            Row(
-                modifier = modifier.padding(40.dp).offset(x = 30.dp)
+            Column(
+                modifier = Modifier.padding(top = 100.dp)
             ) {
-                TextButton(
-                    onClick = { showSearchScreen = true },
-                    modifier = Modifier.offset(x = (-5).dp, y = (-12).dp)
-                ){
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(IntrinsicSize.Min),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextButton(
+                        onClick = { showSearchScreen = true },
+                        modifier = Modifier.wrapContentWidth(Alignment.End)
+                    ) {
+                        Text(
+                            text = "제품명 검색",
+                            color = Color.Black
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(35.dp))
+                    Box(
+                        modifier = Modifier
+                            .width(40.dp)
+                            .fillMaxHeight(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.line_select),
+                            contentDescription = "select bar",
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(45.dp))
                     Text(
-                        text = "제품명 검색",
-                        color = Color.Black
+                        text = "키워드 검색",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        modifier = Modifier.wrapContentWidth(Alignment.Start)
                     )
                 }
                 Box(
-                    modifier = Modifier.weight(1f) // Row 공간을 최대로 차지하게 하여 중앙 공간 확보
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(R.drawable.line_select),
-                        contentDescription = "select bar",
-                        modifier = Modifier.size(40.dp)
-                            .offset(y = (-10).dp)
-                            .align(Alignment.Center)
-                    )
-                }
-                Spacer(Modifier.width(35.dp))
-                Text(
-                    text = "키워드 검색",
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    modifier = Modifier.width(100.dp)
-                )
-            }
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ){
-                Canvas(modifier = Modifier.size(width = 350.dp, height = 250.dp).offset(y= (-300).dp)) {
-                    drawLine(
-                        color = Color.Black,
-                        start = Offset(0f, size.height / 2),
-                        end = Offset(size.width, size.height / 2),
-                        strokeWidth = 3f
-                    )
+                    Canvas(
+                        modifier = Modifier.fillMaxWidth().padding(15.dp).align(Alignment.TopCenter)
+                    ) {
+                        drawLine(
+                            color = Color.Black,
+                            start = Offset(0f, size.height / 2),
+                            end = Offset(size.width, size.height / 2),
+                            strokeWidth = 3f
+                        )
+                    }
                 }
             }
         }
