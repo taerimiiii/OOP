@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,73 +23,36 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.AsyncImage
 import com.example.oop.R
+import com.example.oop.data.model.Medicine
 
 // 의약품 데이터 클래스
-data class MedicineItem(
-    val id: String,
-    val name: String,
-    val nameEng: String,
-    val className: String,
-    val shape: String,
-    val chart: String,
-    var isFavorite: Boolean = false
-)
+
 
 @Composable
 fun SearchResultScreen(
-    searchKeyword: String = "4일의 마라톤",
+    searchKeyword: String = "타이레놀",
+    viewModel: SearchResultViewModel = viewModel(),
     onMedicineClick: (String) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
-    // 샘플 데이터 (실제로는 ViewModel에서 가져올 예정)
-    var medicines by remember {
-        mutableStateOf(
-            listOf(
-                MedicineItem(
-                    id = "1",
-                    name = "ITEM_NAME",
-                    nameEng = "[ITEM_ENG_NAME]",
-                    className = "ENTP_NAME",
-                    shape = "CLASS_NAME",
-                    chart = "CHART",
-                    isFavorite = false
-                ),
-                MedicineItem(
-                    id = "2",
-                    name = "ITEM_NAME",
-                    nameEng = "[ITEM_ENG_NAME]",
-                    className = "ENTP_NAME",
-                    shape = "CLASS_NAME",
-                    chart = "CHART",
-                    isFavorite = false
-                ),
-                MedicineItem(
-                    id = "3",
-                    name = "ITEM_NAME",
-                    nameEng = "[ITEM_ENG_NAME]",
-                    className = "ENTP_NAME",
-                    shape = "CLASS_NAME",
-                    chart = "CHART",
-                    isFavorite = true
-                ),
-                MedicineItem(
-                    id = "4",
-                    name = "ITEM_NAME",
-                    nameEng = "[ITEM_ENG_NAME]",
-                    className = "ENTP_NAME",
-                    shape = "CLASS_NAME",
-                    chart = "CHART",
-                    isFavorite = false
-                )
-            )
-        )
-    }
+    val medicines by viewModel.medicines.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
 
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+
+    LaunchedEffect(searchKeyword) {
+        if (searchKeyword.isNotEmpty()) {
+            viewModel.searchMedicines(searchKeyword)
+        }
+    }
+
 
     Scaffold(
         topBar = {
@@ -106,29 +68,95 @@ fun SearchResultScreen(
             )
         }
     ) { contentPadding ->
-        LazyColumn(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
                 .padding(contentPadding)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(medicines) { medicine ->
-                MedicineResultCard(
-                    medicine = medicine,
-                    onCardClick = { onMedicineClick(medicine.id) },
-                    onFavoriteClick = {
-                        // 즐겨찾기 토글
-                        medicines = medicines.map {
-                            if (it.id == medicine.id) {
-                                it.copy(isFavorite = !it.isFavorite)
-                            } else {
-                                it
-                            }
+            when {
+                // 로딩 중
+                isLoading -> {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color(0xFF71E000)
+                    )
+                }
+
+                // 에러 발생
+                errorMessage != null -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = errorMessage ?: "오류가 발생했습니다",
+                            color = Color.Red,
+                            textAlign = TextAlign.Center,
+                            fontSize = 16.sp
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = {
+                                viewModel.clearError()
+                                viewModel.searchMedicines(searchKeyword)
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF71E000)
+                            )
+                        ) {
+                            Text("다시 시도")
                         }
                     }
-                )
+                }
+
+                // 검색 결과 없음
+                medicines.isEmpty() && !isLoading && errorMessage == null -> {
+                    Text(
+                        text = "'$searchKeyword'에 대한\n검색 결과가 없습니다",
+                        modifier = Modifier.align(Alignment.Center),
+                        color = Color.Gray,
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp
+                    )
+                }
+
+                // 정상: 검색 결과 표시
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.White)
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        // 검색 결과 개수
+                        item {
+                            Text(
+                                text = "검색 결과 ${medicines.size}개",
+                                fontSize = 14.sp,
+                                color = Color.Gray,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
+                        }
+
+                        // 검색 결과 리스트
+                        items(medicines) { medicine ->
+                            MedicineResultCard(
+                                medicine = medicine,
+                                onCardClick = {
+                                    // itemSeq를 상세 화면으로 전달
+                                    onMedicineClick(medicine.itemSeq)
+                                },
+                                onFavoriteClick = {
+                                    // TODO: 즐겨찾기 기능은 나중에 구현
+                                }
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -199,7 +227,7 @@ fun SearchTopBar(
 
 @Composable
 fun MedicineResultCard(
-    medicine: MedicineItem,
+    medicine: Medicine,
     onCardClick: () -> Unit,
     onFavoriteClick: () -> Unit
 ) {
@@ -225,28 +253,38 @@ fun MedicineResultCard(
             Column(
                 modifier = Modifier.weight(1f)
             ) {
-                // ITEM_NAME [ITEM_ENG_NAME]
+                // 제품명
                 Text(
-                    text = "${medicine.name}  ${medicine.nameEng}",
+                    text = medicine.itemName,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black
                 )
 
+                // 영문명 (있으면 표시)
+                medicine.itemEngName?.let { engName ->
+                    Text(
+                        text = "[$engName]",
+                        fontSize = 14.sp,
+                        color = Color.Gray,
+                        modifier = Modifier.padding(top = 2.dp)
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // 회사명
-                InfoText(label = "회사명", value = medicine.className)
+                InfoText(label = "회사명", value = medicine.entpName ?: "-")
 
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // 분류
-                InfoText(label = "분류", value = medicine.shape)
+                InfoText(label = "분류", value = medicine.className ?: "-")
 
                 Spacer(modifier = Modifier.height(4.dp))
 
                 // 성상
-                InfoText(label = "성상", value = medicine.chart)
+                InfoText(label = "성상", value = medicine.chart ?: "-")
             }
 
             // 중간: 약 이미지
@@ -258,13 +296,24 @@ fun MedicineResultCard(
                     .background(Color(0xFFE8F5E9)),
                 contentAlignment = Alignment.Center
             ) {
-                // 실제 이미지가 있을 때는 coil로 로드
-                Image(
-                    painter = painterResource(id = R.drawable.my_logo),
-                    contentDescription = "Medicine Image",
-                    modifier = Modifier.size(80.dp),
-                    contentScale = ContentScale.Fit
-                )
+                // 실제 이미지가 있으면 표시
+                if (medicine.itemImage != null) {
+                    AsyncImage(
+                        model = medicine.itemImage,
+                        contentDescription = "Medicine Image",
+                        modifier = Modifier.size(80.dp),
+                        contentScale = ContentScale.Fit,
+                        placeholder = painterResource(id = R.drawable.my_logo),
+                        error = painterResource(id = R.drawable.my_logo)
+                    )
+                } else {
+                    Image(
+                        painter = painterResource(id = R.drawable.my_logo),
+                        contentDescription = "Medicine Image",
+                        modifier = Modifier.size(80.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
             }
 
             // 오른쪽: 즐겨찾기 버튼
@@ -273,9 +322,9 @@ fun MedicineResultCard(
                 modifier = Modifier.size(40.dp)
             ) {
                 Icon(
-                    imageVector = if (medicine.isFavorite) Icons.Filled.Star else Icons.Outlined.Star,
-                    contentDescription = if (medicine.isFavorite) "즐겨찾기 해제" else "즐겨찾기 추가",
-                    tint = if (medicine.isFavorite) Color(0xFFFFD700) else Color.Gray,
+                    imageVector = Icons.Outlined.Star,
+                    contentDescription = "즐겨찾기",
+                    tint = Color.Gray,
                     modifier = Modifier.size(28.dp)
                 )
             }
@@ -352,10 +401,4 @@ fun SearchBottomNavBar(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SearchResultScreenPreview() {
-    SearchResultScreen()
 }
