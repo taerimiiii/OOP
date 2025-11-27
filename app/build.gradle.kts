@@ -6,6 +6,21 @@ plugins {
     id("com.google.gms.google-services")
 }
 
+// local.properties 파일에서 API_KEY 읽기
+val localPropertiesFile = rootProject.file("local.properties")
+val apiKey = if (localPropertiesFile.exists()) {
+    val lines = localPropertiesFile.readLines()
+    val apiKeyLine = lines.find { it.startsWith("API_KEY=") }
+    if (apiKeyLine != null) {
+        apiKeyLine.substringAfter("API_KEY=").trim()
+    } else {
+        ""
+    }
+} else {
+    ""
+}
+
+
 android {
     namespace = "com.example.oop"
     compileSdk = 36
@@ -19,7 +34,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "API_KEY", "\"${project.findProperty("API_KEY") ?: ""}\"")
+        // local.properties에서 API_KEY 읽기
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -53,6 +69,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.androidx.monitor)
