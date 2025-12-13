@@ -21,7 +21,6 @@ class CalendarViewModel : ViewModel() {
         loadInitialData()
     }
 
-    // 하단 영역 하드 코딩.
     private fun loadInitialData() {
         val today = LocalDate.now()
         val todayDateString = CalendarUtils.formatDate(today)
@@ -100,6 +99,35 @@ class CalendarViewModel : ViewModel() {
             currentSeeMonth = newMonth,
             monthCount = monthCount,
             lastMonthCount = lastMonthCount
+        )
+    }
+    
+    // 현재 보이는 월의 출석 횟수 갱신 (CalendarDetailScreen에서 복용 기록 추가 후 호출)
+    fun refreshCurrentMonthCount() {
+        val currentSeeMonth = mutableUiState.value.currentSeeMonth
+        val currentMonth = CalendarUtils.formatYearMonth(currentSeeMonth)
+        val lastMonth = CalendarUtils.formatYearMonth(CalendarUtils.getPreviousMonth(currentSeeMonth))
+        
+        // 현재 월 출석 횟수 재계산
+        val monthCount = TempData.logs.count { log ->
+            log.date.startsWith(currentMonth) && log.items.values.any { it.taken }
+        }
+        
+        // 지난달 출석 횟수 재계산
+        val lastMonthCount = TempData.logs.count { log ->
+            log.date.startsWith(lastMonth) && log.items.values.any { it.taken }
+        }
+        
+        // 오늘 복용 여부도 갱신
+        val today = LocalDate.now()
+        val todayDateString = CalendarUtils.formatDate(today)
+        val todayLog = TempData.logs.find { it.date == todayDateString }
+        val todayMedicineTaken = todayLog?.items?.values?.any { it.taken } ?: false
+        
+        mutableUiState.value = mutableUiState.value.copy(
+            monthCount = monthCount,
+            lastMonthCount = lastMonthCount,
+            todayMedicineTaken = todayMedicineTaken
         )
     }
 }

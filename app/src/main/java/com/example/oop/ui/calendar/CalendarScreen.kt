@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -36,6 +37,15 @@ fun CalendarScreen(
     var selectedDate by remember { mutableStateOf<LocalDate?>(null) }   // 뷰모델이랑 똑같이 mutableStateOf 사용하기
     var gotoDetailScreen by remember { mutableStateOf(false) }
     val currentSelectedDate = selectedDate
+
+    // CalendarDetailScreen에서 돌아올 때 출석 횟수 갱신
+    // LaunchedEffect : 컴포저블이 화면에 나타났을 때(또는 특정 값이 바뀔 때) 실행하기 위한 API
+    LaunchedEffect(gotoDetailScreen) {
+        if (!gotoDetailScreen) {
+            // CalendarDetailScreen에서 CalendarScreen으로 돌아왔을 때
+            viewModel.refreshCurrentMonthCount()
+        }
+    }
 
     // if else 문으로 스크린 선택.
     if (gotoDetailScreen && currentSelectedDate != null) {  // !! 안 쓰기 위한 스마트캐스트
