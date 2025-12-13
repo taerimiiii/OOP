@@ -66,19 +66,9 @@ data class MedicineItem(
             itemSeq = itemSeq,
             itemName = itemName,
             entpName = entpName,
-            itemEngName = itemEngName,
-            etcOtcName = etcOtcName,
             className = className,
-            drugShape = drugShape,
-            color1 = colorClass1,
-            printFront = printFront,
-            printBack = printBack,
             chart = chart,
             itemImage = itemImage,
-            ediCode = ediCode,
-            bizrno = bizrno,
-            stdCd = stdCd,
-            imgRegistTs = imgRegistTs
         )
     }
 }
