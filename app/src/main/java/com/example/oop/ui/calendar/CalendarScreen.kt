@@ -57,6 +57,7 @@ fun CalendarScreen(
             // 월간 캘린더
             MonthCalendar(
                 currentSeeMonth = uiState.currentSeeMonth, // 현재 월을 UI에 있는 현재 월로 갱신.
+                selectedDate = uiState.selectedDate, // ViewModel에서 관리하는 선택된 날짜 전달
                 onDateSelected = { date ->
                     selectedDate = date     // 여기서 선택 날짜 갱신 후
                     viewModel.handleEvent(CalendarEvent.OnDateSelected(date)) // 이벤트 실행
