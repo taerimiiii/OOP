@@ -3,7 +3,7 @@ package com.example.oop.ui.calendar
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
 import androidx.lifecycle.ViewModel
-import com.example.oop.ui.calendarDetail.repository.TempData
+import com.example.oop.data.TempData
 import java.time.LocalDate
 import java.time.YearMonth
 

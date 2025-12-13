@@ -1,5 +1,6 @@
 package com.example.oop.ui.calendarDetail.repository
 
+import com.example.oop.data.TempData
 import com.example.oop.data.api.MedicineApiDataSource
 import com.example.oop.data.model.Favorite
 import com.example.oop.data.model.Medicine
@@ -29,7 +30,7 @@ class CalendarDetailRepository(
     }
 
     // 특정 날짜의 복용 상태 저장/업데이트
-    // 임시로 로컬 상태만 관리 (DB 완성 전까지)
+    // 임시로 로컬 상태만 관리
     suspend fun updateMedicineTakenStatus(
         userId: String,
         itemSeq: String,
@@ -42,7 +43,7 @@ class CalendarDetailRepository(
     }
 
     // 특정 날짜의 복용 상태 가져오기
-    // 임시 데이터에서 조회 (DB 완성 전까지)
+    // 임시 데이터에서 조회
     suspend fun getMedicineTakenStatus(
         userId: String,
         itemSeq: String,

@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.oop.data.model.DailyLog
 import com.example.oop.data.model.DailyLogItem
-import com.example.oop.ui.calendarDetail.CalendarDetailUtils
 import com.example.oop.ui.calendarDetail.repository.CalendarDetailRepository
-import com.example.oop.ui.calendarDetail.repository.TempData
+import com.example.oop.data.TempData
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -31,7 +30,7 @@ class CalendarDetailViewModel(
         previousSelectedDate?.let { previousDate ->
             cleanupEmptyLog(previousDate)
         }
-        
+
         // 현재 날짜로 업데이트
         previousSelectedDate = selectedDate
         mutableUiState.value = mutableUiState.value.copy(selectedDate = selectedDate)

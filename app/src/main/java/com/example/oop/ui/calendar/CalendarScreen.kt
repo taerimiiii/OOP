@@ -24,7 +24,7 @@ import com.example.oop.ui.calendar.components.DateIntoBox
 import com.example.oop.ui.calendar.components.MonthCalendar
 import com.example.oop.ui.calendar.components.UserInfoBox
 import com.example.oop.ui.calendarDetail.CalendarDetailScreen
-import com.example.oop.ui.calendarDetail.repository.TempData
+import com.example.oop.data.TempData
 import java.time.LocalDate
 
 @Composable
@@ -41,7 +41,8 @@ fun CalendarScreen(
     if (gotoDetailScreen && currentSelectedDate != null) {  // !! 안 쓰기 위한 스마트캐스트
         CalendarDetailScreen(
             modifier = modifier,
-            selectedDate = currentSelectedDate
+            selectedDate = currentSelectedDate,
+            onBackClick = { gotoDetailScreen = false }
         )
     } else {
         Column(
