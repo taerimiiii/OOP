@@ -51,8 +51,6 @@ fun MonthCalendar(
 ) {
     // remember = 상태 저장. Composable 함수가 다시 호출되더라도 값이 재생성X
     //원래 샘플 코드
-    //val startMonth = remember { currentSeeMonth.minusMonths(10) }
-    //val endMonth = remember { currentSeeMonth.plusMonths(10) }
     // remember(key) 형태: key가 변경될 때만 재계산됨
     val preMonth = remember(currentSeeMonth) { currentSeeMonth.minusMonths(1) }  // currentSeeMonth가 바뀌면 재계산.
     val nextMonth = remember(currentSeeMonth) { currentSeeMonth.plusMonths(1) }     // 빠릿빠릿하게 로딩되어서 좋구만요
@@ -130,11 +128,6 @@ fun MonthCalendar(
 
             // 날짜 칸은 dayContent으로 지정.
             // day.date는 LocalDate. ex) “11월 2일” 칸을 누르면 → day.date = LocalDate(2025, 11, 2)
-            // CalendarDay 클래스 구조
-//            data class CalendarDay(
-//                val date: LocalDate,
-//                val position: DayPosition
-//            )
             // day는 CalendarDay이다. 그냥 이렇게 생각하면 편함. 라이브러리가 각 날짜마다 CalendarDay 객체를 생성해 dayContent 람다에 전달하는 중.
             dayContent = { day ->   // 날짜 칸을 다 출력할 때 까지??
                 Day(
