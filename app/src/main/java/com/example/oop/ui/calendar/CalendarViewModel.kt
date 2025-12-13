@@ -17,31 +17,42 @@ class CalendarViewModel : ViewModel() {
     private val mutableUiState = mutableStateOf(CalendarUiState())
     val uiState: State<CalendarUiState> = mutableUiState    // Screen 에서 읽어서 사용함.
 
+    // 특정 월의 출석 횟수 계산 함수 (복용한 날짜 수)
+    private fun calculateMonthCount(yearMonth: YearMonth): Int {
+        val monthString = CalendarUtils.formatYearMonth(yearMonth)
+        return TempData.logs.count { log ->
+            log.date.startsWith(monthString) && log.items.values.any { it.taken }
+        }
+    }
+
+    // 현재 월과 지난달 출석 횟수 계산 함수
+    private fun calculateMonthCounts(yearMonth: YearMonth): Pair<Int, Int> {
+        val monthCount = calculateMonthCount(yearMonth)
+        val lastMonthCount = calculateMonthCount(CalendarUtils.getPreviousMonth(yearMonth))
+        return Pair(monthCount, lastMonthCount)
+    }
+
+    // 오늘 복용 여부 계산 함수
+    private fun calculateTodayMedicineTaken(): Boolean {
+        val today = LocalDate.now()
+        val todayDateString = CalendarUtils.formatDate(today)
+        val todayLog = TempData.logs.find { it.date == todayDateString }
+        return todayLog?.items?.values?.any { it.taken } ?: false
+    }
+
+    // 초기값 설정
     init {
         loadInitialData()
     }
 
     private fun loadInitialData() {
         val today = LocalDate.now()
-        val todayDateString = CalendarUtils.formatDate(today)
         val currentYearMonth = CalendarUtils.getCurrentMonth() // YearMonth 타입
-        val currentMonth = CalendarUtils.formatYearMonth(currentYearMonth) // String 타입 (출석 계산용)
-        val lastMonth = CalendarUtils.formatYearMonth(CalendarUtils.getPreviousMonth(currentYearMonth))
-        
+
+        // 현재 월 출석 횟수, 지난달 출석 횟수 계산
+        val (monthCount, lastMonthCount) = calculateMonthCounts(currentYearMonth)
         // 오늘 복용 여부 확인
-        val todayLog = TempData.logs.find { it.date == todayDateString }
-        val todayMedicineTaken = todayLog?.items?.values?.any { it.taken } ?: false
-        
-        // 현재 월 출석 횟수 계산 (복용한 날짜 수)
-        // 업뎃 로직이랑 겹치니까 나중에 하나로 합치기.
-        val monthCount = TempData.logs.count { log ->
-            log.date.startsWith(currentMonth) && log.items.values.any { it.taken }
-        }
-        
-        // 지난달 출석 횟수 계산
-        val lastMonthCount = TempData.logs.count { log ->
-            log.date.startsWith(lastMonth) && log.items.values.any { it.taken }
-        }
+        val todayMedicineTaken = calculateTodayMedicineTaken()
         
         // mutableStateOf는 .value로 접근하고 직접 할당
         mutableUiState.value = mutableUiState.value.copy(
@@ -83,17 +94,7 @@ class CalendarViewModel : ViewModel() {
     
     // 월이 변경될 때 출석 횟수 재계산
     private fun updateMonthCount(newMonth: YearMonth) {
-        val currentMonth = CalendarUtils.formatYearMonth(newMonth)
-        val lastMonth = CalendarUtils.formatYearMonth(CalendarUtils.getPreviousMonth(newMonth))
-        
-        // 새로운 월의 출석 횟수 계산
-        val monthCount = TempData.logs.count { log ->
-            log.date.startsWith(currentMonth) && log.items.values.any { it.taken }
-        }
-        
-        val lastMonthCount = TempData.logs.count { log ->
-            log.date.startsWith(lastMonth) && log.items.values.any { it.taken }
-        }
+        val (monthCount, lastMonthCount) = calculateMonthCounts(newMonth)
         
         mutableUiState.value = mutableUiState.value.copy(
             currentSeeMonth = newMonth,
@@ -105,24 +106,8 @@ class CalendarViewModel : ViewModel() {
     // 현재 보이는 월의 출석 횟수 갱신 (CalendarDetailScreen에서 복용 기록 추가 후 호출)
     fun refreshCurrentMonthCount() {
         val currentSeeMonth = mutableUiState.value.currentSeeMonth
-        val currentMonth = CalendarUtils.formatYearMonth(currentSeeMonth)
-        val lastMonth = CalendarUtils.formatYearMonth(CalendarUtils.getPreviousMonth(currentSeeMonth))
-        
-        // 현재 월 출석 횟수 재계산
-        val monthCount = TempData.logs.count { log ->
-            log.date.startsWith(currentMonth) && log.items.values.any { it.taken }
-        }
-        
-        // 지난달 출석 횟수 재계산
-        val lastMonthCount = TempData.logs.count { log ->
-            log.date.startsWith(lastMonth) && log.items.values.any { it.taken }
-        }
-        
-        // 오늘 복용 여부도 갱신
-        val today = LocalDate.now()
-        val todayDateString = CalendarUtils.formatDate(today)
-        val todayLog = TempData.logs.find { it.date == todayDateString }
-        val todayMedicineTaken = todayLog?.items?.values?.any { it.taken } ?: false
+        val (monthCount, lastMonthCount) = calculateMonthCounts(currentSeeMonth)
+        val todayMedicineTaken = calculateTodayMedicineTaken()
         
         mutableUiState.value = mutableUiState.value.copy(
             monthCount = monthCount,
