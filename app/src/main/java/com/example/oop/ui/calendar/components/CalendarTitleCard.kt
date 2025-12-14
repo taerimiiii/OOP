@@ -11,10 +11,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.oop.ui.theme.blackColor
+import com.example.oop.ui.theme.greenColor
 
 @Composable
 fun CalendarTitleCard(
@@ -22,10 +23,6 @@ fun CalendarTitleCard(
     modifier: Modifier = Modifier,
     height: Dp = 120.dp,    // 기본값
 ) {
-    // 색 테마 상속 받아서 쓰기??
-    val greenColor = Color(0xFF71E000)
-    val whiteColor = Color(0xFFFFFFFF)
-    val blackColor = Color(0xFF000000)
 
     Box(
         modifier = modifier

@@ -13,9 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.oop.ui.theme.greenColor
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -26,7 +26,6 @@ fun CalendarTitleCard(
     selectedDate: LocalDate,
     modifier: Modifier = Modifier
 ) {
-    val greenColor = Color(0xFF71E000)
 
     val dateTitle = remember(selectedDate) {
         val datePart = selectedDate.format(DateTimeFormatter.ofPattern("yyyy년 M월 d일"))

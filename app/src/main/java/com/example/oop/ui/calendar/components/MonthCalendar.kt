@@ -29,6 +29,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.runtime.rememberCoroutineScope
 import com.example.oop.data.TempData
 import com.example.oop.ui.calendar.CalendarUtils
+import com.example.oop.ui.theme.blackColor
+import com.example.oop.ui.theme.grayColor
+import com.example.oop.ui.theme.greenColor
+import com.example.oop.ui.theme.lightGreenColor
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
@@ -153,11 +157,6 @@ fun MonthCalendar(
 // CalendarDay : 라이브러리
 @Composable
 private fun Day(day: CalendarDay, isSelected: Boolean, hasLog: Boolean, onClick: (CalendarDay) -> Unit) {
-    val blackColor = Color(0xFF000000)
-    val grayColor = Color(0xFF808080)
-    val greenColor = Color(0xFF71E000)
-    val lightGreenColor = Color(0xFFD6F4B6)
-
     // day.position : InDate, OutDate 구분. +MonthDate
     // DayPosition : 라이브러리. InDate, MonthDate, OutDate 있음.
     Box(
