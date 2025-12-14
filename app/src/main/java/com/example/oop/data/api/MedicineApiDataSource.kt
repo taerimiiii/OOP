@@ -10,7 +10,7 @@ class MedicineApiDataSource {
     // 의약품 목록 조회
     // 원본 API 응답 반환
     // 각자 만들 조회 리턴에 넣고 필요한 데이터만 뽑아서 사용하기
-    // suspend : 실행 중단했다가 나중에 다시 이어서 실행할 수 있는 함수. 네트워크와 관련? 안 쓰면 콜백을 해야 함?
+    // suspend : 실행 중단했다가 나중에 다시 이어서 실행할 수 있는 함수. 네트워크와 관련? 안 쓰면 콜백을 해야 함? 일단 API 호출 앞에 쓰고 볼 것.
     suspend fun getMedicineList(
         pageNo: Int = 1,
         numOfRows: Int = 100,
