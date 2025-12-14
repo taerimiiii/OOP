@@ -29,13 +29,13 @@ fun CalendarJoinScreen(
 
     // if else 문으로 스크린 선택.
     uiState.selectedDate?.let { selectedDate ->
-        if (gotoDetailScreen) {
+        if (gotoDetailScreen) { // selectedDate가 null이 아니고 gotoDetailScreen이 true일 때
             CalendarDetailScreen(
                 modifier = modifier,
                 selectedDate = selectedDate,
                 onBackClick = { gotoDetailScreen = false }
             )
-        } else {
+        } else {                // selectedDate가 null이 아니고 gotoDetailScreen이 false일 때
             CalendarScreen(
                 modifier = modifier,
                 uiState = uiState,
@@ -46,7 +46,7 @@ fun CalendarJoinScreen(
                 }
             )
         }
-    } ?: CalendarScreen(
+    } ?: CalendarScreen(    // selectedDate가 null 이면 CalendarScreen 호출
         modifier = modifier,
         uiState = uiState,
         viewModel = viewModel,
