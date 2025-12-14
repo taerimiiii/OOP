@@ -24,6 +24,7 @@ object MedicineApiClient {
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
+    // Gson 변환기 설정(JSON ↔ 객체 변환)
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)

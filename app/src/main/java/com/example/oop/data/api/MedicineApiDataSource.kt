@@ -37,10 +37,9 @@ class MedicineApiDataSource {
         itemEngName: String? = null,
     ): Result<MedicineApiResponse> {
         return try {
-            // API_KEY 확인
             val apiKey = BuildConfig.API_KEY
             if (apiKey.isBlank()) {
-                return Result.failure(Exception("API_KEY가 설정되지 않았습니다. local.properties 파일에 API_KEY를 추가해주세요."))
+                return Result.failure(Exception("API_KEY가 설정되지 않았습니다."))
             }
 
             val response = apiService.getMedicineList(
@@ -73,16 +72,10 @@ class MedicineApiDataSource {
             if (response.header.resultCode == "00") {
                 Result.success(response)
             } else {
-                Result.failure(Exception("API Error: ${response.header.resultMsg} (resultCode: ${response.header.resultCode})"))
+                Result.failure(Exception("API 오류: ${response.header.resultMsg}"))
             }
         } catch (e: Exception) {
-            // HTTP 401 오류인 경우 더 명확한 메시지 제공
-            val errorMessage = when {
-                e.message?.contains("401") == true -> "인증 실패: API_KEY가 유효하지 않거나 설정되지 않았습니다. local.properties 파일에 올바른 API_KEY를 설정해주세요."
-                e.message?.contains("Unauthorized") == true -> "인증 실패: API_KEY가 유효하지 않습니다. 공공데이터포털에서 발급받은 인증키를 확인해주세요."
-                else -> "API 호출 실패: ${e.message}"
-            }
-            Result.failure(Exception(errorMessage))
+            Result.failure(Exception("API 호출 실패: ${e.message}"))
         }
     }
 

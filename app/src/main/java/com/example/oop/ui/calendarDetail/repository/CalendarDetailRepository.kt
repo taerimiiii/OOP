@@ -28,29 +28,4 @@ class CalendarDetailRepository(
             medicines.firstOrNull() ?: throw Exception("에러발생. 의약품 정보를 찾을 수 없습니다")
         }
     }
-
-    // 특정 날짜의 복용 상태 저장/업데이트
-    // 임시로 로컬 상태만 관리
-    suspend fun updateMedicineTakenStatus(
-        userId: String,
-        itemSeq: String,
-        date: String,
-        isTaken: Boolean
-    ) {
-        // DB 완성 전까지는 아무 작업도 하지 않음
-        // 추후 DB 연동 시 구현
-        // 임시 데이터는 TempData.logs에 하드코딩되어 있음
-    }
-
-    // 특정 날짜의 복용 상태 가져오기
-    // 임시 데이터에서 조회
-    suspend fun getMedicineTakenStatus(
-        userId: String,
-        itemSeq: String,
-        date: String
-    ): Boolean {
-        // 임시 데이터에서 해당 날짜의 복용 상태 조회
-        val dailyLog = TempData.logs.find { it.date == date }
-        return dailyLog?.items?.get(itemSeq)?.taken ?: false
-    }
 }
