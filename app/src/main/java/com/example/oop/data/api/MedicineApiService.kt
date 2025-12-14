@@ -1,6 +1,5 @@
 package com.example.oop.data.api
 
-import com.example.oop.data.api.MedicineApiResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
