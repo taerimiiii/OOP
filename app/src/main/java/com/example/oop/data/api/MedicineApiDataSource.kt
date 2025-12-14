@@ -69,6 +69,7 @@ class MedicineApiDataSource {
                 itemEngName = itemEngName,
             )
 
+            // API 문서에 따르면, resultCode가 00일 경우 성공
             if (response.header.resultCode == "00") {
                 Result.success(response)
             } else {
