@@ -1,7 +1,7 @@
 package com.example.oop.data.api
 
 import com.example.oop.BuildConfig
-import com.example.oop.data.api.model.MedicineApiResponse
+import com.example.oop.data.api.MedicineApiResponse
 import com.example.oop.data.model.Medicine
 
 // API 데이터 소스
