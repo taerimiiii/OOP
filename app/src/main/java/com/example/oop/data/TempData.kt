@@ -1,4 +1,4 @@
-package com.example.oop.ui.calendarDetail.repository
+package com.example.oop.data
 
 import com.example.oop.data.model.DailyLog
 import com.example.oop.data.model.DailyLogItem
@@ -68,7 +68,25 @@ object TempData {
                 "200808948" to DailyLogItem(taken = false),
                 "200809076" to DailyLogItem(taken = false)
             )
-        )
+        ),
+        DailyLog(
+            date = "2025-12-01",
+            items = mapOf(
+                "200808876" to DailyLogItem(taken = true),
+                "200808877" to DailyLogItem(taken = false),
+                "200808948" to DailyLogItem(taken = false),
+                "200809076" to DailyLogItem(taken = false)
+            )
+        ),
+        DailyLog(
+            date = "2025-12-02",
+            items = mapOf(
+                "200808876" to DailyLogItem(taken = true),
+                "200808877" to DailyLogItem(taken = false),
+                "200808948" to DailyLogItem(taken = false),
+                "200809076" to DailyLogItem(taken = false)
+            )
+        ),
     )
 
     // logs를 날짜 순으로 오름차순 정렬
@@ -76,4 +94,3 @@ object TempData {
         logs.sortBy { it.date }
     }
 }
-

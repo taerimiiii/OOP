@@ -14,11 +14,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oop.ui.calendar.CalendarUtils
+import com.example.oop.ui.theme.blackColor
+import com.example.oop.ui.theme.lightGreenColor
+import com.example.oop.ui.theme.whiteColor
 import java.time.LocalDate
 
 @Composable
@@ -27,10 +29,6 @@ fun DateIntoBox(
     date: LocalDate?,
     modifier: Modifier = Modifier
 ) {
-    // 나중에 색 테마 만들어서 쓰기
-    val lightGreenColor = Color(0xFFD6F4B6)
-    val whiteColor = Color(0xFFFFFFFF)
-    val blackColor = Color(0xFF000000)
     
     Box(
         modifier = modifier

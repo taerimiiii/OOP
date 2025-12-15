@@ -1,31 +1,27 @@
 package com.example.oop.ui.calendarDetail
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.oop.ui.calendar.components.CalendarTitleCard
 import com.example.oop.ui.calendarDetail.components.MedicineTakeCard
 import com.example.oop.ui.calendarDetail.components.CalendarTitleCard
-import com.example.oop.ui.calendarDetail.components.WeekCalendar
+import com.example.oop.ui.calendarDetail.components.CalendarDetailTitle
 import java.time.LocalDate
 
 @Composable
 fun CalendarDetailScreen(
     selectedDate: LocalDate,
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit = {},
     viewModel: CalendarDetailViewModel = viewModel()
 ) {
     // selectedDate가 별경 될 때 마다 초기화
@@ -42,13 +38,13 @@ fun CalendarDetailScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(start = 5.dp, top = 17.dp, end = 5.dp, bottom = 17.dp)
+            .padding(start = 5.dp, top = 1.dp, end = 5.dp, bottom = 17.dp)
             .verticalScroll(scroll),                // 세로 스크롤
         horizontalAlignment = Alignment.CenterHorizontally // 가운데 정렬
     ) {
+        CalendarDetailTitle(onBackClick = onBackClick)
+        
         CalendarTitleCard(selectedDate = selectedDate)
-
-        //WeekCalendar(targetDate = selectedDate)
 
         // Favorite 리스트를 기반으로 MedicineTakeCard 생성
         // 즐겨찾기 목록은 뷰모델에서 갱신.

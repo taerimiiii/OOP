@@ -11,11 +11,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oop.ui.calendar.CalendarUtils
 import java.time.LocalDate
+import com.example.oop.ui.theme.blackColor
+import com.example.oop.ui.theme.backGrayColor
+import com.example.oop.ui.theme.greenColor
+import com.example.oop.ui.theme.whiteColor
 
 @Composable
 fun MoveDetailPageButton(
@@ -23,11 +26,6 @@ fun MoveDetailPageButton(
     onClick: () -> Unit,            // 매개변수X, 반환값X
     modifier: Modifier = Modifier
 ) {
-    // 나중에 색상 테마 만들어서 사용하기.
-    val blackColor = Color(0xFF000000)
-    val greenColor = Color(0xFF71E000)
-    val darkGrayColor = Color(0xFFD9D9D9)
-    val whiteColor = Color(0xFFFFFFFF)
 
     Button(
         onClick = onClick,
@@ -39,7 +37,7 @@ fun MoveDetailPageButton(
         colors = ButtonDefaults.buttonColors(
             containerColor = greenColor,
             contentColor = whiteColor,
-            disabledContainerColor = darkGrayColor,
+            disabledContainerColor = backGrayColor,
             disabledContentColor = blackColor
         )
     ) {

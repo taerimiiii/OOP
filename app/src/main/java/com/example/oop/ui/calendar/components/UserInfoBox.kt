@@ -14,9 +14,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.oop.ui.theme.blackColor
+import com.example.oop.ui.theme.lightGreenColor
+import com.example.oop.ui.theme.whiteColor
 
 @Composable
 fun UserInfoBox(
@@ -25,16 +27,12 @@ fun UserInfoBox(
     todayMedicineTaken: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val borderColor = Color(0xFFD6F4B6)
-    val whiteColor = Color(0xFFFFFFFF)
-    val blackColor = Color(0xFF000000)
-
     Box(
         modifier = modifier
             .width(185.dp)
             .height(350.dp)
             .border(
-                border = BorderStroke(3.dp, borderColor),
+                border = BorderStroke(3.dp, lightGreenColor),
                 shape = RoundedCornerShape(
                     topStartPercent = 0,
                     topEndPercent = 0,
