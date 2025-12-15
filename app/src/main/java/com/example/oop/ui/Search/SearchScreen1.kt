@@ -1,6 +1,8 @@
 package com.example.oop.ui.Search
 
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,8 +17,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -37,9 +43,13 @@ import com.example.oop.ui.keyword.KeywordSearchScreen1
 import com.example.oop.ui.medicineDetail.MedicineDetailScreen
 import com.example.oop.ui.view.SearchResultScreen
 import androidx.compose.material3.*
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+
+private const val MAX_CAPACITY = 5
+private const val TAG = "SearchFeature"
 
 data class Medicine(val name: String, val effect: String)
 val allMedicines = listOf(
@@ -187,15 +197,114 @@ fun SearchScreen1(modifier: Modifier = Modifier) {
                     onValueChange = { searchText = it },
                     onSearchExecuted = executeSearch
                 )
-                Text(text = "--- 검색 결과 ---")
-                if (searchResults.isNotEmpty()) {
-                    searchResults.forEach { medicine ->
-                        Text(text = "제품명: ${medicine.name}, 효능: ${medicine.effect}")
-                    }
-                } else {
-                    Text(text = "검색 결과가 없습니다.")
+                //Text(text = "--- 검색 결과 ---")
+                //if (searchResults.isNotEmpty()) {
+                //    searchResults.forEach { medicine ->
+                //       Text(text = "제품명: ${medicine.name}, 효능: ${medicine.effect}")
+                //    }
+                //} else {
+                //    Text(text = "검색 결과가 없습니다.")
+                //}
+                RecentSearchScreen()
+            }
+        }
+    }
+}
+
+@Composable
+fun RecentSearchScreen() {
+    val recentSearches = rememberSaveable {
+        mutableStateListOf("아이폰", "갤럭시", "노트북", "키보드", "마우스")
+    }
+
+    val addSearchTerm: (String) -> Unit = { term ->
+
+        recentSearches.remove(term)
+        recentSearches.add(0, term)
+
+        if (recentSearches.size > MAX_CAPACITY) {
+            recentSearches.removeAt(recentSearches.size - 1)
+        }
+    }
+
+    // --- (1) 검색 실행 로직 (검색 버튼 클릭 시 호출될 함수) ---
+    val performSearch: (String) -> Unit = { term ->
+        Log.d(TAG, "검색 실행: $term")
+        // 실제 검색 API 호출, 화면 이동, 결과 표시 등의 로직이 여기에 들어갑니다.
+        // 여기서는 예시로 로그만 출력합니다.
+
+        // 검색어를 최근 검색 목록에 추가하여 최신화합니다.
+        addSearchTerm(term)
+    }
+
+
+    // 개별 검색어 제거 함수
+    val removeSearchTerm: (String) -> Unit = { term ->
+        recentSearches.remove(term)
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "최근 검색어",
+            modifier = Modifier.padding(bottom = 12.dp),
+            fontSize = 12.sp
+        )
+
+        // --- 검색어 목록 표시 ---
+        if (recentSearches.isEmpty()) {
+            Text(
+                text = "최근 검색 기록이 없습니다.",
+                modifier = Modifier.align(Alignment.CenterHorizontally)
+            )
+        } else {
+            LazyColumn {
+                items(recentSearches) { term ->
+                    SearchItem(
+                        term = term,
+                        // --- (2) SearchItemRow에 검색 실행 콜백 전달 ---
+                        onSearchClicked = { clickedTerm ->
+                            performSearch(clickedTerm)
+                        },
+                        onRemove = { removeSearchTerm(term) }
+                    )
                 }
             }
+        }
+    }
+}
+
+// --- (3) SearchItemRow 컴포저블 수정 ---
+@Composable
+fun SearchItem(
+    term: String,
+    onSearchClicked: (String) -> Unit, // 검색어 클릭 시 실행할 람다
+    onRemove: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            // Row 클릭 시, 전달받은 onSearchClicked 람다를 실행합니다.
+            .clickable { onSearchClicked(term) }
+            .padding(vertical = 12.dp, horizontal = 7.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = term,
+            modifier = Modifier.weight(1f)
+        )
+
+        IconButton(
+            onClick = onRemove,
+            modifier = Modifier.size(24.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "삭제"
+            )
         }
     }
 }
