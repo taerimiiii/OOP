@@ -13,12 +13,9 @@ class MedicineRepository(
     // Firestore 컬렉션 이름 정의
     private val MEDICINE_COLLECTION = "medicines"
 
-    /**
-     * [API 호출 및 저장] 외부 API 데이터를 가져와 Firestore에 저장합니다.
-     */
+
     suspend fun fetchAndSaveMedicines(query: String) {
         try {
-            // 1. API 호출: API DataSource 사용
             val result = apiDataSource.getMedicineList(itemName = query)
 
             result.onSuccess { response ->
@@ -39,26 +36,53 @@ class MedicineRepository(
         }
     }
 
-    /**
-     * [DB 저장] MedicineItem 리스트를 Firestore에 일괄 저장합니다.
-     */
+
     private suspend fun saveBulkToFirestore(items: List<MedicineItem>) {
         val batch = firestore.batch()
 
         items.forEach { medicine ->
             val docRef = firestore.collection(MEDICINE_COLLECTION).document(medicine.itemSeq)
 
-            // 💡 Firestore에 저장할 때, API 모델(MedicineItem)을 사용합니다.
             batch.set(docRef, medicine)
         }
 
         batch.commit().await()
-        println("✅ ${items.size}개의 의약품 데이터가 Firestore에 성공적으로 저장되었습니다.")
+        println(" ${items.size}개의 의약품 데이터가 Firestore에 성공적으로 저장되었습니다.")
     }
 
-    /**
-     * [DB 검색] Firestore에 저장된 데이터를 검색합니다.
-     */
+    suspend fun searchMedicines(query: String): Result<List<MedicineItem>> {
+        if (query.isBlank()) return Result.success(emptyList())
+
+        try {
+            // 1. Firestore에서 검색을 시도합니다. (빠른 검색)
+            val dbResults = searchFromDatabase(query)
+
+            if (dbResults.isNotEmpty()) {
+                println("Repository: Firestore에서 ${dbResults.size}개 결과 반환 (빠른 응답)")
+                return Result.success(dbResults) // DB에 결과가 있으면 즉시 반환
+            }
+
+            println("Repository: Firestore 검색 결과 없음. API 호출 시작.")
+
+            // 2. DB에 결과가 없거나 검색어가 새로운 경우, API에서 데이터를 가져옵니다.
+            val apiResult = apiDataSource.getMedicineList(itemName = query)
+
+            return apiResult.map { response ->
+                val newMedicines = response.body.items // List<MedicineItem>
+
+                if (newMedicines.isNotEmpty()) {
+                    // 3. API에서 가져온 데이터를 Firestore에 저장합니다. (다음 검색을 위해)
+                    saveBulkToFirestore(newMedicines)
+                }
+                println("Repository: API에서 ${newMedicines.size}개 결과 반환 및 저장 완료")
+                return@map newMedicines
+            }
+
+        } catch (e: Exception) {
+            println("통합 검색 중 치명적인 오류 발생: ${e.message}")
+            return Result.failure(e)
+        }
+    }
     suspend fun searchFromDatabase(query: String): List<MedicineItem> {
         val normalizedQuery = query.trim().lowercase()
 

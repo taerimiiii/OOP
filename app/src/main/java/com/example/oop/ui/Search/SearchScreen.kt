@@ -106,8 +106,7 @@ fun SearchTech(value: String,
 
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier) {
-    // 임시 검색 UI
-    var showDetailScreen by remember { mutableStateOf(false) }
+    //var showDetailScreen by remember { mutableStateOf(false) }
     var showSearchResultScreen by remember { mutableStateOf(false) }
     var showKeywordSearchScreen by remember { mutableStateOf(false) }
     var searchText by rememberSaveable { mutableStateOf("") }
@@ -115,7 +114,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
     var searchResults by rememberSaveable {
         mutableStateOf<List<MedicineItem>>(emptyList())
     }
-    var selectedItemSeq by remember { mutableStateOf<String?>(null) }
+    //var selectedItemSeq by remember { mutableStateOf<String?>(null) }
     val repository = remember { MedicineRepository() }
     val scope = rememberCoroutineScope()
     val savedSearchesList = rememberSaveable {
@@ -164,23 +163,24 @@ fun SearchScreen(modifier: Modifier = Modifier) {
             isSearching = true
             scope.launch {
                 try {
-                    // 💡 DB 검색 실행
-                    val results = repository.searchFromDatabase(query)
+                    val result = repository.searchMedicines(query)
 
-                    if (results.isNotEmpty()) {
-                        searchResults = results
+                    val list = result.getOrNull()
+
+                    if (list != null && list.isNotEmpty()) {
+                        searchResults = list
                         showSearchResultScreen = true
-                        println("✅ DB 검색 성공, 검색된 결과 수: ${results.size}. SearchResultScreen으로 이동.")
+                        println("✅ 검색 성공, 총 결과 수: ${searchResults.size}. SearchResultScreen으로 이동.")
                     } else {
                         searchResults = emptyList()
-                        println("❌ DB 검색 결과 없음.")
-
-                        // 💡 (선택 사항) DB에 없으면 API를 호출하여 저장 (최초 데이터 로딩 시 주로 사용)
-                        // repository.fetchAndSaveMedicines(query)
+                        showSearchResultScreen = false
+                        println("❌ 검색 결과 없음 또는 실패.")
                     }
+
                 } catch (e: Exception) {
-                    println("검색 중 오류 발생: ${e.message}")
+                    println("검색 중 치명적인 오류 발생: ${e.message}")
                     searchResults = emptyList()
+                    showSearchResultScreen = false
                 } finally {
                     isSearching = false
                 }
@@ -188,26 +188,25 @@ fun SearchScreen(modifier: Modifier = Modifier) {
         }
     }
     when {
-        showDetailScreen && selectedItemSeq != null -> {
-            MedicineDetailScreen(
-                medicineId = selectedItemSeq!!,
-                onBackClick = {
-                    showDetailScreen = false
-                    selectedItemSeq = null
-                }
-            )
-        }
+        //showDetailScreen && selectedItemSeq != null -> {
+        //    MedicineDetailScreen(
+        //        medicineId = selectedItemSeq!!,
+        //        onBackClick = {
+        //            showDetailScreen = false
+        //            selectedItemSeq = null
+        //        }
+        //    )
+        //}
 
         showSearchResultScreen -> {
-            // NOTE: 현재 SearchResultScreen 컴포넌트는 List<MedicineItem>을 받는 인자가 없으므로,
-            // 이 화면 내부에서 결과를 표시하려면 SearchResultScreen 컴포넌트 자체를 수정해야 합니다.
             SearchResultScreen(
-                // SearchResultScreen에서 항목 클릭 시 showDetailScreen을 true로 변경
-                onMedicineClick = {
-                    // 실제 구현에서는 클릭된 항목의 itemSeq를 여기에 저장해야 함
-                    selectedItemSeq = "TODO: CLICKED_ITEM_SEQ" // 임시 값
-                    showDetailScreen = true
-                },
+                //searchResults = searchResults, //보내주고자 하는 값
+
+                onMedicineClick = { /* itemSeq ->
+                    // selectedItemSeq = itemSeq
+                    // showDetailScreen = true
+                    println("Search Result Clicked: $it") // 클릭 이벤트만 로그로 확인
+                */ },
                 onBackClick = { showSearchResultScreen = false }
             )
         }
@@ -266,7 +265,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
 
                 Text(
                     text = when {
-                        isSearching -> "검색 중입니다..." // 💡 로딩 중일 때 메시지
+                        isSearching -> "검색 중입니다..." //로딩 중일 때 메시지
                         searchText.isNotBlank() && searchResults.isEmpty() && !showSearchResultScreen ->
                             "검색 결과가 없거나 연관된 내용이 없습니다."
                         else ->
