@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 
 // --- 색상 정의 ---
 val PillYellow = Color(0xFFF2FCCD) // 상단 배경 연한 노랑
-val PillGreen = Color(0xFF8BC34A)  // 로고 및 아이콘 초록
 
 @Composable
 fun MainScreen() {

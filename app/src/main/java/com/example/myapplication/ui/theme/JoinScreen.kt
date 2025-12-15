@@ -1,6 +1,8 @@
-package com.example.myapplication
+package com.example.myapplication.ui.theme
 
-import UserAccount
+import com.example.myapplication.ui.theme.UserAccount
+import com.example.myapplication.ui.theme.UserManager
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

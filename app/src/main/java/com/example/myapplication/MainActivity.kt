@@ -13,10 +13,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.ui.theme.MainScreen // 우리가 방금 정리한 MainScreen
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
+// MainActivity.kt 파일의 import 부분
+
+import com.example.myapplication.ui.theme.*
 // 화면들의 주소(이름)를 정해두는 곳
 enum class Screen {
     Loading,            // 1. 앱 켜자마자 나오는 로딩
-    Login,              // 2. 로그인 화면
+    Login, FindPassword,              // 2. 로그인 화면
     Join1, Join2, Join2_1, Join3, Join4, // 회원가입 단계들
     MainContentLoading, // 3. 로그인 성공 후 나오는 로고 로딩
     Home                // 4. 최종 메인 화면 (MainScreen.kt)
@@ -59,7 +62,11 @@ class MainActivity : ComponentActivity() {
                                 onJoinClick = {
                                     // 회원가입 버튼 -> 가입 1단계로 이동
                                     navController.navigate(Screen.Join1.name)
+                                },
+                                onFindPasswordClick = {
+                                    navController.navigate(Screen.FindPassword.name)
                                 }
+
                             )
                         }
 
@@ -118,6 +125,18 @@ class MainActivity : ComponentActivity() {
                                 password = "",
                                 name = "",
                                 phoneNumber = ""
+                            )
+                        }
+                        // [비밀번호 찾기 화면]
+                        composable(Screen.FindPassword.name) {
+                            FindPasswordScreen(
+                                onBackClick = { navController.popBackStack() }, // 뒤로가기
+                                onFinishClick = {
+                                    // 비밀번호 변경 완료 시 로그인 화면으로 이동 (기록 삭제)
+                                    navController.navigate(Screen.Login.name) {
+                                        popUpTo(0)
+                                    }
+                                }
                             )
                         }
                     }

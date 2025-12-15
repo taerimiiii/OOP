@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.ui.theme
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -54,16 +54,7 @@ fun MainContentLoadingScreen(onLoadingFinished: () -> Unit) {
             .background(Color.White),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // 로고 이미지 (임시로 안드로이드 기본 아이콘 사용)
-        // 나중에 R.drawable.pill_logo 같은 실제 이미지로 바꾸세요
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
-            contentDescription = "App Logo",
-            modifier = Modifier.size(150.dp),
-            colorFilter = ColorFilter.tint(Color(0xFF8BC34A)) // 초록색 틴트
-        )
-    }
+    ) {}
 }
 
 @Preview(showBackground = true)

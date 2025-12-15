@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.ui.theme
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,7 +21,8 @@ import com.example.myapplication.ui.theme.MyApplicationTheme
 @Composable
 fun LoginScreen(
     onLoginClick: () -> Unit,
-    onJoinClick: () -> Unit
+    onJoinClick: () -> Unit,
+    onFindPasswordClick: () -> Unit
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -116,7 +117,7 @@ fun LoginScreen(
 
         // 비밀번호 찾기 버튼
         Button(
-            onClick = { /* TODO: 비밀번호 찾기 */ },
+            onClick = onFindPasswordClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
@@ -148,6 +149,10 @@ fun LoginScreen(
 @Composable
 fun LoginScreenPreview() {
     MyApplicationTheme {
-        LoginScreen(onLoginClick = {}, onJoinClick = {})
+        LoginScreen(
+            onLoginClick = {},
+            onJoinClick = {},
+            onFindPasswordClick = {}
+        )
     }
 }
