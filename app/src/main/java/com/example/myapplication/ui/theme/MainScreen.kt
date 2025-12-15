@@ -1,105 +1,203 @@
 package com.example.myapplication.ui.theme
 
-import androidx.compose.runtime.Composable
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.myapplication.JoinScreen1
-import com.example.myapplication.JoinScreen2
-import com.example.myapplication.JoinScreen2_1
-import com.example.myapplication.JoinScreen3
-import com.example.myapplication.JoinScreen4
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
-// 다른 파일에 있는 화면들을 가져오기 위한 import
-import com.example.myapplication.LoginScreen
-import com.example.myapplication.LoadingScreen
-import com.example.myapplication.MainContentLoadingScreen
-// JoinScreen이 만약 ui.theme 패키지가 아니라면 아래 주석을 풀거나 자동으로 import 됩니다.
-// import com.example.myapplication.JoinScreen1
-// (같은 ui.theme 패키지에 있다면 import가 필요 없습니다)
-
-// 화면 경로를 정의하는 enum 클래스
-enum class Screen {
-    Login,
-    Loading,
-    Join1,
-    Join2,
-    Join2_1,
-    Join3,
-    Join4,
-    MainContentLoading // 메인 화면 진입 전 로딩
-}
+// --- 색상 정의 ---
+val PillYellow = Color(0xFFF2FCCD) // 상단 배경 연한 노랑
+val PillGreen = Color(0xFF8BC34A)  // 로고 및 아이콘 초록
 
 @Composable
 fun MainScreen() {
-    val navController = rememberNavController() // 화면 전환을 관리하는 컨트롤러
+    Scaffold(
+        // 하단 네비게이션 바
+        bottomBar = {
+            NavigationBar(
+                containerColor = Color.White,
+                contentColor = PillGreen
+            ) {
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { /* 검색 탭 클릭 */ },
+                    icon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = PillGreen) }
+                )
+                NavigationBarItem(
+                    selected = true, // 홈이 선택된 상태
+                    onClick = { /* 홈 탭 클릭 */ },
+                    icon = { Icon(Icons.Default.Home, contentDescription = "Home", tint = PillGreen) }
+                )
+                NavigationBarItem(
+                    selected = false,
+                    onClick = { /* 캘린더 탭 클릭 */ },
+                    icon = { Icon(Icons.Default.DateRange, contentDescription = "Calendar", tint = PillGreen) }
+                )
+            }
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(Color.White)
+        ) {
+            // 1. 상단 노란색 영역 (헤더 + 검색창)
+            TopHeaderSection()
 
-    NavHost(navController = navController, startDestination = Screen.Login.name) {
-        // 1. 로그인 화면
-        composable(Screen.Login.name) {
-            LoginScreen(
-                onLoginClick = { navController.navigate(Screen.Loading.name) },
-                onJoinClick = { navController.navigate(Screen.Join1.name) }
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // 2. 캘린더 영역
+            CalendarSection()
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TopHeaderSection() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(PillYellow) // 노란색 배경
+            .padding(horizontal = 24.dp, vertical = 24.dp)
+    ) {
+        // 로고 (pill)
+        Text(
+            text = "pill",
+            fontSize = 32.sp,
+            color = PillGreen,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        // 인사말
+        Text(
+            text = "안녕하세요!\n궁금하신 모든 의약품을 한 번에 검색해 보세요",
+            fontSize = 16.sp,
+            color = Color.Black,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.End,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 검색창
+        var searchText by remember { mutableStateOf("") }
+        TextField(
+            value = searchText,
+            onValueChange = { searchText = it },
+            placeholder = { Text("Enter keyword to search", color = Color.Gray) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .clip(RoundedCornerShape(28.dp)), // 둥근 모서리
+            colors = TextFieldDefaults.textFieldColors(
+                containerColor = Color.White, // 검색창 배경 흰색
+                focusedIndicatorColor = Color.Transparent, // 밑줄 제거
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            trailingIcon = {
+                Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.Gray)
+            }
+        )
+    }
+}
+
+@Composable
+fun CalendarSection() {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp)
+    ) {
+        // 달력 헤더 (화살표와 년월)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = { /* 이전 달 */ }) {
+                Icon(Icons.Default.ArrowBack, contentDescription = "Prev", tint = Color.DarkGray)
+            }
+            Text(
+                text = "2021년 October",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.DarkGray
             )
+            IconButton(onClick = { /* 다음 달 */ }) {
+                Icon(Icons.Default.ArrowForward, contentDescription = "Next", tint = Color.DarkGray)
+            }
         }
 
-        // 2. 로딩 화면 (로그인 직후)
-        composable(Screen.Loading.name) {
-            LoadingScreen(
-                onLoadingFinished = { navController.navigate(Screen.MainContentLoading.name) }
-            )
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // 요일 표시 (Sun ~ Sat)
+        val daysOfWeek = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            daysOfWeek.forEach { day ->
+                Text(
+                    text = day,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                    color = Color.Gray,
+                    fontSize = 14.sp
+                )
+            }
         }
 
-        // 3. 메인 진입 전 로딩 화면 (Pill 로고)
-        composable(Screen.MainContentLoading.name) {
-            // LoadingScreen.kt 파일에 있는 MainContentLoadingScreen 함수를 사용합니다.
-            MainContentLoadingScreen(
-                onLoadingFinished = { /* TODO: 실제 메인 화면으로 이동 */ }
-            )
-        }
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // 4. 회원가입 화면들
-        composable(Screen.Join1.name) {
-            JoinScreen1(
-                onNextClick = { navController.navigate(Screen.Join2.name) },
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.Join2.name) {
-            JoinScreen2(
-                onNextClick = { navController.navigate(Screen.Join2_1.name) },
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.Join2_1.name) {
-            JoinScreen2_1(
-                onNextClick = { navController.navigate(Screen.Join3.name) },
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.Join3.name) {
-            JoinScreen3(
-                onNextClick = { navController.navigate(Screen.Join4.name) },
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-        composable(Screen.Join4.name) {
-            JoinScreen4(
-                onFinishClick = {
-                    // 회원가입 완료 후 로그인 화면으로 이동
-                    navController.navigate(Screen.Login.name) {
-                        // popUpTo(0)은 '백스택(화면 기록)을 싹 다 비워라'는 뜻입니다.
-                        // 이렇게 하면 로그인 화면으로 갔을 때, 뒤로가기를 눌러도 회원가입 화면이 안 나오고 앱이 종료됩니다. (정상)
-                        popUpTo(0)
+        // 날짜 그리드 (이미지와 똑같이 10월 1일이 금요일에 시작하도록 배치)
+        // 빈 칸 5개(일~목) + 날짜 1~31
+        val emptyDays = 5 // 2021년 10월 1일은 금요일이므로 앞에 5칸 공백
+        val daysInMonth = 31
+        val totalCells = emptyDays + daysInMonth
+
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(7), // 7열
+            modifier = Modifier.height(300.dp), // 달력 높이 고정
+            verticalArrangement = Arrangement.spacedBy(16.dp) // 줄 간격
+        ) {
+            items(totalCells) { index ->
+                if (index < emptyDays) {
+                    // 빈 칸
+                    Spacer(modifier = Modifier.size(40.dp))
+                } else {
+                    // 날짜 숫자
+                    val day = index - emptyDays + 1
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.size(40.dp)
+                    ) {
+                        Text(
+                            text = day.toString(),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.DarkGray
+                        )
                     }
-                },
-                // TODO()가 있으면 앱 터짐!
-                // (나중에 앞 화면에서 데이터를 받아오는 코드로 바꿀 에정)
-                email = "",
-                password = "",
-                name = "",
-                phoneNumber = ""
-            )
+                }
+            }
         }
     }
 }
