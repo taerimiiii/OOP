@@ -60,16 +60,17 @@ fun JoinHeader(
                 Spacer(modifier = Modifier.width(48.dp))
             }
 
-            // 로고 이미지 (오류 방지를 위해 기본 아이콘 사용)
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
-                contentDescription = "Logo",
-                modifier = Modifier.size(40.dp),
-                colorFilter = ColorFilter.tint(PillGreen)
+            // 로고 (pill)
+            Text(
+                text = "pill",
+                fontSize = 32.sp,
+                color = PillGreen,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 16.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
         }
-        // 화면 타이틀 (예: 회원가입1)
+        // 화면 타이틀
         // 디자인상 타이틀이 없는 경우도 있어 빈 문자열이면 공간만 차지하게 처리
         if (title.isNotEmpty()) {
             Text(
