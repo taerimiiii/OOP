@@ -106,17 +106,10 @@ fun SearchTech(value: String,
 
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier) {
-    //var showDetailScreen by remember { mutableStateOf(false) }
     var showSearchResultScreen by remember { mutableStateOf(false) }
     var showKeywordSearchScreen by remember { mutableStateOf(false) }
-    var searchText by rememberSaveable { mutableStateOf("") }
-    var isSearching by remember { mutableStateOf(false) }
-    var searchResults by rememberSaveable {
-        mutableStateOf<List<MedicineItem>>(emptyList())
-    }
-    //var selectedItemSeq by remember { mutableStateOf<String?>(null) }
-    val repository = remember { MedicineRepository() }
-    val scope = rememberCoroutineScope()
+    var searchText by remember { mutableStateOf("") }
+    var searchResults by remember { mutableStateOf<String?>(null) }
     val savedSearchesList = rememberSaveable {
         mutableStateOf(emptyList<String>())
     }
@@ -151,62 +144,28 @@ fun SearchScreen(modifier: Modifier = Modifier) {
     val executeSearch: (String) -> Unit = { query ->
         println("--- 🔎 검색 로직 시작. 쿼리 값: '$query' ---")
 
-
+        searchResults = null
         addSearchTerm(query)
 
         if (query.isBlank()) {
-            searchResults = emptyList()
+            searchResults = null
             searchText = ""
             println("검색어 없음: 결과 초기화")
         } else {
-            showSearchResultScreen = false
-            isSearching = true
-            scope.launch {
-                try {
-                    val result = repository.searchMedicines(query)
 
-                    val list = result.getOrNull()
+            searchResults = query
 
-                    if (list != null && list.isNotEmpty()) {
-                        searchResults = list
-                        showSearchResultScreen = true
-                        println("✅ 검색 성공, 총 결과 수: ${searchResults.size}. SearchResultScreen으로 이동.")
-                    } else {
-                        searchResults = emptyList()
-                        showSearchResultScreen = false
-                        println("❌ 검색 결과 없음 또는 실패.")
-                    }
+            println("✅ 검색 완료. API 호출 없이 쿼리 값($query)을 searchResult에 할당.")
+            println("SearchResultScreen으로 이동 예정.")
 
-                } catch (e: Exception) {
-                    println("검색 중 치명적인 오류 발생: ${e.message}")
-                    searchResults = emptyList()
-                    showSearchResultScreen = false
-                } finally {
-                    isSearching = false
-                }
-            }
         }
     }
     when {
-        //showDetailScreen && selectedItemSeq != null -> {
-        //    MedicineDetailScreen(
-        //        medicineId = selectedItemSeq!!,
-        //        onBackClick = {
-        //            showDetailScreen = false
-        //            selectedItemSeq = null
-        //        }
-        //    )
-        //}
-
-        showSearchResultScreen -> {
+        searchResults != null -> {
             SearchResultScreen(
-                //searchResults = searchResults, //보내주고자 하는 값
+                searchKeyword = searchResults!!, //보내주고자 하는 값
 
-                onMedicineClick = { /* itemSeq ->
-                    // selectedItemSeq = itemSeq
-                    // showDetailScreen = true
-                    println("Search Result Clicked: $it") // 클릭 이벤트만 로그로 확인
-                */ },
+                onMedicineClick = {},
                 onBackClick = { showSearchResultScreen = false }
             )
         }
@@ -263,18 +222,18 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                     onSearchExecuted = executeSearch
                 )
 
-                Text(
-                    text = when {
-                        isSearching -> "검색 중입니다..." //로딩 중일 때 메시지
-                        searchText.isNotBlank() && searchResults.isEmpty() && !showSearchResultScreen ->
-                            "검색 결과가 없거나 연관된 내용이 없습니다."
-                        else ->
-                            "제품명을 입력하고 검색 버튼을 누르세요."
-                    },
-                    modifier = Modifier
-                        .padding(all = 15.dp)
-                        .padding(bottom = 0.dp)
-                )
+               // Text(                                             // API사용시에 필요
+               //     text = when {
+               //         isSearching -> "검색 중입니다..." //로딩 중일 때 메시지
+               //         searchText.isNotBlank() && (searchResults == null) && !showSearchResultScreen ->
+               //             "검색 결과가 없거나 연관된 내용이 없습니다."
+               //         else ->
+               //             "제품명을 입력하고 검색 버튼을 누르세요."
+                //    },
+                //    modifier = Modifier
+                //        .padding(all = 15.dp)
+                //        .padding(bottom = 0.dp)
+                //)
 
                 RecentSearchScreen(
                     recentSearches = recentSearches,
