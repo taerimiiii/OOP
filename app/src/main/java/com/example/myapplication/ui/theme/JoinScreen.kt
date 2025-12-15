@@ -87,7 +87,7 @@ fun JoinScreen1(onNextClick: () -> Unit, onBackClick: () -> Unit) {
             .background(Color.White)
             .padding(horizontal = 24.dp)
     ) {
-        JoinHeader(title = "회원가입1", onBackClick = onBackClick)
+        JoinHeader(title = "", onBackClick = onBackClick)
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -181,7 +181,7 @@ fun JoinScreen2(onNextClick: () -> Unit, onBackClick: () -> Unit) {
             .background(Color.White)
             .padding(horizontal = 24.dp)
     ) {
-        JoinHeader(title = "회원가입2", onBackClick = onBackClick)
+        JoinHeader(title = "", onBackClick = onBackClick)
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
@@ -245,7 +245,7 @@ fun JoinScreen2_1(onNextClick: () -> Unit, onBackClick: () -> Unit) {
             .background(Color.White)
             .padding(horizontal = 24.dp)
     ) {
-        JoinHeader(title = "회원가입2-1", onBackClick = onBackClick)
+        JoinHeader(title = "", onBackClick = onBackClick)
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
@@ -325,7 +325,7 @@ fun JoinScreen3(onNextClick: () -> Unit, onBackClick: () -> Unit) {
             .padding(horizontal = 24.dp)
             .verticalScroll(scrollState) // 내용이 길어질 수 있어 스크롤 추가
     ) {
-        JoinHeader(title = "회원가입3", onBackClick = onBackClick)
+        JoinHeader(title = "", onBackClick = onBackClick)
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
@@ -405,7 +405,7 @@ fun JoinScreen4(onFinishClick: () -> Unit) {
     ) {
         // 마지막 화면은 뒤로가기 없이 로고만 우측 상단 등 배치하거나 헤더 없이 처리
         // 여기선 디자인 일관성을 위해 헤더 사용하되 뒤로가기 null
-        JoinHeader(title = "회원가입4", onBackClick = null)
+        JoinHeader(title = "", onBackClick = null)
 
         Spacer(modifier = Modifier.height(24.dp))
 
