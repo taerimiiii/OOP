@@ -36,7 +36,7 @@ import com.example.oop.data.model.Medicine
 
 @Composable
 fun SearchResultScreen(
-    searchKeyword: String = "타이레놀",
+    searchKeyword: String,
     viewModel: SearchResultViewModel = viewModel(),
     onMedicineClick: (String) -> Unit = {},
     onBackClick: () -> Unit = {}
