@@ -86,11 +86,19 @@ fun MainScreen() {
         composable(Screen.Join4.name) {
             JoinScreen4(
                 onFinishClick = {
-                    // 회원가입 완료 시 로그인 화면으로 돌아가되, 백스택을 모두 지워서 뒤로가기 못하게 함
+                    // 회원가입 완료 후 로그인 화면으로 이동
                     navController.navigate(Screen.Login.name) {
+                        // popUpTo(0)은 '백스택(화면 기록)을 싹 다 비워라'는 뜻입니다.
+                        // 이렇게 하면 로그인 화면으로 갔을 때, 뒤로가기를 눌러도 회원가입 화면이 안 나오고 앱이 종료됩니다. (정상)
                         popUpTo(0)
                     }
-                }
+                },
+                // TODO()가 있으면 앱 터짐!
+                // (나중에 앞 화면에서 데이터를 받아오는 코드로 바꿀 에정)
+                email = "",
+                password = "",
+                name = "",
+                phoneNumber = ""
             )
         }
     }

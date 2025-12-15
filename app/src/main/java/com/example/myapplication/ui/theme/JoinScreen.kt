@@ -1,5 +1,6 @@
 package com.example.myapplication
 
+import UserAccount
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -643,67 +644,100 @@ fun JoinScreen3(onNextClick: () -> Unit, onBackClick: () -> Unit) {
 }
 
 // ==========================================
-// [회원가입 4] 닉네임 입력 (마지막)
+// [회원가입 4] 닉네임 입력 및 저장 (수정됨)
 // ==========================================
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun JoinScreen4(onFinishClick: () -> Unit) {
+fun JoinScreen4(
+    // 이전 화면에서 넘겨받은 정보들
+    email: String,
+    password: String,
+    name: String,
+    phoneNumber: String,
+    onFinishClick: () -> Unit
+) {
     var nickname by remember { mutableStateOf("") }
 
-    Column(
+    Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
-            .systemBarsPadding() // 시스템 바 패딩 추가
-            .imePadding()        // 키보드 패딩 추가
-            .padding(horizontal = 24.dp)
-    ) {
-        // 마지막 화면은 뒤로가기 없이 로고만 우측 상단 등 배치하거나 헤더 없이 처리
-        // 여기선 디자인 일관성을 위해 헤더 사용하되 뒤로가기 null
-        JoinHeader(title = "", onBackClick = null)
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text(
-            text = buildAnnotatedString {
-                append("마지막으로,\n")
-                withStyle(style = SpanStyle(color = PillGreen)) {
-                    append("닉네임")
-                }
-                append("을 입력해주세요!")
-            },
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            lineHeight = 30.sp
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // 닉네임 입력
-        OutlinedTextField(
-            value = nickname,
-            onValueChange = { nickname = it },
-            label = { Text("닉네임") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = Color.Transparent,
-                focusedBorderColor = PillGreen
-            )
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Button(
-            onClick = onFinishClick,
+            .imePadding(),
+        containerColor = Color.White
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .padding(bottom = 24.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.LightGray), // 완료 전엔 회색, 입력시 색상변경 로직 추가 가능
-            shape = RoundedCornerShape(12.dp)
+                .padding(innerPadding)
+                .fillMaxSize()
+                .padding(horizontal = 24.dp)
         ) {
-            Text("회원가입 완료", fontSize = 18.sp, color = Color.White, fontWeight = FontWeight.Bold)
+            JoinHeader(title = "", onBackClick = null)
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                text = buildAnnotatedString {
+                    append("마지막으로,\n")
+                    withStyle(style = SpanStyle(color = PillGreen)) {
+                        append("닉네임")
+                    }
+                    append("을 입력해주세요!")
+                },
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                lineHeight = 30.sp
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // 닉네임 입력
+            OutlinedTextField(
+                value = nickname,
+                onValueChange = { nickname = it },
+                label = { Text("닉네임") },
+                modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    containerColor = Color.Transparent,
+                    focusedBorderColor = PillGreen
+                )
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Button(
+                onClick = {
+                    // 1. 입력받은 모든 정보를 묶어서 저장 (회원가입 처리)
+                    val newUser = UserAccount(
+                        email = email,
+                        password = password,
+                        name = name,
+                        phoneNumber = phoneNumber,
+                        nickname = nickname
+                    )
+                    UserManager.register(newUser) // 저장소에 등록!
+
+                    // 2. 완료 후 첫 화면(로그인)으로 이동
+                    onFinishClick()
+                },
+                // 닉네임을 한 글자라도 써야 버튼 활성화
+                enabled = nickname.isNotEmpty(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .padding(bottom = 24.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = ButtonGreen,
+                    disabledContainerColor = Color.LightGray
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    "회원가입 완료",
+                    fontSize = 18.sp,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }
