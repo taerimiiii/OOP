@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
 
 
-
 @Composable//검색의 종류를 고르는 ui
 fun SearchSelect(modifier : Modifier = Modifier) {
     Row(
