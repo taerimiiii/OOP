@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -14,34 +13,29 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
-import android.util.Log
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.oop.data.model.Medicine
+import com.example.oop.ui.theme.backGreenColor
+import com.example.oop.ui.theme.blackColor
+import com.example.oop.ui.theme.grayTextColor
+import com.example.oop.ui.theme.lightGrayColor
+import com.example.oop.ui.theme.takeGreenColor
+import com.example.oop.ui.theme.takeRedColor
 
 @Composable
 fun MedicineTakeCard(
     medicine: Medicine?,
     isTaken: Boolean,
-    //errorMessage: String?,
     onTakenChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // 나중에 색 테마로 쓰기
-    val redColor = Color(0xFFD21818)
-    val greenColor = Color(0xFF38B000)
-    val lightGrayColor = Color(0xFFEAEAEA)
-    val backGreenColor = Color(0xFFDDE8E4)
-    val blackColor = Color(0xFF000000)
-    val grayTextColor = Color(0xFF666666)
 
     Column(
         modifier = modifier
@@ -148,7 +142,6 @@ fun MedicineTakeCard(
             }
         }
 
-
         // 하단 색상 영역 (초록/빨강)
         Box(
             modifier = Modifier
@@ -156,9 +149,9 @@ fun MedicineTakeCard(
                 .height(40.dp)
                 .background(
                     color = if (isTaken) {
-                        greenColor
+                        takeGreenColor
                     } else {
-                        redColor
+                        takeRedColor
                     },
                     shape = RoundedCornerShape(
                         topStart = 0.dp,

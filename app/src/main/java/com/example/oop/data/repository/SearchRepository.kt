@@ -2,7 +2,7 @@ package com.example.oop.data.repository
 
 import com.example.oop.data.api.FirebaseDataSource
 import com.example.oop.data.api.MedicineApiDataSource
-import com.example.oop.data.api.model.MedicineItem
+import com.example.oop.data.api.MedicineItem
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 

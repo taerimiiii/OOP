@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit
 
 // Retrofit 클라이언트 설정
 // Base URL, OkHttp 로깅 인터셉터 설정
+// object : 인스턴스가 하나만 생성, 전역 접근, 지연 초기화, 데이터 없음, 메모리 효율적.
 object MedicineApiClient {
     private const val BASE_URL = "https://apis.data.go.kr/"
 
@@ -24,6 +25,7 @@ object MedicineApiClient {
         .writeTimeout(30, TimeUnit.SECONDS)
         .build()
 
+    // Gson 변환기 설정(JSON ↔ 객체 변환)
     private val retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL)
         .client(okHttpClient)
