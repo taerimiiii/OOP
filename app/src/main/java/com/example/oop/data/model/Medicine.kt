@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp
 
 data class Medicine(
     val itemSeq: String = "",
-    val itemName: String = "",
+    val itemName: String? = "",
     val entpName: String? = null,
     val itemEngName: String? = null,
     val etcOtcName: String? = null,

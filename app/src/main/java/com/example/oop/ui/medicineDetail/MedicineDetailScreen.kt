@@ -212,7 +212,7 @@ fun MedicineDetailScreen(
 
                         // 약품명 - API 데이터 사용
                         Text(
-                            text = medicine!!.itemName,
+                            text = medicine!!.itemName!!,
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold
                         )

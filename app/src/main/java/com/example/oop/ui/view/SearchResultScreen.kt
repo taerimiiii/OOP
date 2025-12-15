@@ -255,7 +255,7 @@ fun MedicineResultCard(
             ) {
                 // 제품명
                 Text(
-                    text = medicine.itemName,
+                    text = medicine.itemName!!,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.Black

@@ -486,7 +486,7 @@ fun MedicineDetailView(
                             Spacer(modifier = Modifier.height(16.dp))
 
                             Text(
-                                text = medicine!!.itemName,
+                                text = medicine!!.itemName!!,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold
                             )
