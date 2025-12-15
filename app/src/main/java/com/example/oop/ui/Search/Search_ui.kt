@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.oop.ui.Search.SearchScreen1
+import com.example.oop.ui.Search.SearchScreen
 
 
 @Composable//검색의 종류를 고르는 ui
