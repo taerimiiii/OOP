@@ -35,6 +35,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // local.properties에서 API_KEY 읽기
+        val properties = org.jetbrains.kotlin.konan.properties.Properties()
+        properties.load(project.rootProject.file("local.properties").inputStream())
         buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 

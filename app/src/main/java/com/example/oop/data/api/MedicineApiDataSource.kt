@@ -2,11 +2,12 @@ package com.example.oop.data.api
 
 import com.example.oop.BuildConfig
 import com.example.oop.data.model.Medicine
+import android.util.Log
 
 // API 데이터 소스
 class MedicineApiDataSource {
     private val apiService = MedicineApiClient.apiService
-
+    private val serviceKey = BuildConfig.API_KEY
     // 의약품 목록 조회
     // 원본 API 응답 반환
     // 각자 만들 조회 리턴에 넣고 필요한 데이터만 뽑아서 사용하기
@@ -97,6 +98,23 @@ class MedicineApiDataSource {
         }
     }
 
-    // 이 밑으로 각자 조회 API 작성해서 사용!!
+    suspend fun getSearchResult(
+        pageNo: Int = 1,
+        numOfRows: Int = 100,
+        type: String = "json",
+        itemName: String? = null
+    ): Result<List<Medicine>>{
+        Log.d("API_DataSource", "getSearchResult 호출: $itemName")
+        return getMedicineList(
+            itemName = itemName,
+            pageNo = pageNo,
+            numOfRows = numOfRows,
+            type = type
 
+        ).map { response ->
+            (response.body.items ?: emptyList()).map { it.toSearchMedicine() }
+        }
+    }
+
+    // 이 밑으로 각자 조회 API 작성해서 사용!!
 }

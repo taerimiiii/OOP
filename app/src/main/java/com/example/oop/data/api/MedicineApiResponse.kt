@@ -72,4 +72,27 @@ data class MedicineItem(
             itemImage = itemImage,
         )
     }
+
+    // 이 밑으로 각자 사용할 API 응답 모델 선언해서 사용하기!!
+
+    //이동하
+    //검색 결과에 대한 의약품 조회
+    fun toSearchMedicine(): com.example.oop.data.model.Medicine {
+        return com.example.oop.data.model.Medicine(
+            itemSeq = itemSeq,
+            itemName = itemName,
+            itemEngName = itemEngName,
+            entpName = entpName,
+            className = className,
+            chart = chart,
+            itemImage = itemImage,
+            lengLong = lengLong,
+            lengShort = lengShort,
+            thick = thick,
+            printFront = printFront,
+            printBack = printBack,
+            etcOtcName = etcOtcName,
+            formCodeName = formCodeName
+        )
+    }
 }
