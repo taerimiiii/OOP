@@ -142,7 +142,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
 
 
     val executeSearch: (String) -> Unit = { query ->
-        println("--- 🔎 검색 로직 시작. 쿼리 값: '$query' ---")
+        println("--- 검색 로직 시작. 쿼리 값: '$query' ---")
 
         searchResults = null
         addSearchTerm(query)
@@ -155,7 +155,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
 
             searchResults = query
 
-            println("✅ 검색 완료. API 호출 없이 쿼리 값($query)을 searchResult에 할당.")
+            println("검색 완료. API 호출 없이 쿼리 값($query)을 searchResult에 할당.")
             println("SearchResultScreen으로 이동 예정.")
 
         }

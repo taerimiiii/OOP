@@ -3,6 +3,7 @@ package com.example.oop.ui.keyword
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -53,7 +54,6 @@ import com.example.oop.R
 import com.example.oop.ui.Search.SearchScreen
 import com.example.oop.ui.medicineDetail.MedicineDetailScreen
 import com.example.oop.ui.view.SearchResultScreen
-import androidx.compose.ui.unit.IntSize
 
 data class DetailResult(
     val letter: String = "",
@@ -64,22 +64,16 @@ data class DetailResult(
 
 @Composable
 fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
-    // 임시 검색 UI
     var showDetailScreen by remember { mutableStateOf(false) }
     var showSearchResultScreen by remember { mutableStateOf(false) }
-    var showKeywordSearchScreen by remember { mutableStateOf(false) }
     var selectedDetails by remember { mutableStateOf(DetailResult()) }
     var finalResultList by remember { mutableStateOf<List<DetailResult>>(emptyList()) }
     var showSearchScreen by remember { mutableStateOf(false) }
-    var submittedQuery by remember { mutableStateOf("") }
-    var bottomBarHeight by remember { mutableStateOf(IntSize.Zero) }
 
-    // 2. 검색을 실행하는 함수 정의
     val performKeywordSearch: () -> Unit = {
-        // 💡 [핵심] 현재 선택된 DetailResult 객체를 리스트에 담아 저장합니다.
         finalResultList = listOf(selectedDetails)
 
-        println("--- 🔎 키워드 검색 결정 완료 ---")
+        println("--- 키워드 검색 결정 완료 ---")
         println("최종 결합된 DetailResult: ${selectedDetails}")
         println("최종 반환 리스트: $finalResultList")
 
@@ -90,7 +84,7 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
     val resetKeywordSearch: () -> Unit = {
         selectedDetails = DetailResult()
         finalResultList = emptyList()
-        println("--- 🔎 키워드 검색 초기화 완료 ---")
+        println("--- 키워드 검색 초기화 완료 ---")
     }
 
     when {
@@ -183,7 +177,6 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
                         }
                     ) }
 
-                    // 💡 [수정] 제형 값 업데이트 콜백 추가
                     item { Keyword_type(
                         selectedType = selectedDetails.type,
                         onTypeSelected = { type ->
@@ -191,7 +184,6 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
                         }
                     ) }
 
-                    // 💡 [수정] 모양 값 업데이트 콜백 추가
                     item { Keyword_shape(
                         selectedShape = selectedDetails.shape,
                         onShapeSelected = { shape ->
@@ -199,7 +191,6 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
                         }
                     ) }
 
-                    // 💡 [수정] 색상 값 업데이트 콜백 추가
                     item { Keyword_color(
                         selectedColor = selectedDetails.color,
                         onColorSelected = { color ->
@@ -207,7 +198,6 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
                         }
                     ) }
 
-                    // 💡 [수정] 결정/리셋 로직 연결
                     item { Decide_reset(
                         onDecide = performKeywordSearch, // 최종 결정
                         onReset = resetKeywordSearch     // 초기화
@@ -252,7 +242,6 @@ fun Keyword_letter(
         },
         trailingIcon = {
             if (searchText.isNotEmpty()) {
-                // 입력 내용이 있을 경우 지우기 버튼 표시
                 IconButton(onClick = { searchText = "" }) {
                     Icon(Icons.Default.Close, contentDescription = "Clear search")
                 }
@@ -270,12 +259,34 @@ fun Keyword_letter(
             .padding(horizontal = 16.dp, vertical = 0.dp)
     )
 }
-
 @Composable
-//제형 선택칸
+fun KeywordButton(
+    selected: Boolean,
+    selectedImage: Int,
+    defaultImage: Int,
+    contentDescription: String,
+    size: androidx.compose.ui.unit.Dp = 90.dp,
+    onClick: () -> Unit
+) {
+    Image(
+        modifier = Modifier
+            .size(size)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = onClick
+            )
+            .alpha(if (selected) 1f else 0.5f),
+        painter = painterResource(
+            if (selected) selectedImage else defaultImage
+        ),
+        contentDescription = contentDescription
+    )
+}
+@Composable
 fun Keyword_type(
-    selectedType: String, // 현재 선택된 상태를 받음
-    onTypeSelected: (String) -> Unit, // 선택 시 콜백
+    selectedType: String,
+    onTypeSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ){
     Text(
@@ -295,34 +306,45 @@ fun Keyword_type(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ){
+        // 1. 정제
         val typeTablet = "정제"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onTypeSelected(typeTablet) },
-            painter =  painterResource(R.drawable.circle_type),
+        val isSelectedTablet = selectedType == typeTablet
+        KeywordButton(
+            selected = isSelectedTablet,
+            selectedImage = R.drawable.circle_type_selected, // 선택된 이미지 리소스 ID 필요
+            defaultImage = R.drawable.circle_type,
             contentDescription = "keyword_type_tablet",
-            alpha = if (selectedType == typeTablet) 1f else 0.5f
+            onClick = {
+                onTypeSelected(if (isSelectedTablet) "" else typeTablet)
+            }
         )
         Spacer(Modifier.width(35.dp))
+
+        // 2. 경질캡슐
         val typeHard = "경질캡슐"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onTypeSelected(typeHard) },
-            painter =  painterResource(R.drawable.circle_type),
+        val isSelectedHard = selectedType == typeHard
+        KeywordButton(
+            selected = isSelectedHard,
+            selectedImage = R.drawable.circle_type_selected,
+            defaultImage = R.drawable.circle_type,
             contentDescription = "keyword_type_hard",
-            alpha = if (selectedType == typeHard) 1f else 0.5f
+            onClick = {
+                onTypeSelected(if (isSelectedHard) "" else typeHard)
+            }
         )
         Spacer(Modifier.width(35.dp))
+
+        // 3. 연질캡슐
         val typeSoft = "연질캡슐"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onTypeSelected(typeSoft) },
-            painter =  painterResource(R.drawable.circle_type),
+        val isSelectedSoft = selectedType == typeSoft
+        KeywordButton(
+            selected = isSelectedSoft,
+            selectedImage = R.drawable.circle_type_selected,
+            defaultImage = R.drawable.circle_type,
             contentDescription = "keyword_type_soft",
-            alpha = if (selectedType == typeSoft) 1f else 0.5f
+            onClick = {
+                onTypeSelected(if (isSelectedSoft) "" else typeSoft)
+            }
         )
     }
 }
@@ -351,44 +373,63 @@ fun Keyword_shape(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ){
+        // 1. 원형
         val shapecircle = "원형"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onShapeSelected(shapecircle) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedShape == shapecircle) 1f else 0.5f
+        val isSelectedCircle = selectedShape == shapecircle
+        KeywordButton(
+            selected = isSelectedCircle,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_shape_circle",
+            size = 90.dp,
+            onClick = {
+                onShapeSelected(if (isSelectedCircle) "" else shapecircle)
+            }
         )
         Spacer(Modifier.width(8.dp))
+
+        // 2. 타원형
         val shapeoval = "타원형"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onShapeSelected(shapeoval) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedShape == shapeoval) 1f else 0.5f
+        val isSelectedOval = selectedShape == shapeoval
+        KeywordButton(
+            selected = isSelectedOval,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_shape_oval",
+            size = 90.dp,
+            onClick = {
+                onShapeSelected(if (isSelectedOval) "" else shapeoval)
+            }
         )
         Spacer(Modifier.width(8.dp))
+
+        // 3. 장방형
         val shaperound_rectangle = "장방형"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onShapeSelected(shaperound_rectangle) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedShape == shaperound_rectangle) 1f else 0.5f
+        val isSelectedRoundRectangle = selectedShape == shaperound_rectangle
+        KeywordButton(
+            selected = isSelectedRoundRectangle,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_shape_round_rectangle",
+            size = 90.dp,
+            onClick = {
+                onShapeSelected(if (isSelectedRoundRectangle) "" else shaperound_rectangle)
+            }
         )
         Spacer(Modifier.width(8.dp))
+
+        // 4. 반원형
         val shapehalf_circle = "반원형"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onShapeSelected(shapehalf_circle) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedShape == shapehalf_circle) 1f else 0.5f
+        val isSelectedHalfCircle = selectedShape == shapehalf_circle
+        KeywordButton(
+            selected = isSelectedHalfCircle,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_shape_half_rectangle",
+            size = 90.dp,
+            onClick = {
+                onShapeSelected(if (isSelectedHalfCircle) "" else shapehalf_circle)
+            }
         )
     }
     Row(
@@ -398,44 +439,63 @@ fun Keyword_shape(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ){
+        // 5. 삼각형
         val shapethree = "삼각형"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onShapeSelected(shapethree) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedShape == shapethree) 1f else 0.5f
+        val isSelectedThree = selectedShape == shapethree
+        KeywordButton(
+            selected = isSelectedThree,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_shape_three",
+            size = 90.dp,
+            onClick = {
+                onShapeSelected(if (isSelectedThree) "" else shapethree)
+            }
         )
         Spacer(Modifier.width(8.dp))
-        val shapefore = "사각형"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onShapeSelected(shapefore) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedShape == shapefore) 1f else 0.5f
+
+        // 6. 사각형
+        val shapefour = "사각형"
+        val isSelectedFour = selectedShape == shapefour
+        KeywordButton(
+            selected = isSelectedFour,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_shape_four",
+            size = 90.dp,
+            onClick = {
+                onShapeSelected(if (isSelectedFour) "" else shapefour)
+            }
         )
         Spacer(Modifier.width(8.dp))
-        val shapetilt_rectangle = "마름모"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onShapeSelected(shapetilt_rectangle) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedShape == shapetilt_rectangle) 1f else 0.5f
+
+        // 7. 마름모형
+        val shapetilt_rectangle = "마름모형"
+        val isSelectedTiltRectangle = selectedShape == shapetilt_rectangle
+        KeywordButton(
+            selected = isSelectedTiltRectangle,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_shape_tilt",
+            size = 90.dp,
+            onClick = {
+                onShapeSelected(if (isSelectedTiltRectangle) "" else shapetilt_rectangle)
+            }
         )
         Spacer(Modifier.width(8.dp))
+
+        // 8. 오각형
         val shapefive = "오각형"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onShapeSelected(shapefive) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedShape == shapefive) 1f else 0.5f
+        val isSelectedFive = selectedShape == shapefive
+        KeywordButton(
+            selected = isSelectedFive,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_shape_five",
+            size = 90.dp,
+            onClick = {
+                onShapeSelected(if (isSelectedFive) "" else shapefive)
+            }
         )
     }
     Row(
@@ -445,36 +505,49 @@ fun Keyword_shape(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ){
+        // 9. 육각형
         val shapesix = "육각형"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onShapeSelected(shapesix) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedShape == shapesix) 1f else 0.5f
+        val isSelectedSix = selectedShape == shapesix
+        KeywordButton(
+            selected = isSelectedSix,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_shape_six",
+            size = 90.dp,
+            onClick = {
+                onShapeSelected(if (isSelectedSix) "" else shapesix)
+            }
         )
         Spacer(Modifier.width(8.dp))
+
+        // 10. 팔각형
         val shapeeight = "팔각형"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onShapeSelected(shapeeight) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedShape == shapeeight) 1f else 0.5f
+        val isSelectedEight = selectedShape == shapeeight
+        KeywordButton(
+            selected = isSelectedEight,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_shape_eight",
+            size = 90.dp,
+            onClick = {
+                onShapeSelected(if (isSelectedEight) "" else shapeeight)
+            }
         )
         Spacer(Modifier.width(8.dp))
+
+        // 빈 자리 1
         Image(
             modifier = Modifier.size(90.dp).alpha(0f),
             painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_shape_round_tilt_rectangle"
+            contentDescription = "placeholder"
         )
         Spacer(Modifier.width(8.dp))
+
+        // 빈 자리 2
         Image(
             modifier = Modifier.size(90.dp).alpha(0f),
             painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_shape_half_penta"
+            contentDescription = "placeholder"
         )
     }
 }
@@ -503,44 +576,63 @@ fun Keyword_color(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ){
+        // 1. 하양
         val colorwhite = "하양"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onColorSelected(colorwhite) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedColor == colorwhite) 1f else 0.5f
+        val isSelectedWhite = selectedColor == colorwhite
+        KeywordButton(
+            selected = isSelectedWhite,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_white",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedWhite) "" else colorwhite)
+            }
         )
         Spacer(Modifier.width(8.dp))
+
+        // 2. 노랑
         val coloryellow = "노랑"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onColorSelected(coloryellow) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedColor == coloryellow) 1f else 0.5f
+        val isSelectedYellow = selectedColor == coloryellow
+        KeywordButton(
+            selected = isSelectedYellow,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_yellow",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedYellow) "" else coloryellow)
+            }
         )
         Spacer(Modifier.width(8.dp))
-        val shapetilt_rectangle = "주황"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onColorSelected(shapetilt_rectangle) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedColor == shapetilt_rectangle) 1f else 0.5f
+
+        // 3. 주황
+        val colororange = "주황"
+        val isSelectedOrange = selectedColor == colororange
+        KeywordButton(
+            selected = isSelectedOrange,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_orange",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedOrange) "" else colororange)
+            }
         )
         Spacer(Modifier.width(8.dp))
+
+        // 4. 분홍
         val colorpink = "분홍"
-        Image(
-            modifier = modifier
-                .size(90.dp)
-                .clickable { onColorSelected(colorpink) },
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_type_tablet",
-            alpha = if (selectedColor == colorpink) 1f else 0.5f
+        val isSelectedPink = selectedColor == colorpink
+        KeywordButton(
+            selected = isSelectedPink,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_pink",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedPink) "" else colorpink)
+            }
         )
     }
     Row(
@@ -550,28 +642,63 @@ fun Keyword_color(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ){
-        Image(
-            modifier = Modifier.size(90.dp),
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_shape_try"
+        // 5. 빨강
+        val colorred = "빨강"
+        val isSelectedRed = selectedColor == colorred
+        KeywordButton(
+            selected = isSelectedRed,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_red",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedRed) "" else colorred)
+            }
         )
-        Spacer(Modifier.width(10.dp))
-        Image(
-            modifier = Modifier.size(90.dp),
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_shape_rectangle"
+        Spacer(Modifier.width(8.dp))
+
+        // 6. 갈색
+        val colorbrown = "갈색"
+        val isSelectedBrown = selectedColor == colorbrown
+        KeywordButton(
+            selected = isSelectedBrown,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_brown",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedBrown) "" else colorbrown)
+            }
         )
-        Spacer(Modifier.width(10.dp))
-        Image(
-            modifier = Modifier.size(90.dp),
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_shape_round_tilt_rectangle"
+        Spacer(Modifier.width(8.dp))
+
+        // 7. 연두
+        val colorbright_green = "연두"
+        val isSelectedBrightGreen = selectedColor == colorbright_green
+        KeywordButton(
+            selected = isSelectedBrightGreen,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_bright_green",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedBrightGreen) "" else colorbright_green)
+            }
         )
-        Spacer(Modifier.width(10.dp))
-        Image(
-            modifier = Modifier.size(90.dp),
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_shape_half_penta"
+        Spacer(Modifier.width(8.dp))
+
+        // 8. 초록
+        val colorgreen = "초록"
+        val isSelectedGreen = selectedColor == colorgreen
+        KeywordButton(
+            selected = isSelectedGreen,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_green",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedGreen) "" else colorgreen)
+            }
         )
     }
     Row(
@@ -581,28 +708,63 @@ fun Keyword_color(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ){
-        Image(
-            modifier = Modifier.size(90.dp),
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_shape_hexa"
+        // 9. 청록
+        val colorbluegreen = "청록"
+        val isSelectedBlueGreen = selectedColor == colorbluegreen
+        KeywordButton(
+            selected = isSelectedBlueGreen,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_bluegreen",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedBlueGreen) "" else colorbluegreen)
+            }
         )
-        Spacer(Modifier.width(10.dp))
-        Image(
-            modifier = Modifier.size(90.dp),
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_shape_octa"
+        Spacer(Modifier.width(8.dp))
+
+        // 10. 파랑
+        val colorblue = "파랑"
+        val isSelectedBlue = selectedColor == colorblue
+        KeywordButton(
+            selected = isSelectedBlue,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_blue",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedBlue) "" else colorblue)
+            }
         )
-        Spacer(Modifier.width(10.dp))
-        Image(
-            modifier = Modifier.size(90.dp),
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_shape_hexa"
+        Spacer(Modifier.width(8.dp))
+
+        // 11. 남색
+        val colordarkblue = "남색"
+        val isSelectedDarkBlue = selectedColor == colordarkblue
+        KeywordButton(
+            selected = isSelectedDarkBlue,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_dark_blue",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedDarkBlue) "" else colordarkblue)
+            }
         )
-        Spacer(Modifier.width(10.dp))
-        Image(
-            modifier = Modifier.size(90.dp),
-            painter =  painterResource(R.drawable.rectangle_shape),
-            contentDescription = "keyword_shape_octa"
+        Spacer(Modifier.width(8.dp))
+
+        // 12. 회색
+        val colorgray = "회색"
+        val isSelectedGray = selectedColor == colorgray
+        KeywordButton(
+            selected = isSelectedGray,
+            selectedImage = R.drawable.rectangle_shape_selected,
+            defaultImage = R.drawable.rectangle_shape,
+            contentDescription = "keyword_color_gray",
+            size = 90.dp,
+            onClick = {
+                onColorSelected(if (isSelectedGray) "" else colorgray)
+            }
         )
     }
 }
@@ -613,7 +775,6 @@ fun Decide_reset(
     onReset: () -> Unit
 ) {
 
-    // 1. Box 컨테이너를 사용하여 이미지 위에 다른 요소(버튼)를 겹쳐 놓습니다.
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -621,7 +782,6 @@ fun Decide_reset(
             .height(100.dp) // 전체 컨테이너의 높이를 이미지에 맞게 설정
     ) {
 
-        // 2. 직사각형 컨테이너 역할을 할 배경 이미지 (가장 아래에 배치)
         Image(
             painter = painterResource(R.drawable.keyword_underbar),
             contentDescription = "배경 직사각형 이미지",
@@ -629,7 +789,6 @@ fun Decide_reset(
             modifier = Modifier.matchParentSize() // 부모 Box의 크기(150dp)를 따름
         )
 
-        // 3. 버튼들을 수평으로 배치하기 위한 Row (이미지 위에 겹쳐짐)
         Row(
             modifier = Modifier
                 .fillMaxSize() // 이미지와 같은 크기
@@ -638,22 +797,20 @@ fun Decide_reset(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            // 첫 번째 타원형 버튼
             Image(
                 modifier = Modifier
                     .width(200.dp)
                     .height(70.dp)
-                    .clickable { onDecide() }, // 💡 최종 결정 로직 연결
+                    .clickable { onDecide() },
                 painter =  painterResource(R.drawable.rectangle_finish),
                 contentDescription = "결정 버튼"
             )
 
-            // 두 번째 타원형 버튼
             Image(
                 modifier = Modifier
                     .width(90.dp)
                     .height(90.dp)
-                    .clickable { onReset() }, // 💡 초기화 로직 연결
+                    .clickable { onReset() },
                 painter =  painterResource(R.drawable.rectangle_reset),
                 contentDescription = "초기화 버튼"
             )
