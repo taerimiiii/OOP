@@ -23,17 +23,24 @@ fun SearchScreen(modifier: Modifier = Modifier) {
     var showDetailScreen by remember { mutableStateOf(false) }
     var showSearchResultScreen by remember { mutableStateOf(false) }
 
+    var selectedMedicineId by remember { mutableStateOf("") }
+
+
     when {
         showDetailScreen -> {
             MedicineDetailScreen(
-                medicineId = "medicine_001",
+                medicineId = selectedMedicineId,
                 onBackClick = { showDetailScreen = false }
             )
         }
 
         showSearchResultScreen -> {
             SearchResultScreen(
-                onMedicineClick = {
+                searchKeyword = "타이레놀",
+                onMedicineClick = { itemSeq ->
+                    android.util.Log.d("SearchScreen", "클릭한 의약품: $itemSeq")
+                    selectedMedicineId = itemSeq
+                    showSearchResultScreen = false
                     showDetailScreen = true
                 },
                 onBackClick = { showSearchResultScreen = false }

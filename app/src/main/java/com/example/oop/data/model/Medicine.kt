@@ -19,4 +19,8 @@ data class Medicine(
     val bizrno: String? = null,
     val stdCd: String? = null,
     val imgRegistTs: String? = null,
+    val lengLong: String? = null,
+    val lengShort: String? = null,
+    val thick: String? = null,
+    val formCodeName: String? = null
 )

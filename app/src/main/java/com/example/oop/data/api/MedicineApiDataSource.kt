@@ -118,10 +118,9 @@ class MedicineApiDataSource {
             type = type
 
         ).map { response ->
-            response.body.items.map { it.toSearchMedicine() }
+            (response.body.items ?: emptyList()).map { it.toSearchMedicine() }
         }
     }
 
     // 이 밑으로 각자 조회 API 작성해서 사용!!
-
 }
