@@ -1,5 +1,6 @@
-package com.example.oop.data.api.model
+package com.example.oop.data.api
 
+import com.example.oop.data.model.Medicine
 import com.google.gson.annotations.SerializedName
 
 // API 응답 전체 구조
@@ -61,25 +62,14 @@ data class MedicineItem(
 
     // 태림양꺼 응답 모델
     // 즐겨찾기한 의약품 조회
-    fun tofavoriteMedicine(): com.example.oop.data.model.Medicine {
-        return com.example.oop.data.model.Medicine(
+    fun tofavoriteMedicine(): Medicine {
+        return Medicine(
             itemSeq = itemSeq,
             itemName = itemName,
             entpName = entpName,
-            itemEngName = itemEngName,
-            etcOtcName = etcOtcName,
             className = className,
-            drugShape = drugShape,
-            color1 = colorClass1,
-            printFront = printFront,
-            printBack = printBack,
             chart = chart,
             itemImage = itemImage,
-            ediCode = ediCode,
-            bizrno = bizrno,
-            stdCd = stdCd,
-            imgRegistTs = imgRegistTs
         )
     }
 }
-
