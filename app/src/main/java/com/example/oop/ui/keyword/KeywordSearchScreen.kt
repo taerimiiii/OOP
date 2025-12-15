@@ -106,6 +106,7 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
                     contentAlignment = Alignment.Center
                 ) {
                     Canvas(
+                        modifier = Modifier
                     ) {
                         drawLine(
                             color = Color.Black,

@@ -41,92 +41,18 @@ import com.example.oop.R
 import com.example.oop.ui.keyword.KeywordSearchScreen1
 import com.example.oop.ui.medicineDetail.MedicineDetailScreen
 import com.example.oop.ui.view.SearchResultScreen
+import com.example.oop.data.api.model.MedicineItem
 import androidx.compose.material3.*
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
-import kotlinx.coroutines.delay
+import com.example.oop.data.repository.MedicineRepository
 import kotlinx.coroutines.launch
 
 private const val MAX_CAPACITY = 5
 private const val TAG = "SearchFeature"
-
-private val RecentSearchSaver: Saver<SnapshotStateList<String>, List<String>> = Saver(
-    save = { it.toList() }, // SnapshotStateList<String>을 List<String>으로 변환
-    restore = { it.toMutableStateList() } // List<String>을 SnapshotStateList<String>으로 복원
-)
-
-data class MedicineItem(
-    val itemSeq: String, // **Key: 제품일련번호 (반환 목표)**
-    val itemName: String, // **Key: 제품명 (검색어와 비교 목표)**
-    val drugShape: String, // 제형
-    val color1: String, // 색상
-    val printFront: String?, // 앞면 각인 (null 허용)
-    val printBack: String? // 뒷면 각인 (null 허용)
-)
-
-val allMedicines = listOf(
-    MedicineItem(
-        itemSeq = "200808876",
-        itemName = "가스디알정50밀리그램(디메크로틴산마그네슘)",
-        drugShape = "원형",
-        color1 = "연두",
-        printFront = "IDG",
-        printBack = null
-    ),
-    MedicineItem(
-        itemSeq = "199401777",
-        itemName = "타이레놀정500밀리그램",
-        drugShape = "장방형",
-        color1 = "흰색",
-        printFront = "TYL",
-        printBack = "500"
-    ),
-    MedicineItem(
-        itemSeq = "202008711",
-        itemName = "이지엔6프로연질캡슐",
-        drugShape = "타원형",
-        color1 = "노란색",
-        printFront = null,
-        printBack = null
-    ),
-    MedicineItem(
-        itemSeq = "199401778",
-        itemName = "타이레놀정160밀리그램", // <-- 검색 목표 2
-        drugShape = "장방형",
-        color1 = "흰색",
-        printFront = "TYL",
-        printBack = "160"
-    ),
-    MedicineItem(
-        itemSeq = "200600001",
-        itemName = "타이레놀콜드-에스정", // <-- 연관 검색 목표 3
-        drugShape = "타원형",
-        color1 = "흰색",
-        printFront = "T-C",
-        printBack = "S"
-    )
-)
-
-suspend fun searchItem(query: String): List<MedicineItem> {
-    delay(500) // 0.5초 대기 (비동기 작업 시뮬레이션)
-
-    if (query.isBlank()) return emptyList()
-
-    val normalizedQuery = query.trim()
-
-    // 검색어가 약품명에 부분적으로 포함되는 모든 항목을 찾습니다. (Case Insensitive)
-    val foundMedicines = allMedicines.filter {
-        it.itemName.contains(normalizedQuery, ignoreCase = true)
-    }
-
-    return foundMedicines
-}
 
 @Composable
 fun SearchTech(value: String,
@@ -185,11 +111,18 @@ fun SearchScreen(modifier: Modifier = Modifier) {
     var showSearchResultScreen by remember { mutableStateOf(false) }
     var showKeywordSearchScreen by remember { mutableStateOf(false) }
     var searchText by rememberSaveable { mutableStateOf("") }
-    var searchResults by remember { mutableStateOf<List<MedicineItem>>(emptyList()) }
+    var isSearching by remember { mutableStateOf(false) }
+    var searchResults by rememberSaveable {
+        mutableStateOf<List<MedicineItem>>(emptyList())
+    }
     var selectedItemSeq by remember { mutableStateOf<String?>(null) }
-    val scope = rememberCoroutineScope() // CoroutineScope 추가
-    val recentSearches = rememberSaveable(saver = RecentSearchSaver) {
-        mutableStateListOf<String>()
+    val repository = remember { MedicineRepository() }
+    val scope = rememberCoroutineScope()
+    val savedSearchesList = rememberSaveable {
+        mutableStateOf(emptyList<String>())
+    }
+    val recentSearches = remember {
+        savedSearchesList.value.toMutableStateList()
     }
 
     val addSearchTerm: (String) -> Unit = remember {
@@ -203,20 +136,23 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                 if (recentSearches.size > MAX_CAPACITY) {
                     recentSearches.removeAt(MAX_CAPACITY)
                 }
+
+                savedSearchesList.value = recentSearches.toList()
             }
         }
     }
 
-    // 💡 변경 3: 개별 검색어 제거 로직
+
     val removeSearchTerm: (String) -> Unit = { term ->
         recentSearches.remove(term)
+        savedSearchesList.value = recentSearches.toList()
     }
 
-    // 변경점 3: executeSearch 로직을 apiResultItemSeq에 맞게 수정
+
     val executeSearch: (String) -> Unit = { query ->
         println("--- 🔎 검색 로직 시작. 쿼리 값: '$query' ---")
 
-        // 검색 실행 시 무조건 최근 검색어 목록 업데이트
+
         addSearchTerm(query)
 
         if (query.isBlank()) {
@@ -224,16 +160,29 @@ fun SearchScreen(modifier: Modifier = Modifier) {
             searchText = ""
             println("검색어 없음: 결과 초기화")
         } else {
+            showSearchResultScreen = false
+            isSearching = true
             scope.launch {
-                val results = searchItem(query)
+                try {
+                    // 💡 DB 검색 실행
+                    val results = repository.searchFromDatabase(query)
 
-                if (results.isNotEmpty()) {
-                    searchResults = results
-                    showSearchResultScreen = true
-                    println("✅ API 호출 성공, 검색된 결과 수: ${results.size}. SearchResultScreen으로 이동.")
-                } else {
+                    if (results.isNotEmpty()) {
+                        searchResults = results
+                        showSearchResultScreen = true
+                        println("✅ DB 검색 성공, 검색된 결과 수: ${results.size}. SearchResultScreen으로 이동.")
+                    } else {
+                        searchResults = emptyList()
+                        println("❌ DB 검색 결과 없음.")
+
+                        // 💡 (선택 사항) DB에 없으면 API를 호출하여 저장 (최초 데이터 로딩 시 주로 사용)
+                        // repository.fetchAndSaveMedicines(query)
+                    }
+                } catch (e: Exception) {
+                    println("검색 중 오류 발생: ${e.message}")
                     searchResults = emptyList()
-                    println("❌ 검색 결과 없음")
+                } finally {
+                    isSearching = false
                 }
             }
         }
@@ -241,10 +190,10 @@ fun SearchScreen(modifier: Modifier = Modifier) {
     when {
         showDetailScreen && selectedItemSeq != null -> {
             MedicineDetailScreen(
-                medicineId = selectedItemSeq!!, // itemSeq 전달
+                medicineId = selectedItemSeq!!,
                 onBackClick = {
                     showDetailScreen = false
-                    selectedItemSeq = null // 화면 복귀 시 itemSeq 초기화
+                    selectedItemSeq = null
                 }
             )
         }
@@ -316,21 +265,25 @@ fun SearchScreen(modifier: Modifier = Modifier) {
                 )
 
                 Text(
-                    text = if (searchText.isNotBlank() && searchResults.isEmpty() && !showSearchResultScreen)
-                        "검색 결과가 없거나 연관된 내용이 없습니다."
-                    else "제품명을 입력하고 검색 버튼을 누르세요.",
+                    text = when {
+                        isSearching -> "검색 중입니다..." // 💡 로딩 중일 때 메시지
+                        searchText.isNotBlank() && searchResults.isEmpty() && !showSearchResultScreen ->
+                            "검색 결과가 없거나 연관된 내용이 없습니다."
+                        else ->
+                            "제품명을 입력하고 검색 버튼을 누르세요."
+                    },
                     modifier = Modifier
-                        .padding(all = 15.dp) // 상하좌우 모두 10dp를 먼저 적용
+                        .padding(all = 15.dp)
                         .padding(bottom = 0.dp)
                 )
 
                 RecentSearchScreen(
-                    recentSearches = recentSearches, // 상태 목록 전달
+                    recentSearches = recentSearches,
                     onSearchExecuted = { term ->
-                        searchText = term // 검색 필드 업데이트
-                        executeSearch(term) // 검색 실행 (내부에서 addSearchTerm 호출됨)
+                        searchText = term
+                        executeSearch(term)
                     },
-                    onRemoveSearchTerm = removeSearchTerm // 개별 삭제 함수 전달
+                    onRemoveSearchTerm = removeSearchTerm
                 )
             }
         }
@@ -339,12 +292,11 @@ fun SearchScreen(modifier: Modifier = Modifier) {
 
 @Composable
 fun RecentSearchScreen(
-    // 💡 변경 7: 상태 목록을 인자로 받음
     recentSearches: List<String>,
-    onSearchExecuted: (String) -> Unit, // 검색 실행 (SearchScreen의 executeSearch로 연결됨)
-    onRemoveSearchTerm: (String) -> Unit // 개별 삭제 (SearchScreen의 removeSearchTerm으로 연결됨)
+    onSearchExecuted: (String) -> Unit,
+    onRemoveSearchTerm: (String) -> Unit
 ) {
-    // 💡 로직 제거: rememberSaveable, addSearchTerm, performSearch, LaunchedEffect 모두 제거
+
 
     Column(
         modifier = Modifier
@@ -368,9 +320,9 @@ fun RecentSearchScreen(
                 items(recentSearches) { term ->
                     SearchItem(
                         term = term,
-                        // 💡 변경 8: 클릭 시 onSearchExecuted에 term을 전달하여 바로 호출
+
                         onSearchClicked = { onSearchExecuted(term) },
-                        // 💡 변경 9: 삭제 시 onRemoveSearchTerm에 term을 전달하여 바로 호출
+
                         onRemove = { onRemoveSearchTerm(term) }
                     )
                 }
@@ -379,17 +331,16 @@ fun RecentSearchScreen(
     }
 }
 
-// --- (3) SearchItemRow 컴포저블 수정 ---
+
 @Composable
 fun SearchItem(
     term: String,
-    onSearchClicked: (String) -> Unit, // 검색어 클릭 시 실행할 람다
+    onSearchClicked: (String) -> Unit,
     onRemove: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            // Row 클릭 시, 전달받은 onSearchClicked 람다를 실행합니다.
             .clickable { onSearchClicked(term) }
             .padding(vertical = 12.dp, horizontal = 7.dp),
         verticalAlignment = Alignment.CenterVertically
