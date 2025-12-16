@@ -12,7 +12,7 @@ val apiKey = if (localPropertiesFile.exists()) {
     val lines = localPropertiesFile.readLines()
     val apiKeyLine = lines.find { it.startsWith("API_KEY=") }
     if (apiKeyLine != null) {
-        apiKeyLine.substringAfter("API_KEY=").trim()
+        apiKeyLine.substringAfter("API_KEY=").trim() // 앞뒤 공백 제거
     } else {
         ""
     }
