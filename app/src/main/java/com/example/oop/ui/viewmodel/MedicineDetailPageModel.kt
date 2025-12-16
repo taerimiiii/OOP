@@ -1,71 +1,92 @@
+
 package com.example.oop.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.oop.data.api.MedicineApiDataSource
+import com.example.oop.data.model.Medicine
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class MedicineDetailViewModel : ViewModel() {
 
-    // 즐겨찾기 상태 (UI에서 관찰)
+    private val apiDataSource = MedicineApiDataSource()
+
+    // 약품 상세 정보
+    private val _medicine = MutableStateFlow<Medicine?>(null)
+    val medicine: StateFlow<Medicine?> = _medicine.asStateFlow()
+
+    // 로딩 상태
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
+    // 에러 메시지
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    // 즐겨찾기 상태
     private val _isFavorite = MutableStateFlow(false)
     val isFavorite: StateFlow<Boolean> = _isFavorite.asStateFlow()
 
-    // 약품 ID (나중에 DB 연동 시 사용)
     private var currentMedicineId: String = ""
 
-    /**
-     * 약품 ID 설정
-     * 나중에 DB에서 해당 약품의 즐겨찾기 상태를 불러올 예정
-     */
     fun setMedicineId(medicineId: String) {
+        if (medicineId == currentMedicineId || medicineId.isBlank()) {
+            return
+        }
+
         currentMedicineId = medicineId
-        // TODO: DB 연동 시 여기서 즐겨찾기 상태 불러오기
-        // loadFavoriteStatusFromDB(medicineId)
+
+        viewModelScope.launch {
+            try {
+                Log.d("MedicineDetailViewModel", "상세 조회 시작: $medicineId")
+
+                _isLoading.value = true
+                _errorMessage.value = null
+
+                val result = apiDataSource.getMedicineList(
+                    pageNo = 1,
+                    numOfRows = 1,  // 1개만 가져오기
+                    type = "json",
+                    itemSeq = medicineId  // itemSeq를 약품명으로 검색
+                )
+
+                result.onSuccess { response ->
+                    val items = response.body.items ?: emptyList()
+
+                    if (items.isNotEmpty()) {
+                        Log.d("MedicineDetailViewModel", "조회 성공: ${items[0].itemName}")
+                        _medicine.value = items[0].toSearchMedicine()
+                    } else {
+                        _errorMessage.value = "약품 정보를 찾을 수 없습니다"
+                    }
+                }.onFailure { exception ->
+                    Log.e("MedicineDetailViewModel", "조회 실패", exception)
+                    _errorMessage.value = exception.message ?: "약품 정보를 불러올 수 없습니다"
+                }
+
+            } catch (e: Exception) {
+                Log.e("MedicineDetailViewModel", "예외 발생", e)
+                _errorMessage.value = "알 수 없는 오류가 발생했습니다"
+            } finally {
+                _isLoading.value = false
+            }
+        }
     }
 
-    /**
-     * 즐겨찾기 토글 (별 버튼 클릭 시)
-     * 나중에 DB에 저장하는 로직 추가 예정
-     */
     fun toggleFavorite() {
-        val newStatus = !_isFavorite.value
-        _isFavorite.value = newStatus
-
-        // TODO: DB 연동 시 여기서 DB에 저장
-        // saveFavoriteStatusToDB(currentMedicineId, newStatus)
+        _isFavorite.value = !_isFavorite.value
+        // TODO: DB 저장
     }
 
-    /**
-     * 뒤로가기 버튼 처리
-     * 현재는 단순히 Navigation만 처리하지만
-     * 나중에 변경사항 저장 등의 로직 추가 가능
-     */
     fun onBackPressed() {
-        // TODO: 필요시 뒤로가기 전 처리할 작업
-        // 예: 변경사항 자동 저장 등
+        // 뒤로가기 전 처리
     }
 
-    // ========== DB 연동 시 추가될 함수들 ==========
-
-    /**
-     * DB에서 즐겨찾기 상태 불러오기 (추후 구현)
-     */
-    private fun loadFavoriteStatusFromDB(medicineId: String) {
-        // TODO: Repository를 통해 DB에서 데이터 가져오기
-        // viewModelScope.launch {
-        //     val status = repository.isFavorite(medicineId)
-        //     _isFavorite.value = status
-        // }
-    }
-
-    /**
-     * DB에 즐겨찾기 상태 저장 (추후 구현)
-     */
-    private fun saveFavoriteStatusToDB(medicineId: String, isFavorite: Boolean) {
-        // TODO: Repository를 통해 DB에 저장
-        // viewModelScope.launch {
-        //     repository.updateFavoriteStatus(medicineId, isFavorite)
-        // }
+    fun clearError() {
+        _errorMessage.value = null
     }
 }

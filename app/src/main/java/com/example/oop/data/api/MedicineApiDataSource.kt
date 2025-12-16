@@ -1,16 +1,17 @@
 package com.example.oop.data.api
 
 import com.example.oop.BuildConfig
-import com.example.oop.data.api.model.MedicineApiResponse
 import com.example.oop.data.model.Medicine
+import android.util.Log
 
 // API 데이터 소스
 class MedicineApiDataSource {
     private val apiService = MedicineApiClient.apiService
-
+    private val serviceKey = BuildConfig.API_KEY
     // 의약품 목록 조회
     // 원본 API 응답 반환
     // 각자 만들 조회 리턴에 넣고 필요한 데이터만 뽑아서 사용하기
+    // suspend : 실행 중단했다가 나중에 다시 이어서 실행할 수 있는 함수. 네트워크와 관련? 안 쓰면 콜백을 해야 함? 일단 API 호출 앞에 쓰고 볼 것.
     suspend fun getMedicineList(
         pageNo: Int = 1,
         numOfRows: Int = 100,
@@ -37,10 +38,9 @@ class MedicineApiDataSource {
         itemEngName: String? = null,
     ): Result<MedicineApiResponse> {
         return try {
-            // API_KEY 확인
             val apiKey = BuildConfig.API_KEY
             if (apiKey.isBlank()) {
-                return Result.failure(Exception("API_KEY가 설정되지 않았습니다. local.properties 파일에 API_KEY를 추가해주세요."))
+                return Result.failure(Exception("API_KEY가 설정되지 않았습니다."))
             }
 
             val response = apiService.getMedicineList(
@@ -70,19 +70,14 @@ class MedicineApiDataSource {
                 itemEngName = itemEngName,
             )
 
+            // API 문서에 따르면, resultCode가 00일 경우 성공
             if (response.header.resultCode == "00") {
                 Result.success(response)
             } else {
-                Result.failure(Exception("API Error: ${response.header.resultMsg} (resultCode: ${response.header.resultCode})"))
+                Result.failure(Exception("API 오류: ${response.header.resultMsg}"))
             }
         } catch (e: Exception) {
-            // HTTP 401 오류인 경우 더 명확한 메시지 제공
-            val errorMessage = when {
-                e.message?.contains("401") == true -> "인증 실패: API_KEY가 유효하지 않거나 설정되지 않았습니다. local.properties 파일에 올바른 API_KEY를 설정해주세요."
-                e.message?.contains("Unauthorized") == true -> "인증 실패: API_KEY가 유효하지 않습니다. 공공데이터포털에서 발급받은 인증키를 확인해주세요."
-                else -> "API 호출 실패: ${e.message}"
-            }
-            Result.failure(Exception(errorMessage))
+            Result.failure(Exception("API 호출 실패: ${e.message}"))
         }
     }
 
@@ -103,6 +98,23 @@ class MedicineApiDataSource {
         }
     }
 
-    // 이 밑으로 각자 조회 API 작성해서 사용!!
+    suspend fun getSearchResult(
+        pageNo: Int = 1,
+        numOfRows: Int = 100,
+        type: String = "json",
+        itemName: String? = null
+    ): Result<List<Medicine>>{
+        Log.d("API_DataSource", "getSearchResult 호출: $itemName")
+        return getMedicineList(
+            itemName = itemName,
+            pageNo = pageNo,
+            numOfRows = numOfRows,
+            type = type
 
+        ).map { response ->
+            (response.body.items ?: emptyList()).map { it.toSearchMedicine() }
+        }
+    }
+
+    // 이 밑으로 각자 조회 API 작성해서 사용!!
 }

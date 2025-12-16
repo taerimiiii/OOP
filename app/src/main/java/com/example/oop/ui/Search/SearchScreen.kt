@@ -41,7 +41,6 @@ import com.example.oop.R
 import com.example.oop.ui.keyword.KeywordSearchScreen1
 import com.example.oop.ui.medicineDetail.MedicineDetailScreen
 import com.example.oop.ui.view.SearchResultScreen
-import com.example.oop.data.api.model.MedicineItem
 import androidx.compose.material3.*
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable

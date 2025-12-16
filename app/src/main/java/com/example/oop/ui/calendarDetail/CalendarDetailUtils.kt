@@ -11,14 +11,4 @@ object CalendarDetailUtils {
     fun formatDate(date: LocalDate): String {
         return date.format(dateFormatter)
     }
-
-    // 날짜 문자열을 LocalDate로 변환
-    // @param dateString "yyyy-MM-dd" 형식
-    fun parseDate(dateString: String): LocalDate? {
-        return try {
-            LocalDate.parse(dateString, dateFormatter)
-        } catch (e: Exception) {
-            null
-        }
-    }
 }

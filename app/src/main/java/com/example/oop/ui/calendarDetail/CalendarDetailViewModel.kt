@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.oop.data.model.DailyLog
 import com.example.oop.data.model.DailyLogItem
-import com.example.oop.ui.calendarDetail.CalendarDetailUtils
 import com.example.oop.ui.calendarDetail.repository.CalendarDetailRepository
-import com.example.oop.ui.calendarDetail.repository.TempData
+import com.example.oop.data.TempData
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -31,7 +30,7 @@ class CalendarDetailViewModel(
         previousSelectedDate?.let { previousDate ->
             cleanupEmptyLog(previousDate)
         }
-        
+
         // 현재 날짜로 업데이트
         previousSelectedDate = selectedDate
         mutableUiState.value = mutableUiState.value.copy(selectedDate = selectedDate)
@@ -146,13 +145,14 @@ class CalendarDetailViewModel(
             
             if (logIndex != -1) {
                 // 기존 로그 업데이트
-                val existingLog = TempData.logs[logIndex]
-                val updatedItems = existingLog.items.toMutableMap()
-                updatedItems[itemSeq] = DailyLogItem(taken = isTaken)
-                val updatedLog = existingLog.copy(items = updatedItems)
-                TempData.logs[logIndex] = updatedLog
+                val existingLog = TempData.logs[logIndex]                   // 기존 로그 가져오기
+                val updatedItems = existingLog.items.toMutableMap()         // Map을 변경 가능하게 복사
+                updatedItems[itemSeq] = DailyLogItem(taken = isTaken)       // 해당 의약품의 taken 상태 업데이트
+                val updatedLog = existingLog.copy(items = updatedItems)     // 새로운 DailyLog 객체 생성
+                TempData.logs[logIndex] = updatedLog                        // 리스트에 업데이트된 로그 저장
             } else {
-                // 로그가 없으면 새로 생성 (이론적으로는 ensureDailyLogExists에서 이미 생성되어 있어야 함)
+                // 해당 날짜의 로그가 없으면 새로 생성
+                // 모든 즐겨찾기 의약품을 포함하되, 클릭한 의약품만 isTaken 상태로 설정. 나머지는 taken = false
                 val newItems = TempData.favorites.associate { favorite ->
                     favorite.itemSeq to DailyLogItem(taken = if (favorite.itemSeq == itemSeq) isTaken else false)
                 }
