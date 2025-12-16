@@ -39,7 +39,8 @@ import com.example.oop.data.TempData
 
 @Composable
 fun SearchResultScreen(
-    searchKeyword: String,
+    searchKeyword: String ="",
+    searchAttributes: List<String> = emptyList(),
     viewModel: SearchResultViewModel = viewModel(),
     onMedicineClick: (String) -> Unit = {},
     onBackClick: () -> Unit = {}
@@ -53,8 +54,24 @@ fun SearchResultScreen(
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
     var selectedMedicineId by remember { mutableStateOf<String?>(null) }
 
-    LaunchedEffect(searchKeyword) {
-        if (searchKeyword.isNotEmpty()) {
+    val displayText = if (searchAttributes.isNotEmpty()) {
+        searchAttributes.filter { it.isNotEmpty() }.joinToString(", "){ "#$it" }
+    } else {
+        searchKeyword
+    }
+
+
+//    LaunchedEffect(searchKeyword) {
+//        if (searchKeyword.isNotEmpty()) {
+//            viewModel.searchMedicines(searchKeyword)
+//        }
+//    }
+    LaunchedEffect(searchKeyword, searchAttributes) {
+        if (searchAttributes.isNotEmpty()) {
+            // 1. 속성 리스트가 있으면 -> 속성 검색 함수 호출 (ViewModel에 이 함수 필요!)
+            viewModel.searchMedicinesByAttributes(searchAttributes)
+        } else if (searchKeyword.isNotEmpty()) {
+            // 2. 속성이 없고 검색어만 있으면 -> 기존 검색 함수 호출
             viewModel.searchMedicines(searchKeyword)
         }
     }
@@ -71,7 +88,7 @@ fun SearchResultScreen(
     Scaffold(
         topBar = {
             SearchTopBar(
-                keyword = searchKeyword,
+                keyword = displayText,
                 onBackClick = onBackClick
             )
         },
@@ -129,7 +146,7 @@ fun SearchResultScreen(
                 // 검색 결과 없음
                 medicines.isEmpty() && !isLoading && errorMessage == null -> {
                     Text(
-                        text = "'$searchKeyword'에 대한\n검색 결과가 없습니다",
+                        text = "'$displayText'에 대한\n검색 결과가 없습니다",
                         modifier = Modifier.align(Alignment.Center),
                         color = Color.Gray,
                         textAlign = TextAlign.Center,

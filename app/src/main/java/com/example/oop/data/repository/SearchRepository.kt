@@ -36,6 +36,33 @@ class MedicineRepository(
         }
     }
 
+    suspend fun getMedicinesByFilter(
+        print: String?, formulation: String?, shape: String?, color: String?
+    ): List<MedicineItem> {
+        try {
+            var queryRef = firestore.collection(MEDICINE_COLLECTION).limit(50)
+
+            // DB 필드명(printFront 등)은 실제 Firestore 필드명과 일치해야 합니다.
+            if (!print.isNullOrEmpty()) {
+                queryRef = queryRef.whereEqualTo("printFront", print)
+            }
+            if (!formulation.isNullOrEmpty()) {
+                queryRef = queryRef.whereEqualTo("formCodeName", formulation)
+            }
+            if (!shape.isNullOrEmpty()) {
+                queryRef = queryRef.whereEqualTo("drugShape", shape)
+            }
+            if (!color.isNullOrEmpty()) {
+                queryRef = queryRef.whereEqualTo("color1", color)
+            }
+
+            return queryRef.get().await().toObjects(MedicineItem::class.java)
+        } catch (e: Exception) {
+            return emptyList()
+        }
+    }
+
+
 
     private suspend fun saveBulkToFirestore(items: List<MedicineItem>) {
         val batch = firestore.batch()

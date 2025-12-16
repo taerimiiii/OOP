@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.String
-
+import com.example.oop.data.repository.MedicineRepository
 
 class SearchResultViewModel : ViewModel() {
 
@@ -30,6 +30,9 @@ class SearchResultViewModel : ViewModel() {
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
     private var lastSearchKeyword: String? = null
+
+    private val repository = MedicineRepository()
+
 
     fun searchMedicines(keyword: String) {
         // 빈 검색어는 무시
@@ -94,6 +97,36 @@ class SearchResultViewModel : ViewModel() {
                 // 로딩 종료
                 _isLoading.value = false
             }
+        }
+    }
+
+    fun searchMedicinesByAttributes(attributes: List<String>) {
+        // 1. 로딩 시작
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            // 2. 여기서 DB나 서버에 {각인, 제형, 모양, 색상}으로 검색 요청을 보냅니다.
+            try {
+                val print = attributes.getOrNull(0)?.ifEmpty { null }
+                val formulation = attributes.getOrNull(1)?.ifEmpty { null }
+                val shape = attributes.getOrNull(2)?.ifEmpty { null }
+                val color = attributes.getOrNull(3)?.ifEmpty { null }
+
+                val result = repository.getMedicinesByFilter(
+                    print = print,
+                    formulation = formulation,
+                    shape = shape,
+                    color = color
+                )
+            }catch (e: Exception) {
+                _errorMessage.value = "오류 발생: ${e.message}"
+            } finally {
+                _isLoading.value = false
+            }
+
+            // 3. 결과를 받아오면 _medicines.value = 결과
+            // 4. 로딩 종료
         }
     }
 
