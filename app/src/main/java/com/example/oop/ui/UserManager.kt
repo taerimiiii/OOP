@@ -1,4 +1,4 @@
-package com.example.myapplication.ui.theme
+package com.example.oop.ui
 
 // [사용자 정보 데이터 모델]
 // 수정 가능한(var) 객체로 관리하거나, copy()를 사용하기 위해 data class 유지
