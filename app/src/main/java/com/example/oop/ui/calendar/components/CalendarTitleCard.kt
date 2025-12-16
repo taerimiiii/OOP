@@ -19,8 +19,8 @@ import com.example.oop.ui.theme.greenColor
 
 @Composable
 fun CalendarTitleCard(
-    text: String,
     modifier: Modifier = Modifier,
+    text: String,
     height: Dp = 120.dp,    // 기본값
 ) {
 

@@ -22,10 +22,10 @@ import com.example.oop.ui.theme.whiteColor
 
 @Composable
 fun UserInfoBox(
+    modifier: Modifier = Modifier,
     monthCount: Int,
     lastMonthCount: Int,
     todayMedicineTaken: Boolean,
-    modifier: Modifier = Modifier
 ) {
     Box(
         modifier = modifier

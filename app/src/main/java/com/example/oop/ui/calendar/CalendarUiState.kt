@@ -12,6 +12,4 @@ data class CalendarUiState(
     val monthCount: Int = 0,
     val lastMonthCount: Int = 0,
     val todayMedicineTaken: Boolean = false,
-    val isLoading: Boolean = false,
-    val errorMessage: String? = null
 )
