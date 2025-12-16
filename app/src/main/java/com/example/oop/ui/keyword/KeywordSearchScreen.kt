@@ -311,8 +311,8 @@ fun Keyword_type(
         val isSelectedTablet = selectedType == typeTablet
         KeywordButton(
             selected = isSelectedTablet,
-            selectedImage = R.drawable.circle_type_selected, // 선택된 이미지 리소스 ID 필요
-            defaultImage = R.drawable.circle_type,
+            selectedImage = R.drawable.circle_type_selected_tablet, // 선택된 이미지 리소스 ID 필요
+            defaultImage = R.drawable.circle_type_tablet,
             contentDescription = "keyword_type_tablet",
             onClick = {
                 onTypeSelected(if (isSelectedTablet) "" else typeTablet)
@@ -325,8 +325,8 @@ fun Keyword_type(
         val isSelectedHard = selectedType == typeHard
         KeywordButton(
             selected = isSelectedHard,
-            selectedImage = R.drawable.circle_type_selected,
-            defaultImage = R.drawable.circle_type,
+            selectedImage = R.drawable.circle_type_selected_hard,
+            defaultImage = R.drawable.circle_type_hard,
             contentDescription = "keyword_type_hard",
             onClick = {
                 onTypeSelected(if (isSelectedHard) "" else typeHard)
@@ -339,8 +339,8 @@ fun Keyword_type(
         val isSelectedSoft = selectedType == typeSoft
         KeywordButton(
             selected = isSelectedSoft,
-            selectedImage = R.drawable.circle_type_selected,
-            defaultImage = R.drawable.circle_type,
+            selectedImage = R.drawable.circle_type_selected_soft,
+            defaultImage = R.drawable.circle_type_soft,
             contentDescription = "keyword_type_soft",
             onClick = {
                 onTypeSelected(if (isSelectedSoft) "" else typeSoft)
@@ -378,8 +378,8 @@ fun Keyword_shape(
         val isSelectedCircle = selectedShape == shapecircle
         KeywordButton(
             selected = isSelectedCircle,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_circle,
+            defaultImage = R.drawable.rectangle_shape_circle,
             contentDescription = "keyword_shape_circle",
             size = 90.dp,
             onClick = {
@@ -393,8 +393,8 @@ fun Keyword_shape(
         val isSelectedOval = selectedShape == shapeoval
         KeywordButton(
             selected = isSelectedOval,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_oval,
+            defaultImage = R.drawable.rectangle_shape_oval,
             contentDescription = "keyword_shape_oval",
             size = 90.dp,
             onClick = {
@@ -408,8 +408,8 @@ fun Keyword_shape(
         val isSelectedRoundRectangle = selectedShape == shaperound_rectangle
         KeywordButton(
             selected = isSelectedRoundRectangle,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_round,
+            defaultImage = R.drawable.rectangle_shape_round,
             contentDescription = "keyword_shape_round_rectangle",
             size = 90.dp,
             onClick = {
@@ -423,8 +423,8 @@ fun Keyword_shape(
         val isSelectedHalfCircle = selectedShape == shapehalf_circle
         KeywordButton(
             selected = isSelectedHalfCircle,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_half,
+            defaultImage = R.drawable.rectangle_shape_half,
             contentDescription = "keyword_shape_half_rectangle",
             size = 90.dp,
             onClick = {
@@ -444,8 +444,8 @@ fun Keyword_shape(
         val isSelectedThree = selectedShape == shapethree
         KeywordButton(
             selected = isSelectedThree,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_three,
+            defaultImage = R.drawable.rectangle_shape_three,
             contentDescription = "keyword_shape_three",
             size = 90.dp,
             onClick = {
@@ -459,8 +459,8 @@ fun Keyword_shape(
         val isSelectedFour = selectedShape == shapefour
         KeywordButton(
             selected = isSelectedFour,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_four,
+            defaultImage = R.drawable.rectangle_shape_four,
             contentDescription = "keyword_shape_four",
             size = 90.dp,
             onClick = {
@@ -474,8 +474,8 @@ fun Keyword_shape(
         val isSelectedTiltRectangle = selectedShape == shapetilt_rectangle
         KeywordButton(
             selected = isSelectedTiltRectangle,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_tilt,
+            defaultImage = R.drawable.rectangle_shape_tilt,
             contentDescription = "keyword_shape_tilt",
             size = 90.dp,
             onClick = {
@@ -489,8 +489,8 @@ fun Keyword_shape(
         val isSelectedFive = selectedShape == shapefive
         KeywordButton(
             selected = isSelectedFive,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_five,
+            defaultImage = R.drawable.rectangle_shape_five,
             contentDescription = "keyword_shape_five",
             size = 90.dp,
             onClick = {
@@ -510,8 +510,8 @@ fun Keyword_shape(
         val isSelectedSix = selectedShape == shapesix
         KeywordButton(
             selected = isSelectedSix,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_six,
+            defaultImage = R.drawable.rectangle_shape_six,
             contentDescription = "keyword_shape_six",
             size = 90.dp,
             onClick = {
@@ -525,8 +525,8 @@ fun Keyword_shape(
         val isSelectedEight = selectedShape == shapeeight
         KeywordButton(
             selected = isSelectedEight,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_eight,
+            defaultImage = R.drawable.rectangle_shape_eight,
             contentDescription = "keyword_shape_eight",
             size = 90.dp,
             onClick = {
@@ -581,8 +581,8 @@ fun Keyword_color(
         val isSelectedWhite = selectedColor == colorwhite
         KeywordButton(
             selected = isSelectedWhite,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_white,
+            defaultImage = R.drawable.rectangle_shape_white,
             contentDescription = "keyword_color_white",
             size = 90.dp,
             onClick = {
@@ -596,8 +596,8 @@ fun Keyword_color(
         val isSelectedYellow = selectedColor == coloryellow
         KeywordButton(
             selected = isSelectedYellow,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_yellow,
+            defaultImage = R.drawable.rectangle_shape_yellow,
             contentDescription = "keyword_color_yellow",
             size = 90.dp,
             onClick = {
@@ -611,8 +611,8 @@ fun Keyword_color(
         val isSelectedOrange = selectedColor == colororange
         KeywordButton(
             selected = isSelectedOrange,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_orange,
+            defaultImage = R.drawable.rectangle_shape_orange,
             contentDescription = "keyword_color_orange",
             size = 90.dp,
             onClick = {
@@ -626,8 +626,8 @@ fun Keyword_color(
         val isSelectedPink = selectedColor == colorpink
         KeywordButton(
             selected = isSelectedPink,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_pink,
+            defaultImage = R.drawable.rectangle_shape_pink,
             contentDescription = "keyword_color_pink",
             size = 90.dp,
             onClick = {
@@ -647,8 +647,8 @@ fun Keyword_color(
         val isSelectedRed = selectedColor == colorred
         KeywordButton(
             selected = isSelectedRed,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_red,
+            defaultImage = R.drawable.rectangle_shape_red,
             contentDescription = "keyword_color_red",
             size = 90.dp,
             onClick = {
@@ -662,8 +662,8 @@ fun Keyword_color(
         val isSelectedBrown = selectedColor == colorbrown
         KeywordButton(
             selected = isSelectedBrown,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_brown,
+            defaultImage = R.drawable.rectangle_shape_brown,
             contentDescription = "keyword_color_brown",
             size = 90.dp,
             onClick = {
@@ -677,8 +677,8 @@ fun Keyword_color(
         val isSelectedBrightGreen = selectedColor == colorbright_green
         KeywordButton(
             selected = isSelectedBrightGreen,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_bright_green,
+            defaultImage = R.drawable.rectangle_shape_bright_green,
             contentDescription = "keyword_color_bright_green",
             size = 90.dp,
             onClick = {
@@ -692,8 +692,8 @@ fun Keyword_color(
         val isSelectedGreen = selectedColor == colorgreen
         KeywordButton(
             selected = isSelectedGreen,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_green,
+            defaultImage = R.drawable.rectangle_shape_green,
             contentDescription = "keyword_color_green",
             size = 90.dp,
             onClick = {
@@ -713,8 +713,8 @@ fun Keyword_color(
         val isSelectedBlueGreen = selectedColor == colorbluegreen
         KeywordButton(
             selected = isSelectedBlueGreen,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_bluegreen,
+            defaultImage = R.drawable.rectangle_shape_bluegreen,
             contentDescription = "keyword_color_bluegreen",
             size = 90.dp,
             onClick = {
@@ -728,8 +728,8 @@ fun Keyword_color(
         val isSelectedBlue = selectedColor == colorblue
         KeywordButton(
             selected = isSelectedBlue,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_blue,
+            defaultImage = R.drawable.rectangle_shape_blue,
             contentDescription = "keyword_color_blue",
             size = 90.dp,
             onClick = {
@@ -743,8 +743,8 @@ fun Keyword_color(
         val isSelectedDarkBlue = selectedColor == colordarkblue
         KeywordButton(
             selected = isSelectedDarkBlue,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_darkblue,
+            defaultImage = R.drawable.rectangle_shape_darkblue,
             contentDescription = "keyword_color_dark_blue",
             size = 90.dp,
             onClick = {
@@ -758,8 +758,8 @@ fun Keyword_color(
         val isSelectedGray = selectedColor == colorgray
         KeywordButton(
             selected = isSelectedGray,
-            selectedImage = R.drawable.rectangle_shape_selected,
-            defaultImage = R.drawable.rectangle_shape,
+            selectedImage = R.drawable.rectangle_shape_selected_gray,
+            defaultImage = R.drawable.rectangle_shape_gray,
             contentDescription = "keyword_color_gray",
             size = 90.dp,
             onClick = {
@@ -771,7 +771,7 @@ fun Keyword_color(
 
 @Composable
 fun Decide_reset(
-    onDecide: () -> Unit, // 결정 콜백 추가
+    onDecide: () -> Unit,
     onReset: () -> Unit
 ) {
 
@@ -782,11 +782,12 @@ fun Decide_reset(
             .height(100.dp) // 전체 컨테이너의 높이를 이미지에 맞게 설정
     ) {
 
+        // 1. 배경 이미지
         Image(
             painter = painterResource(R.drawable.keyword_underbar),
             contentDescription = "배경 직사각형 이미지",
             contentScale = ContentScale.FillBounds, // Box 크기에 맞게 이미지 늘리기
-            modifier = Modifier.matchParentSize() // 부모 Box의 크기(150dp)를 따름
+            modifier = Modifier.matchParentSize() // 부모 Box의 크기를 따름
         )
 
         Row(
@@ -797,23 +798,51 @@ fun Decide_reset(
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Image(
+            Box(
                 modifier = Modifier
                     .width(200.dp)
                     .height(70.dp)
                     .clickable { onDecide() },
-                painter =  painterResource(R.drawable.rectangle_finish),
-                contentDescription = "결정 버튼"
-            )
+                contentAlignment = Alignment.Center // 텍스트를 Box 중앙에 배치
+            ) {
+                // 결정 버튼 이미지
+                Image(
+                    modifier = Modifier.matchParentSize(), // Box 크기에 맞춤
+                    painter = painterResource(R.drawable.rectangle_finish),
+                    contentDescription = "결정 버튼 배경",
+                    contentScale = ContentScale.FillBounds
+                )
+                // 결정 텍스트
+                Text(
+                    text = "검색하기",
+                    color = Color.White, // 텍스트 색상 설정
+                    fontSize = 24.sp,    // 텍스트 크기 설정
+                    fontWeight = FontWeight.Bold // 텍스트 굵기 설정 (선택 사항)
+                )
+            }
 
-            Image(
+            Box(
                 modifier = Modifier
                     .width(90.dp)
-                    .height(90.dp)
+                    .height(60.dp)
                     .clickable { onReset() },
-                painter =  painterResource(R.drawable.rectangle_reset),
-                contentDescription = "초기화 버튼"
-            )
+                contentAlignment = Alignment.Center // 텍스트를 Box 중앙에 배치
+            ) {
+                // 초기화 버튼 이미지
+                Image(
+                    modifier = Modifier.matchParentSize(), // Box 크기에 맞춤
+                    painter = painterResource(R.drawable.rectangle_reset),
+                    contentDescription = "초기화 버튼 배경",
+                    contentScale = ContentScale.FillBounds
+                )
+                // 초기화 텍스트
+                Text(
+                    text = "초기화",
+                    color = Color.Black, // 텍스트 색상 설정 (이미지 색상에 맞게 조정 필요)
+                    fontSize = 16.sp,    // 텍스트 크기 설정
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
         }
     }
 }
