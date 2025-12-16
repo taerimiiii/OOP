@@ -36,7 +36,7 @@ import com.example.oop.data.model.Medicine
 
 @Composable
 fun SearchResultScreen(
-    searchKeyword: String = "타이레놀",
+    searchKeyword: String,
     viewModel: SearchResultViewModel = viewModel(),
     onMedicineClick: (String) -> Unit = {},
     onBackClick: () -> Unit = {}
@@ -46,11 +46,20 @@ fun SearchResultScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
 
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
+    var selectedMedicineId by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(searchKeyword) {
         if (searchKeyword.isNotEmpty()) {
             viewModel.searchMedicines(searchKeyword)
         }
+    }
+
+    if (selectedMedicineId != null) {
+        MedicineDetailView(
+            medicineId = selectedMedicineId!!,
+            onBackClick = { selectedMedicineId = null }
+        )
+        return
     }
 
 
@@ -148,7 +157,8 @@ fun SearchResultScreen(
                                 medicine = medicine,
                                 onCardClick = {
                                     // itemSeq를 상세 화면으로 전달
-                                    onMedicineClick(medicine.itemSeq)
+                                    //onMedicineClick(medicine.itemSeq)
+                                    selectedMedicineId = medicine.itemSeq
                                 },
                                 onFavoriteClick = {
                                     // TODO: 즐겨찾기 기능은 나중에 구현
