@@ -20,7 +20,6 @@ object TempData {
         Favorite(itemSeq = "200808876"),
         Favorite(itemSeq = "200808877"),
         Favorite(itemSeq = "200808948"),
-        Favorite(itemSeq = "200809076")
     )
 
     fun toggleFavorite(targetItemSeq: String) {
@@ -42,7 +41,6 @@ object TempData {
                 "200808876" to DailyLogItem(taken = true),
                 "200808877" to DailyLogItem(taken = false),
                 "200808948" to DailyLogItem(taken = false),
-                "200809076" to DailyLogItem(taken = false)
             )
         ),
         DailyLog(
@@ -51,7 +49,6 @@ object TempData {
                 "200808876" to DailyLogItem(taken = true),
                 "200808877" to DailyLogItem(taken = true),
                 "200808948" to DailyLogItem(taken = false),
-                "200809076" to DailyLogItem(taken = false)
             )
         ),
         DailyLog(
@@ -60,7 +57,6 @@ object TempData {
                 "200808876" to DailyLogItem(taken = true),
                 "200808877" to DailyLogItem(taken = true),
                 "200808948" to DailyLogItem(taken = true),
-                "200809076" to DailyLogItem(taken = false)
             )
         ),
         DailyLog(
@@ -69,7 +65,6 @@ object TempData {
                 "200808876" to DailyLogItem(taken = true),
                 "200808877" to DailyLogItem(taken = false),
                 "200808948" to DailyLogItem(taken = false),
-                "200809076" to DailyLogItem(taken = false)
             )
         ),
         DailyLog(
@@ -78,25 +73,22 @@ object TempData {
                 "200808876" to DailyLogItem(taken = true),
                 "200808877" to DailyLogItem(taken = false),
                 "200808948" to DailyLogItem(taken = false),
-                "200809076" to DailyLogItem(taken = false)
             )
         ),
         DailyLog(
             date = "2025-12-01",
             items = mapOf(
-                "200808876" to DailyLogItem(taken = true),
-                "200808877" to DailyLogItem(taken = false),
+                "200808876" to DailyLogItem(taken = false),
+                "200808877" to DailyLogItem(taken = true),
                 "200808948" to DailyLogItem(taken = false),
-                "200809076" to DailyLogItem(taken = false)
             )
         ),
         DailyLog(
             date = "2025-12-02",
             items = mapOf(
-                "200808876" to DailyLogItem(taken = true),
+                "200808876" to DailyLogItem(taken = false),
                 "200808877" to DailyLogItem(taken = false),
-                "200808948" to DailyLogItem(taken = false),
-                "200809076" to DailyLogItem(taken = false)
+                "200808948" to DailyLogItem(taken = true),
             )
         ),
     )

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.oop.data.model.DailyLog
 import com.example.oop.data.model.DailyLogItem
-import com.example.oop.ui.calendarDetail.repository.CalendarDetailRepository
+import com.example.oop.data.repository.CalendarDetailRepository
 import com.example.oop.data.TempData
 import kotlinx.coroutines.launch
 import java.time.LocalDate

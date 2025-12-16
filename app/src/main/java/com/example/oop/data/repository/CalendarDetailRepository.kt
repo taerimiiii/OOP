@@ -1,4 +1,4 @@
-package com.example.oop.ui.calendarDetail.repository
+package com.example.oop.data.repository
 
 import com.example.oop.data.TempData
 import com.example.oop.data.api.MedicineApiDataSource

@@ -8,18 +8,17 @@ plugins {
 
 // local.properties 파일에서 API_KEY 읽기
 val localPropertiesFile = rootProject.file("local.properties")
-val apiKey = if (localPropertiesFile.exists()) {
-    val lines = localPropertiesFile.readLines()
-    val apiKeyLine = lines.find { it.startsWith("API_KEY=") }
+val apiKey = if (localPropertiesFile.exists()) {                      // 파일이 존재하면면
+    val lines = localPropertiesFile.readLines()                       // 파일 내용 읽기
+    val apiKeyLine = lines.find { it.startsWith("API_KEY=") } // API_KEY= 로 시작하는 줄 찾기
     if (apiKeyLine != null) {
-        apiKeyLine.substringAfter("API_KEY=").trim() // 앞뒤 공백 제거
+        apiKeyLine.substringAfter("API_KEY=").trim()        // API_KEY= 뒤의 값 추출 후 앞뒤 공백 제거
     } else {
-        ""
+        ""                                                            // 찾지 못하면 빈 문자열 반환
     }
 } else {
-    ""
+    ""                                                                // 파일이 존재하지 않으면 빈 문자열 반환
 }
-
 
 android {
     namespace = "com.example.oop"
