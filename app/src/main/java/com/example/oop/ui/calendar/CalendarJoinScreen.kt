@@ -15,11 +15,15 @@ fun CalendarJoinScreen(
     modifier: Modifier = Modifier,
     viewModel: CalendarViewModel = viewModel()
 ) {
-    val uiState by viewModel.uiState   // 뷰모델에서 읽기용 UI 받아오기.
+    // 뷰모델에서 읽기용 UI 받아오기.
+    // by : 위임. 편집 권한?은 오른쪽에게 있음. 왼쪽은 빌려 쓰기만.
+    val uiState by viewModel.uiState
+
+    // remember : Composable이 다시 그려져도 값을 유지하게 해주는 상태 저장 함수
     var gotoDetailScreen by remember { mutableStateOf(false) }
 
     // CalendarDetailScreen에서 돌아올 때 출석 횟수 갱신
-    // LaunchedEffect : 컴포저블이 화면에 나타났을 때(또는 특정 값이 바뀔 때) 실행하기 위한 API
+    // LaunchedEffect : gotoDetailScreen이 바뀔 때 마다 밑 실행.
     LaunchedEffect(gotoDetailScreen) {
         if (!gotoDetailScreen) {
             // CalendarDetailScreen에서 CalendarScreen으로 돌아왔을 때

@@ -7,7 +7,7 @@ import com.example.oop.data.TempData
 import java.time.LocalDate
 import java.time.YearMonth
 
-// ViewModel 상속
+// ViewModel 상속해서 생명주기 관리
 // 화면에 나타낼 UI 상태 관리.
 class CalendarViewModel : ViewModel() {
     

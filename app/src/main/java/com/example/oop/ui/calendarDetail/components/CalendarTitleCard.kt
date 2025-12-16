@@ -23,8 +23,8 @@ import java.util.Locale
 
 @Composable
 fun CalendarTitleCard(
+    modifier: Modifier = Modifier,
     selectedDate: LocalDate,
-    modifier: Modifier = Modifier
 ) {
 
     val dateTitle = remember(selectedDate) {
