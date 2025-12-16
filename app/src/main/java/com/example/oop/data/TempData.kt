@@ -4,6 +4,7 @@ import com.example.oop.data.model.DailyLog
 import com.example.oop.data.model.DailyLogItem
 import com.example.oop.data.model.Favorite
 import com.example.oop.data.model.User
+import androidx.compose.runtime.mutableStateListOf
 
 // 임시 데이터
 object TempData {
@@ -15,12 +16,23 @@ object TempData {
     )
 
     // 즐겨찾기 의약품 목록
-    val favorites = listOf(
+    val favorites = mutableStateListOf(
         Favorite(itemSeq = "200808876"),
         Favorite(itemSeq = "200808877"),
         Favorite(itemSeq = "200808948"),
         Favorite(itemSeq = "200809076")
     )
+
+    fun toggleFavorite(targetItemSeq: String) {
+        val existing = favorites.find { it.itemSeq == targetItemSeq }
+        if (existing != null) {
+            // 있으면 삭제
+            favorites.remove(existing)
+        } else {
+            //없으면 추가
+            favorites.add(Favorite(itemSeq = targetItemSeq))
+        }
+    }
 
     // 복용 기록 데이터 (날짜 순으로 오름차순 정렬 유지)
     val logs = mutableListOf(
