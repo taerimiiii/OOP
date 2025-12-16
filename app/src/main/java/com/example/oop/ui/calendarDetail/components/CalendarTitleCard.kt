@@ -15,7 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.oop.ui.theme.greenColor
+// [수정] greenColor 대신 PillGreen 사용!
+import com.example.oop.ui.theme.PillGreen
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -41,7 +42,8 @@ fun CalendarTitleCard(
                 .fillMaxWidth(0.9f)
                 .height(40.dp)
                 .border(
-                    border = BorderStroke(3.dp, greenColor),
+                    // [수정] greenColor -> PillGreen
+                    border = BorderStroke(3.dp, PillGreen),
                     shape = RoundedCornerShape(percent = 50)
                 )
                 .padding(vertical = 5.dp),
@@ -54,4 +56,3 @@ fun CalendarTitleCard(
         }
     }
 }
-

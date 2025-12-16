@@ -18,9 +18,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oop.ui.calendar.CalendarUtils
-import com.example.oop.ui.theme.blackColor
-import com.example.oop.ui.theme.lightGreenColor
-import com.example.oop.ui.theme.whiteColor
+// [수정] 우리 프로젝트의 진짜 색깔 이름들로 변경!
+import com.example.oop.ui.theme.Black
+import com.example.oop.ui.theme.PillGreen
+import com.example.oop.ui.theme.White
 import java.time.LocalDate
 
 @Composable
@@ -29,17 +30,19 @@ fun DateIntoBox(
     date: LocalDate?,
     modifier: Modifier = Modifier
 ) {
-    
+
     Box(
         modifier = modifier
             .width(185.dp)
             .height(80.dp)
             .border(
-                border = BorderStroke(3.dp, lightGreenColor),
+                // [수정] lightGreenColor -> PillGreen
+                border = BorderStroke(3.dp, PillGreen),
                 shape = RoundedCornerShape(percent = 30)
             )
             .background(
-                color = whiteColor,
+                // [수정] whiteColor -> White
+                color = White,
                 shape = RoundedCornerShape(percent = 30)
             ),
         contentAlignment = Alignment.Center // 중앙 정렬
@@ -51,21 +54,22 @@ fun DateIntoBox(
             Text(
                 text = title,
                 fontSize = 18.sp,
-                color = blackColor,
+                // [수정] blackColor -> Black
+                color = Black,
                 textAlign = TextAlign.Center
             )
             Text(
                 text = if (date != null) {
-                            CalendarUtils.formatOutYearMonthDate(date)
-                        } else {
-                            "없음"
-                        },
+                    CalendarUtils.formatOutYearMonthDate(date)
+                } else {
+                    "없음"
+                },
                 fontSize = 18.sp,
-                color = blackColor,
+                // [수정] blackColor -> Black
+                color = Black,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 1.dp)
             )
         }
     }
 }
-

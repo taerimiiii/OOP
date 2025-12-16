@@ -16,9 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.oop.ui.theme.blackColor
-import com.example.oop.ui.theme.lightGreenColor
-import com.example.oop.ui.theme.whiteColor
+// [수정] 우리 프로젝트의 진짜 색깔 이름들로 변경!
+import com.example.oop.ui.theme.Black
+import com.example.oop.ui.theme.PillGreen
+import com.example.oop.ui.theme.White
 
 @Composable
 fun UserInfoBox(
@@ -32,7 +33,8 @@ fun UserInfoBox(
             .width(185.dp)
             .height(350.dp)
             .border(
-                border = BorderStroke(3.dp, lightGreenColor),
+                // [수정] lightGreenColor -> PillGreen (테두리는 진한 녹색)
+                border = BorderStroke(3.dp, PillGreen),
                 shape = RoundedCornerShape(
                     topStartPercent = 0,
                     topEndPercent = 0,
@@ -41,7 +43,8 @@ fun UserInfoBox(
                 )
             )
             .background(
-                color = whiteColor,
+                // [수정] whiteColor -> White
+                color = White,
                 shape = RoundedCornerShape(
                     topStartPercent = 0,
                     topEndPercent = 0,
@@ -59,19 +62,21 @@ fun UserInfoBox(
             Text(
                 text = "월간 출석 : ${monthCount}회",
                 fontSize = 18.sp,
-                color = blackColor
+                // [수정] blackColor -> Black
+                color = Black
             )
             Text(
                 text = "지난달 출석 : ${lastMonthCount}회",
                 fontSize = 18.sp,
-                color = blackColor
+                // [수정] blackColor -> Black
+                color = Black
             )
             Text(
                 text = "오늘의 약 복용 : ${if (todayMedicineTaken) "O" else "X"}",
                 fontSize = 18.sp,
-                color = blackColor
+                // [수정] blackColor -> Black
+                color = Black
             )
         }
     }
 }
-

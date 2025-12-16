@@ -22,12 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.oop.data.model.Medicine
-import com.example.oop.ui.theme.backGreenColor
-import com.example.oop.ui.theme.blackColor
-import com.example.oop.ui.theme.grayTextColor
-import com.example.oop.ui.theme.lightGrayColor
-import com.example.oop.ui.theme.takeGreenColor
-import com.example.oop.ui.theme.takeRedColor
+// [수정] 우리 프로젝트의 진짜 색깔 이름들로 변경!
+import com.example.oop.ui.theme.Black
+import com.example.oop.ui.theme.ButtonGreen
+import com.example.oop.ui.theme.InputGray
+import com.example.oop.ui.theme.PillGreen
 
 @Composable
 fun MedicineTakeCard(
@@ -48,7 +47,7 @@ fun MedicineTakeCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(lightGrayColor)
+                .background(InputGray) // [수정] lightGrayColor -> InputGray
                 .padding(16.dp)
         ) {
             if (medicine != null) {
@@ -62,7 +61,7 @@ fun MedicineTakeCard(
                             .width(80.dp)
                             .height(120.dp)
                             .clip(RoundedCornerShape(8.dp))
-                            .background(backGreenColor),
+                            .background(ButtonGreen), // [수정] backGreenColor -> ButtonGreen
                         contentAlignment = Alignment.Center, // 중앙
                     ) {
                         if (!medicine.itemImage.isNullOrEmpty()) {
@@ -84,7 +83,7 @@ fun MedicineTakeCard(
                             text = medicine.itemName ?: "ITEM_NAME",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = blackColor
+                            color = Black // [수정] blackColor -> Black
                         )
 
                         // ENTP_NAME(회사명) ex)일동제약
@@ -94,13 +93,13 @@ fun MedicineTakeCard(
                             Text(
                                 text = "회사명",
                                 fontSize = 14.sp,
-                                color = blackColor,
+                                color = Black, // [수정] blackColor -> Black
                                 modifier = Modifier.width(60.dp)
                             )
                             Text(
                                 text = medicine.entpName ?: "ENTP_NAME",
                                 fontSize = 14.sp,
-                                color = grayTextColor
+                                color = Color.Gray // [수정] grayTextColor -> Color.Gray
                             )
                         }
 
@@ -111,13 +110,13 @@ fun MedicineTakeCard(
                             Text(
                                 text = "외형",
                                 fontSize = 14.sp,
-                                color = blackColor,
+                                color = Black, // [수정] blackColor -> Black
                                 modifier = Modifier.width(60.dp)
                             )
                             Text(
                                 text = medicine.chart ?: "CHART",
                                 fontSize = 14.sp,
-                                color = grayTextColor
+                                color = Color.Gray // [수정] grayTextColor -> Color.Gray
                             )
                         }
 
@@ -128,13 +127,13 @@ fun MedicineTakeCard(
                             Text(
                                 text = "분류명",
                                 fontSize = 14.sp,
-                                color = blackColor,
+                                color = Black, // [수정] blackColor -> Black
                                 modifier = Modifier.width(60.dp)
                             )
                             Text(
                                 text = medicine.className ?: "CLASS_NAME",
                                 fontSize = 14.sp,
-                                color = grayTextColor
+                                color = Color.Gray // [수정] grayTextColor -> Color.Gray
                             )
                         }
                     }
@@ -149,9 +148,9 @@ fun MedicineTakeCard(
                 .height(40.dp)
                 .background(
                     color = if (isTaken) {
-                        takeGreenColor
+                        PillGreen // [수정] takeGreenColor -> PillGreen
                     } else {
-                        takeRedColor
+                        Color(0xFFFF5252) // [수정] takeRedColor -> 예쁜 빨강 직접 지정
                     },
                     shape = RoundedCornerShape(
                         topStart = 0.dp,
@@ -163,4 +162,3 @@ fun MedicineTakeCard(
         )
     }
 }
-

@@ -29,10 +29,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.runtime.rememberCoroutineScope
 import com.example.oop.data.TempData
 import com.example.oop.ui.calendar.CalendarUtils
-import com.example.oop.ui.theme.blackColor
-import com.example.oop.ui.theme.grayColor
-import com.example.oop.ui.theme.greenColor
-import com.example.oop.ui.theme.lightGreenColor
+// [수정] 우리 프로젝트의 진짜 색깔 이름으로 변경!
+import com.example.oop.ui.theme.Black
+import com.example.oop.ui.theme.PillGreen
+import com.example.oop.ui.theme.ButtonGreen // lightGreenColor 대신 사용
 import com.kizitonwose.calendar.compose.HorizontalCalendar
 import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
@@ -62,7 +62,7 @@ fun MonthCalendar(
     val daysOfWeek = remember { daysOfWeek() }
     val internalSelectedDate = remember { mutableStateOf<LocalDate?>(null) }                     // mutableStateOf : 반응형 UI. 초기값 null인데 외부에서 전달받은 날짜 있으면 그 날짜로 바꿈.
     val coroutineScope = rememberCoroutineScope()                                                       // 애니메이션. 캘린더 라이브러리 사용한 인도형님 코드 훔쳐서 따라함.
-    
+
     // 외부에서 전달받은 selectedDate가 있으면 내부 상태와 동기화
     val currentSelectedDate = selectedDate ?: internalSelectedDate.value
 
@@ -139,7 +139,7 @@ fun MonthCalendar(
                 val dateString = CalendarUtils.formatDate(day.date) // 지금 그릴 날짜
                 val log = TempData.logs.find { it.date == dateString }  // 지금 그릴 날짜의 로그(복용 기록)
                 val hasLog = log?.items?.values?.any { it.taken } ?: false  // 복용 기록이 있으면 true
-                
+
                 Day(
                     day,
                     isSelected = currentSelectedDate == day.date, // 선택한 날짜 == 지금 날자이면 Day 함수 부분에서 초록 칠하기.
@@ -164,12 +164,12 @@ private fun Day(day: CalendarDay, isSelected: Boolean, hasLog: Boolean, onClick:
             .aspectRatio(1f)
             .clip(CircleShape)
             .background(color = if (isSelected) {
-                                    greenColor
-                                } else if (hasLog) {
-                                    lightGreenColor
-                                } else {
-                                    Color.Transparent // 투명배경
-                                }
+                PillGreen // [수정] greenColor -> PillGreen
+            } else if (hasLog) {
+                ButtonGreen // [수정] lightGreenColor -> ButtonGreen
+            } else {
+                Color.Transparent // 투명배경
+            }
             )
             .clickable( // 날짜 클릭 시작!
                 enabled = day.position == DayPosition.MonthDate,    // 현재 월만 클릭 가능
@@ -180,10 +180,10 @@ private fun Day(day: CalendarDay, isSelected: Boolean, hasLog: Boolean, onClick:
         Text(
             text = day.date.dayOfMonth.toString(),
             color = if (day.position == DayPosition.MonthDate) { // 이전 월이랑 다음 월은 회색, 현재 월은 까만색
-                        blackColor
-                    } else {
-                        grayColor
-                    }
+                Black // [수정] blackColor -> Black
+            } else {
+                Color.Gray // [수정] grayColor -> Color.Gray
+            }
         )
     }
 }
@@ -202,4 +202,3 @@ private fun DaysOfWeekTitle(daysOfWeek: List<DayOfWeek>) {
         }
     }
 }
-
