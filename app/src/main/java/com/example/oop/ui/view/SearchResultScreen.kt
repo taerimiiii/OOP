@@ -32,7 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.oop.R
 import com.example.oop.data.model.Medicine
-import com.example.oop.data.model.FavoriteStorage
+import com.example.oop.data.TempData
 
 // 의약품 데이터 클래스
 
@@ -48,7 +48,7 @@ fun SearchResultScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
 
-    val favoriteList = FavoriteStorage.favoriteList
+    val favoriteList = TempData.favorites
 
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
     var selectedMedicineId by remember { mutableStateOf<String?>(null) }
@@ -158,7 +158,7 @@ fun SearchResultScreen(
 
                         // 검색 결과 리스트
                         items(medicines) { medicine ->
-                            val isFavorite = favoriteList.contains(medicine.itemSeq)
+                            val isFavorite = favoriteList.any { it.itemSeq == medicine.itemSeq }
 
                             MedicineResultCard(
                                 medicine = medicine,
@@ -168,7 +168,7 @@ fun SearchResultScreen(
                                     selectedMedicineId = medicine.itemSeq
                                 },
                                 onFavoriteClick = {
-                                    FavoriteStorage.toggleFavorite(medicine.itemSeq)
+                                    TempData.toggleFavorite(medicine.itemSeq)
                                 }
                             )
                         }

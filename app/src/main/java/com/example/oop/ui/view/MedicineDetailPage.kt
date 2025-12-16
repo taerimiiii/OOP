@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.oop.R
-import com.example.oop.data.model.FavoriteStorage
 import com.example.oop.ui.viewmodel.MedicineDetailViewModel
+import com.example.oop.data.TempData
 
 @Composable
 fun MedicineDetailView(
@@ -48,7 +48,7 @@ fun MedicineDetailView(
     val medicine by viewModel.medicine.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-    val favoriteList = FavoriteStorage.favoriteList
+    val favoriteList = TempData.favorites
 
     var selectedItem by rememberSaveable { mutableIntStateOf(1) }
 
@@ -108,7 +108,7 @@ fun MedicineDetailView(
                 medicine != null -> {
                     val scrollState = rememberScrollState()
 
-                    val isFavorite = favoriteList.contains(medicine!!.itemSeq)
+                    val isFavorite = favoriteList.any { it.itemSeq == medicine!!.itemSeq }
 
                     Column(
                         modifier = Modifier
@@ -213,7 +213,7 @@ fun MedicineDetailView(
                                 IconButton(
                                     onClick = {
                                         // 클릭 시 저장소에 추가/삭제 요청
-                                        FavoriteStorage.toggleFavorite(medicine!!.itemSeq)
+                                        TempData.toggleFavorite(medicine!!.itemSeq)
                                     },
                                     modifier = Modifier.size(40.dp) // 터치 영역
                                 ) {
