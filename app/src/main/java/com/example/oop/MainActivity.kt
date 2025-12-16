@@ -1,5 +1,7 @@
 package com.example.oop
 
+import com.example.oop.ui.theme.PillHomeScreen
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,17 +31,17 @@ import com.example.oop.ui.theme.OOPTheme
 // 님이 만든(이사 온) 파일들 (패키지 경로가 com.example.oop.ui 라고 가정)
 import com.example.oop.ui.*
 
+
 // 화면 주소 (Enum)
 enum class Screen {
     Loading,            // 1. 앱 로딩
     Login, FindPassword, // 2. 로그인 관련
-    Join1, Join2, Join2_1, Join3, Join4, // 3. 회원가입 단계
+    Join1, Join2, Join2_1, Join3, Join4, // 3. 회원가입 단계 (1~4단계)
     MainContentLoading, // 4. 메인 진입 전 로딩
     Home                // 5. 진짜 메인 (상단바+하단바 있는 곳)
 }
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge() // 팀원 코드에 있던 엣지투엣지 유지
@@ -76,9 +78,11 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(Screen.MainContentLoading.name)
                                 },
                                 onJoinClick = {
+                                    // 회원가입 1단계로 이동
                                     navController.navigate(Screen.Join1.name)
                                 },
                                 onFindPasswordClick = {
+                                    // 비밀번호 찾기로 이동
                                     navController.navigate(Screen.FindPassword.name)
                                 }
                             )
@@ -97,6 +101,7 @@ class MainActivity : ComponentActivity() {
 
                         // [4] 진짜 메인 화면 (여기에 팀원들의 Scaffold 코드를 넣음!)
                         composable(Screen.Home.name) {
+                            PillHomeScreen()
                             // --- 여기서부터 팀원 코드 (상단바, 하단바) ---
                             val selectedBottomItem = remember { mutableStateOf(1) }
 
@@ -121,7 +126,7 @@ class MainActivity : ComponentActivity() {
                             // --- 팀원 코드 끝 ---
                         }
 
-                        // [5] 회원가입 화면들
+                        // [5] 회원가입 화면들 (1 -> 2 -> 2_1 -> 3 -> 4 순서 연결)
                         composable(Screen.Join1.name) {
                             JoinScreen1(
                                 onNextClick = { navController.navigate(Screen.Join2.name) },
@@ -147,8 +152,10 @@ class MainActivity : ComponentActivity() {
                             )
                         }
                         composable(Screen.Join4.name) {
+                            // JoinScreen3에서 받은 정보를 넘겨줘야 하지만, UI 확인을 위해 빈 값으로 연결
                             JoinScreen4(
                                 onFinishClick = {
+                                    // 회원가입 완료 시 로그인 화면으로 복귀 (백스택 비움)
                                     navController.navigate(Screen.Login.name) {
                                         popUpTo(0)
                                     }
@@ -159,7 +166,8 @@ class MainActivity : ComponentActivity() {
                                 phoneNumber = ""
                             )
                         }
-                        // [비밀번호 찾기]
+
+                        // [6] 비밀번호 찾기
                         composable(Screen.FindPassword.name) {
                             FindPasswordScreen(
                                 onBackClick = { navController.popBackStack() },

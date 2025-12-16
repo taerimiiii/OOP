@@ -11,14 +11,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color // [추가] Color.LightGray 쓰기 위해 필요
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oop.ui.calendar.CalendarUtils
 import java.time.LocalDate
-import com.example.oop.ui.theme.blackColor
-import com.example.oop.ui.theme.backGrayColor
-import com.example.oop.ui.theme.greenColor
-import com.example.oop.ui.theme.whiteColor
+// [수정] 우리 프로젝트의 진짜 색깔 이름들로 변경!
+import com.example.oop.ui.theme.Black
+import com.example.oop.ui.theme.ButtonGreen
+import com.example.oop.ui.theme.White
 
 @Composable
 fun MoveDetailPageButton(
@@ -35,10 +36,14 @@ fun MoveDetailPageButton(
             .height(200.dp)
             .padding(vertical = 20.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = greenColor,
-            contentColor = whiteColor,
-            disabledContainerColor = backGrayColor,
-            disabledContentColor = blackColor
+            // [수정] greenColor -> ButtonGreen
+            containerColor = ButtonGreen,
+            // [수정] whiteColor -> White
+            contentColor = White,
+            // [수정] backGrayColor -> Color.LightGray (기본 연회색)
+            disabledContainerColor = Color.LightGray,
+            // [수정] blackColor -> Black
+            disabledContentColor = Black
         )
     ) {
         Column(
@@ -49,16 +54,17 @@ fun MoveDetailPageButton(
                 Text(
                     text = CalendarUtils.formatOutMonthDate(selectedDate),
                     fontSize = 18.sp,
-                    color = blackColor,
+                    // [수정] blackColor -> Black
+                    color = Black,
                     modifier = Modifier.padding(bottom = 2.dp)
                 )
             }
             Text(
                 text = "복용 체크하기",
                 fontSize = 18.sp,
-                color = blackColor
+                // [수정] blackColor -> Black
+                color = Black
             )
         }
     }
 }
-

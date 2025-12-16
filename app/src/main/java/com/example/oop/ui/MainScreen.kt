@@ -1,4 +1,4 @@
-package com.example.oop.ui.theme
+package com.example.oop.ui.theme // 👈 파일이 theme 폴더 안에 있어야 합니다!
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -22,32 +22,33 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-// --- 색상 정의 ---
-val PillYellow = Color(0xFFF2FCCD) // 상단 배경 연한 노랑
+// ✅ PillGreen, PillYellow는 같은 폴더(Color.kt)에 있어서 import 없이 바로 씁니다!
 
 @Composable
-fun MainScreen() {
+fun PillHomeScreen() { // (이름 충돌 방지: PillHomeScreen)
     Scaffold(
-        // 하단 네비게이션 바
         bottomBar = {
             NavigationBar(
                 containerColor = Color.White,
-                contentColor = PillGreen
+                contentColor = PillGreen // 👈 이제 에러 안 남!
             ) {
                 NavigationBarItem(
                     selected = false,
-                    onClick = { /* 검색 탭 클릭 */ },
-                    icon = { Icon(Icons.Default.Search, contentDescription = "Search", tint = PillGreen) }
+                    onClick = { /* 검색 탭 */ },
+                    icon = { Icon(Icons.Default.Search, "Search", tint = PillGreen) },
+                    colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent)
                 )
                 NavigationBarItem(
-                    selected = true, // 홈이 선택된 상태
-                    onClick = { /* 홈 탭 클릭 */ },
-                    icon = { Icon(Icons.Default.Home, contentDescription = "Home", tint = PillGreen) }
+                    selected = true,
+                    onClick = { /* 홈 탭 */ },
+                    icon = { Icon(Icons.Default.Home, "Home", tint = PillGreen) },
+                    colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent)
                 )
                 NavigationBarItem(
                     selected = false,
-                    onClick = { /* 캘린더 탭 클릭 */ },
-                    icon = { Icon(Icons.Default.DateRange, contentDescription = "Calendar", tint = PillGreen) }
+                    onClick = { /* 캘린더 탭 */ },
+                    icon = { Icon(Icons.Default.DateRange, "Calendar", tint = PillGreen) },
+                    colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent)
                 )
             }
         }
@@ -58,12 +59,10 @@ fun MainScreen() {
                 .padding(innerPadding)
                 .background(Color.White)
         ) {
-            // 1. 상단 노란색 영역 (헤더 + 검색창)
+            // 1. 상단 헤더
             TopHeaderSection()
-
             Spacer(modifier = Modifier.height(24.dp))
-
-            // 2. 캘린더 영역
+            // 2. 캘린더
             CalendarSection()
         }
     }
@@ -75,125 +74,62 @@ fun TopHeaderSection() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(PillYellow) // 노란색 배경
-            .padding(horizontal = 24.dp, vertical = 24.dp)
+            .background(PillYellow) // 👈 Color.kt에서 가져옴
+            .padding(24.dp)
     ) {
-        // 로고 (pill)
-        Text(
-            text = "pill",
-            fontSize = 32.sp,
-            color = PillGreen,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        // 인사말
-        Text(
-            text = "안녕하세요!\n궁금하신 모든 의약품을 한 번에 검색해 보세요",
-            fontSize = 16.sp,
-            color = Color.Black,
-            fontWeight = FontWeight.Bold,
-            textAlign = TextAlign.End,
-            modifier = Modifier.fillMaxWidth()
-        )
-
+        Text("pill", fontSize = 32.sp, color = PillGreen, fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 16.dp))
+        Text("안녕하세요!\n궁금하신 모든 의약품을 한 번에 검색해 보세요", fontSize = 16.sp, color = Color.Black, fontWeight = FontWeight.Bold, textAlign = TextAlign.End, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 검색창
         var searchText by remember { mutableStateOf("") }
         TextField(
             value = searchText,
             onValueChange = { searchText = it },
             placeholder = { Text("Enter keyword to search", color = Color.Gray) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(56.dp)
-                .clip(RoundedCornerShape(28.dp)), // 둥근 모서리
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = Color.White, // 검색창 배경 흰색
-                focusedIndicatorColor = Color.Transparent, // 밑줄 제거
+            modifier = Modifier.fillMaxWidth().height(56.dp).clip(RoundedCornerShape(28.dp)),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.White,
+                unfocusedContainerColor = Color.White,
+                focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent
             ),
-            trailingIcon = {
-                Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.Gray)
-            }
+            trailingIcon = { Icon(Icons.Default.Search, "Search", tint = Color.Gray) }
         )
     }
 }
 
 @Composable
 fun CalendarSection() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 24.dp)
-    ) {
-        // 달력 헤더 (화살표와 년월)
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { /* 이전 달 */ }) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Prev", tint = Color.DarkGray)
-            }
-            Text(
-                text = "2021년 October",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.DarkGray
-            )
-            IconButton(onClick = { /* 다음 달 */ }) {
-                Icon(Icons.Default.ArrowForward, contentDescription = "Next", tint = Color.DarkGray)
-            }
+            IconButton(onClick = {}) { Icon(Icons.Default.ArrowBack, "Prev", tint = Color.DarkGray) }
+            Text("2021년 October", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.DarkGray)
+            IconButton(onClick = {}) { Icon(Icons.Default.ArrowForward, "Next", tint = Color.DarkGray) }
         }
-
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 요일 표시 (Sun ~ Sat)
         val daysOfWeek = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(modifier = Modifier.fillMaxWidth()) {
             daysOfWeek.forEach { day ->
-                Text(
-                    text = day,
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center,
-                    color = Color.Gray,
-                    fontSize = 14.sp
-                )
+                Text(day, modifier = Modifier.weight(1f), textAlign = TextAlign.Center, color = Color.Gray, fontSize = 14.sp)
             }
         }
-
         Spacer(modifier = Modifier.height(16.dp))
-
-        // 날짜 그리드 (이미지와 똑같이 10월 1일이 금요일에 시작하도록 배치)
-        // 빈 칸 5개(일~목) + 날짜 1~31
-        val emptyDays = 5 // 2021년 10월 1일은 금요일이므로 앞에 5칸 공백
-        val daysInMonth = 31
-        val totalCells = emptyDays + daysInMonth
 
         LazyVerticalGrid(
-            columns = GridCells.Fixed(7), // 7열
-            modifier = Modifier.height(300.dp), // 달력 높이 고정
-            verticalArrangement = Arrangement.spacedBy(16.dp) // 줄 간격
+            columns = GridCells.Fixed(7),
+            modifier = Modifier.height(300.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(totalCells) { index ->
-                if (index < emptyDays) {
-                    // 빈 칸
-                    Spacer(modifier = Modifier.size(40.dp))
-                } else {
-                    // 날짜 숫자
-                    val day = index - emptyDays + 1
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(40.dp)
-                    ) {
-                        Text(
-                            text = day.toString(),
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.DarkGray
-                        )
+            items(36) { index ->
+                if (index < 5) Spacer(modifier = Modifier.size(40.dp))
+                else {
+                    Box(contentAlignment = Alignment.Center, modifier = Modifier.size(40.dp)) {
+                        Text("${index - 4}", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.DarkGray)
                     }
                 }
             }
