@@ -26,7 +26,6 @@ fun CalendarTitleCard(
     selectedDate: LocalDate,
     modifier: Modifier = Modifier
 ) {
-
     val dateTitle = remember(selectedDate) {
         val datePart = selectedDate.format(DateTimeFormatter.ofPattern("yyyy년 M월 d일"))
         val dayOfWeek = selectedDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
