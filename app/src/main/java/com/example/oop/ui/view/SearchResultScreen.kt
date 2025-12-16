@@ -12,7 +12,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.Star
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.oop.R
 import com.example.oop.data.model.Medicine
+import com.example.oop.data.TempData
 
 // 의약품 데이터 클래스
 
@@ -44,6 +47,8 @@ fun SearchResultScreen(
     val medicines by viewModel.medicines.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+
+    val favoriteList = TempData.favorites
 
     var selectedItem by rememberSaveable { mutableIntStateOf(0) }
     var selectedMedicineId by remember { mutableStateOf<String?>(null) }
@@ -153,15 +158,17 @@ fun SearchResultScreen(
 
                         // 검색 결과 리스트
                         items(medicines) { medicine ->
+                            val isFavorite = favoriteList.any { it.itemSeq == medicine.itemSeq }
+
                             MedicineResultCard(
                                 medicine = medicine,
+                                isFavorite = isFavorite,
                                 onCardClick = {
                                     // itemSeq를 상세 화면으로 전달
-                                    //onMedicineClick(medicine.itemSeq)
                                     selectedMedicineId = medicine.itemSeq
                                 },
                                 onFavoriteClick = {
-                                    // TODO: 즐겨찾기 기능은 나중에 구현
+                                    TempData.toggleFavorite(medicine.itemSeq)
                                 }
                             )
                         }
@@ -238,6 +245,7 @@ fun SearchTopBar(
 @Composable
 fun MedicineResultCard(
     medicine: Medicine,
+    isFavorite: Boolean,
     onCardClick: () -> Unit,
     onFavoriteClick: () -> Unit
 ) {
@@ -332,9 +340,10 @@ fun MedicineResultCard(
                 modifier = Modifier.size(40.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Star,
+                    imageVector = if (isFavorite) Icons.Filled.Star else Icons.Outlined.StarOutline,
                     contentDescription = "즐겨찾기",
-                    tint = Color.Gray,
+                    // 노란색 vs 회색
+                    tint = if (isFavorite) Color(0xFFFFD700) else Color.Gray,
                     modifier = Modifier.size(28.dp)
                 )
             }
