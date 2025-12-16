@@ -24,11 +24,11 @@ class CalendarDetailViewModel(
     private val uid = TempData.user.uid  // 일단 임시데이터에서 사용자 ID 가져오기
     private var previousSelectedDate: LocalDate? = null  // 이전 선택 날짜 추적
 
-    // 선택된 날짜 설정 및 초기화
+    // 초기화
     fun initialize(selectedDate: LocalDate) {
-        // 이전 날짜의 빈 기록 삭제
-        previousSelectedDate?.let { previousDate ->
-            cleanupEmptyLog(previousDate)
+        // 1. 이전 날짜의 빈 기록 삭제
+        previousSelectedDate?.let { previousDate ->     // 이전 선택 날짜가 있고, 복용 기록이 없으면 클린업.
+            cleanupEmptyLog(previousDate)               // 클린업은 이전 선택 날짜가 있을 때만 실행 가능하니까!
         }
 
         // 현재 날짜로 업데이트
@@ -37,8 +37,23 @@ class CalendarDetailViewModel(
         
         // 선택한 날짜의 복용 기록 로드 또는 생성
         ensureDailyLogExists(selectedDate)
-        
-        loadFavorites() // 즐겨찾기 최신으로 갱신
+
+        // 즐겨찾기 최신으로 갱신
+        loadFavorites()
+    }
+
+    // 빈 기록 삭제 (모든 items의 taken이 false인 경우)
+    private fun cleanupEmptyLog(date: LocalDate) {
+        val dateString = CalendarDetailUtils.formatDate(date)
+        val log = TempData.logs.find { it.date == dateString }
+
+        if (log != null) {
+            // 모든 items의 taken이 false인지 확인
+            val allFalse = log.items.values.all { !it.taken }
+            if (allFalse) {
+                TempData.logs.remove(log)
+            }
+        }
     }
     
     // 선택한 날짜의 DailyLog가 존재하는지 확인하고, 없으면 생성
@@ -54,20 +69,6 @@ class CalendarDetailViewModel(
             val newLog = DailyLog(date = dateString, items = newItems)
             TempData.logs.add(newLog)
             TempData.sortLogs()  // 날짜 순으로 정렬
-        }
-    }
-    
-    // 빈 기록 삭제 (모든 items의 taken이 false인 경우)
-    private fun cleanupEmptyLog(date: LocalDate) {
-        val dateString = CalendarDetailUtils.formatDate(date)
-        val log = TempData.logs.find { it.date == dateString }
-        
-        if (log != null) {
-            // 모든 items의 taken이 false인지 확인
-            val allFalse = log.items.values.all { !it.taken }
-            if (allFalse) {
-                TempData.logs.remove(log)
-            }
         }
     }
 

@@ -30,6 +30,7 @@ fun CalendarDetailScreen(
     }
 
     // 뷰모델에서 읽기용 UI 받아오기.
+    // by : 위임. 편집 권한?은 오른쪽에게 있음. 왼쪽은 빌려 쓰기만.
     val uiState by viewModel.uiState
 
     // 스크롤 객체
@@ -50,7 +51,7 @@ fun CalendarDetailScreen(
         // 즐겨찾기 목록은 뷰모델에서 갱신.
         for (favorite in uiState.favorites) {
             val medicine = uiState.medicines[favorite.itemSeq]
-            val isTaken = uiState.medicineTakenStatus[favorite.itemSeq] ?: false
+            val isTaken = uiState.medicineTakenStatus[favorite.itemSeq] ?: false   // 처음에는 당연히 약을 안 먹은 표시이니 null이고 그래서 false.
             
             MedicineTakeCard(
                 medicine = medicine,
