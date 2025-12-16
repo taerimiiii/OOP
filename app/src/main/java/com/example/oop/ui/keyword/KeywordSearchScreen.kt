@@ -56,10 +56,10 @@ import com.example.oop.ui.medicineDetail.MedicineDetailScreen
 import com.example.oop.ui.view.SearchResultScreen
 
 data class DetailResult(
-    val letter: String = "",
-    val type: String = "",
-    val shape: String = "",
-    val color: String = ""
+    val letter: String? = null,
+    val type: String? = null,
+    val shape: String? = null,
+    val color: String? = null
 )
 
 @Composable
@@ -71,14 +71,23 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
     var showSearchScreen by remember { mutableStateOf(false) }
 
     val performKeywordSearch: () -> Unit = {
-        finalResultList = listOf(selectedDetails)
+        val hasSelection = selectedDetails.letter?.isNotBlank() == true ||
+                selectedDetails.type != null ||
+                selectedDetails.shape != null ||
+                selectedDetails.color != null
 
-        println("--- 키워드 검색 결정 완료 ---")
-        println("최종 결합된 DetailResult: ${selectedDetails}")
-        println("최종 반환 리스트: $finalResultList")
+        if (hasSelection) {
+            finalResultList = listOf(selectedDetails)
 
-        // 검색 결과 화면으로 임시 전환 (전환 시 이 리스트를 SearchResultScreen에 전달해야 함)
-        showSearchResultScreen = true
+            println("--- 키워드 검색 결정 완료 ---")
+            println("최종 결합된 DetailResult: ${selectedDetails}")
+            println("최종 반환 리스트: $finalResultList")
+
+            // 검색 결과 화면으로 전환
+            showSearchResultScreen = true
+        } else {
+            println("--- 키워드 검색 취소: 검색 조건이 없습니다. ---")
+        }
     }
 
     val resetKeywordSearch: () -> Unit = {
@@ -97,7 +106,7 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
 
         showSearchResultScreen -> {
             SearchResultScreen(
-                searchKeyword = "키워드검색",
+                searchKeyword = "키워드검색: $selectedDetails",
                 onMedicineClick = {
                     showDetailScreen = true
                 },
@@ -172,36 +181,38 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
                     modifier = Modifier.padding(bottom = 80.dp)
                 ) {
                     item { Keyword_letter(
-                        initialSearchText = selectedDetails.letter, // 현재 값 전달
+                        // 4. letter는 Nullable이므로 Elvis 연산자 ?: ""를 사용하여 빈 문자열로 대체
+                        initialSearchText = selectedDetails.letter ?: "",
                         onSearch = { letter ->
-                            selectedDetails = selectedDetails.copy(letter = letter) // letter만 업데이트
+                            // 입력된 문자열이 비어있지 않으면 letter로, 비어있으면 null로 업데이트
+                            selectedDetails = selectedDetails.copy(letter = letter.ifBlank { null })
                         }
                     ) }
 
                     item { Keyword_type(
                         selectedType = selectedDetails.type,
                         onTypeSelected = { type ->
-                            selectedDetails = selectedDetails.copy(type = type) // type만 업데이트
+                            selectedDetails = selectedDetails.copy(type = type)
                         }
                     ) }
 
                     item { Keyword_shape(
                         selectedShape = selectedDetails.shape,
                         onShapeSelected = { shape ->
-                            selectedDetails = selectedDetails.copy(shape = shape) // shape만 업데이트
+                            selectedDetails = selectedDetails.copy(shape = shape)
                         }
                     ) }
 
                     item { Keyword_color(
                         selectedColor = selectedDetails.color,
                         onColorSelected = { color ->
-                            selectedDetails = selectedDetails.copy(color = color) // color만 업데이트
+                            selectedDetails = selectedDetails.copy(color = color)
                         }
                     ) }
 
                     item { Decide_reset(
-                        onDecide = performKeywordSearch, // 최종 결정
-                        onReset = resetKeywordSearch     // 초기화
+                        onDecide = performKeywordSearch,
+                        onReset = resetKeywordSearch
                     ) }
                 }
             }
@@ -212,7 +223,7 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
 @Composable
 //각인 입력칸
 fun Keyword_letter(
-    initialSearchText: String, // 초기값 추가
+    initialSearchText: String,
     onSearch: (String) -> Unit
 ){
     var searchText by remember { mutableStateOf(initialSearchText) }
@@ -221,6 +232,7 @@ fun Keyword_letter(
             searchText = initialSearchText
         }
     }
+
     Text(
         modifier = Modifier.padding( top = 15.dp, start = 25.dp, end = 25.dp).fillMaxWidth(),
         text = buildAnnotatedString {
@@ -236,14 +248,18 @@ fun Keyword_letter(
         value = searchText,
         onValueChange = {
             searchText = it
-            onSearch(it) },
+            onSearch(it)
+        },
         label = { Text("각인을 입력하세요") },
         leadingIcon = {
             Icon(Icons.Filled.Search, contentDescription = "Search Icon")
         },
         trailingIcon = {
             if (searchText.isNotEmpty()) {
-                IconButton(onClick = { searchText = "" }) {
+                IconButton(onClick = {
+                    searchText = ""
+                    onSearch("") // 초기화 시 외부 상태에도 빈 문자열 전달 -> null로 처리됨
+                }) {
                     Icon(Icons.Default.Close, contentDescription = "Clear search")
                 }
             }
@@ -284,10 +300,11 @@ fun KeywordButton(
         contentDescription = contentDescription
     )
 }
+
 @Composable
 fun Keyword_type(
-    selectedType: String,
-    onTypeSelected: (String) -> Unit,
+    selectedType: String?,
+    onTypeSelected: (String?) -> Unit,
     modifier: Modifier = Modifier
 ){
     Text(
@@ -312,11 +329,11 @@ fun Keyword_type(
         val isSelectedTablet = selectedType == typeTablet
         KeywordButton(
             selected = isSelectedTablet,
-            selectedImage = R.drawable.circle_type_selected_tablet, // 선택된 이미지 리소스 ID 필요
+            selectedImage = R.drawable.circle_type_selected_tablet,
             defaultImage = R.drawable.circle_type_tablet,
             contentDescription = "keyword_type_tablet",
             onClick = {
-                onTypeSelected(if (isSelectedTablet) "" else typeTablet)
+                onTypeSelected(if (isSelectedTablet) null else typeTablet)
             }
         )
         Spacer(Modifier.width(35.dp))
@@ -330,7 +347,7 @@ fun Keyword_type(
             defaultImage = R.drawable.circle_type_hard,
             contentDescription = "keyword_type_hard",
             onClick = {
-                onTypeSelected(if (isSelectedHard) "" else typeHard)
+                onTypeSelected(if (isSelectedHard) null else typeHard)
             }
         )
         Spacer(Modifier.width(35.dp))
@@ -344,7 +361,7 @@ fun Keyword_type(
             defaultImage = R.drawable.circle_type_soft,
             contentDescription = "keyword_type_soft",
             onClick = {
-                onTypeSelected(if (isSelectedSoft) "" else typeSoft)
+                onTypeSelected(if (isSelectedSoft) null else typeSoft)
             }
         )
     }
@@ -353,8 +370,8 @@ fun Keyword_type(
 @Composable
 //모양 선택칸
 fun Keyword_shape(
-    selectedShape: String, // 현재 선택된 상태를 받음
-    onShapeSelected: (String) -> Unit, // 선택 시 콜백
+    selectedShape: String?,
+    onShapeSelected: (String?) -> Unit,
     modifier: Modifier = Modifier
 ){
     Text(
@@ -384,7 +401,7 @@ fun Keyword_shape(
             contentDescription = "keyword_shape_circle",
             size = 90.dp,
             onClick = {
-                onShapeSelected(if (isSelectedCircle) "" else shapecircle)
+                onShapeSelected(if (isSelectedCircle) null else shapecircle)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -399,7 +416,7 @@ fun Keyword_shape(
             contentDescription = "keyword_shape_oval",
             size = 90.dp,
             onClick = {
-                onShapeSelected(if (isSelectedOval) "" else shapeoval)
+                onShapeSelected(if (isSelectedOval) null else shapeoval)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -414,7 +431,7 @@ fun Keyword_shape(
             contentDescription = "keyword_shape_round_rectangle",
             size = 90.dp,
             onClick = {
-                onShapeSelected(if (isSelectedRoundRectangle) "" else shaperound_rectangle)
+                onShapeSelected(if (isSelectedRoundRectangle) null else shaperound_rectangle)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -429,7 +446,7 @@ fun Keyword_shape(
             contentDescription = "keyword_shape_half_rectangle",
             size = 90.dp,
             onClick = {
-                onShapeSelected(if (isSelectedHalfCircle) "" else shapehalf_circle)
+                onShapeSelected(if (isSelectedHalfCircle) null else shapehalf_circle)
             }
         )
     }
@@ -450,7 +467,7 @@ fun Keyword_shape(
             contentDescription = "keyword_shape_three",
             size = 90.dp,
             onClick = {
-                onShapeSelected(if (isSelectedThree) "" else shapethree)
+                onShapeSelected(if (isSelectedThree) null else shapethree)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -465,7 +482,7 @@ fun Keyword_shape(
             contentDescription = "keyword_shape_four",
             size = 90.dp,
             onClick = {
-                onShapeSelected(if (isSelectedFour) "" else shapefour)
+                onShapeSelected(if (isSelectedFour) null else shapefour)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -480,7 +497,7 @@ fun Keyword_shape(
             contentDescription = "keyword_shape_tilt",
             size = 90.dp,
             onClick = {
-                onShapeSelected(if (isSelectedTiltRectangle) "" else shapetilt_rectangle)
+                onShapeSelected(if (isSelectedTiltRectangle) null else shapetilt_rectangle)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -495,7 +512,7 @@ fun Keyword_shape(
             contentDescription = "keyword_shape_five",
             size = 90.dp,
             onClick = {
-                onShapeSelected(if (isSelectedFive) "" else shapefive)
+                onShapeSelected(if (isSelectedFive) null else shapefive)
             }
         )
     }
@@ -516,7 +533,7 @@ fun Keyword_shape(
             contentDescription = "keyword_shape_six",
             size = 90.dp,
             onClick = {
-                onShapeSelected(if (isSelectedSix) "" else shapesix)
+                onShapeSelected(if (isSelectedSix) null else shapesix)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -531,7 +548,7 @@ fun Keyword_shape(
             contentDescription = "keyword_shape_eight",
             size = 90.dp,
             onClick = {
-                onShapeSelected(if (isSelectedEight) "" else shapeeight)
+                onShapeSelected(if (isSelectedEight) null else shapeeight)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -556,8 +573,8 @@ fun Keyword_shape(
 @Composable
 //색상 선택칸
 fun Keyword_color(
-    selectedColor: String,
-    onColorSelected: (String) -> Unit,
+    selectedColor: String?,
+    onColorSelected: (String?) -> Unit,
     modifier: Modifier = Modifier
 ){
     Text(
@@ -587,7 +604,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_white",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedWhite) "" else colorwhite)
+                onColorSelected(if (isSelectedWhite) null else colorwhite)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -602,7 +619,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_yellow",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedYellow) "" else coloryellow)
+                onColorSelected(if (isSelectedYellow) null else coloryellow)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -617,7 +634,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_orange",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedOrange) "" else colororange)
+                onColorSelected(if (isSelectedOrange) null else colororange)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -632,7 +649,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_pink",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedPink) "" else colorpink)
+                onColorSelected(if (isSelectedPink) null else colorpink)
             }
         )
     }
@@ -653,7 +670,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_red",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedRed) "" else colorred)
+                onColorSelected(if (isSelectedRed) null else colorred)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -668,7 +685,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_brown",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedBrown) "" else colorbrown)
+                onColorSelected(if (isSelectedBrown) null else colorbrown)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -683,7 +700,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_bright_green",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedBrightGreen) "" else colorbright_green)
+                onColorSelected(if (isSelectedBrightGreen) null else colorbright_green)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -698,7 +715,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_green",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedGreen) "" else colorgreen)
+                onColorSelected(if (isSelectedGreen) null else colorgreen)
             }
         )
     }
@@ -719,7 +736,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_bluegreen",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedBlueGreen) "" else colorbluegreen)
+                onColorSelected(if (isSelectedBlueGreen) null else colorbluegreen)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -734,7 +751,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_blue",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedBlue) "" else colorblue)
+                onColorSelected(if (isSelectedBlue) null else colorblue)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -749,7 +766,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_dark_blue",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedDarkBlue) "" else colordarkblue)
+                onColorSelected(if (isSelectedDarkBlue) null else colordarkblue)
             }
         )
         Spacer(Modifier.width(8.dp))
@@ -764,7 +781,7 @@ fun Keyword_color(
             contentDescription = "keyword_color_gray",
             size = 90.dp,
             onClick = {
-                onColorSelected(if (isSelectedGray) "" else colorgray)
+                onColorSelected(if (isSelectedGray) null else colorgray)
             }
         )
     }
@@ -780,20 +797,20 @@ fun Decide_reset(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 10.dp)
-            .height(100.dp) // 전체 컨테이너의 높이를 이미지에 맞게 설정
+            .height(100.dp)
     ) {
 
         // 1. 배경 이미지
         Image(
             painter = painterResource(R.drawable.keyword_underbar),
             contentDescription = "배경 직사각형 이미지",
-            contentScale = ContentScale.FillBounds, // Box 크기에 맞게 이미지 늘리기
-            modifier = Modifier.matchParentSize() // 부모 Box의 크기를 따름
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.matchParentSize()
         )
 
         Row(
             modifier = Modifier
-                .fillMaxSize() // 이미지와 같은 크기
+                .fillMaxSize()
                 .padding(horizontal = 20.dp),
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
@@ -804,11 +821,11 @@ fun Decide_reset(
                     .width(200.dp)
                     .height(70.dp)
                     .clickable { onDecide() },
-                contentAlignment = Alignment.Center // 텍스트를 Box 중앙에 배치
+                contentAlignment = Alignment.Center
             ) {
                 // 결정 버튼 이미지
                 Image(
-                    modifier = Modifier.matchParentSize(), // Box 크기에 맞춤
+                    modifier = Modifier.matchParentSize(),
                     painter = painterResource(R.drawable.rectangle_finish),
                     contentDescription = "결정 버튼 배경",
                     contentScale = ContentScale.FillBounds
@@ -816,9 +833,9 @@ fun Decide_reset(
                 // 결정 텍스트
                 Text(
                     text = "검색하기",
-                    color = Color.White, // 텍스트 색상 설정
-                    fontSize = 24.sp,    // 텍스트 크기 설정
-                    fontWeight = FontWeight.Bold // 텍스트 굵기 설정 (선택 사항)
+                    color = Color.White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
                 )
             }
 
@@ -827,11 +844,11 @@ fun Decide_reset(
                     .width(90.dp)
                     .height(60.dp)
                     .clickable { onReset() },
-                contentAlignment = Alignment.Center // 텍스트를 Box 중앙에 배치
+                contentAlignment = Alignment.Center
             ) {
                 // 초기화 버튼 이미지
                 Image(
-                    modifier = Modifier.matchParentSize(), // Box 크기에 맞춤
+                    modifier = Modifier.matchParentSize(),
                     painter = painterResource(R.drawable.rectangle_reset),
                     contentDescription = "초기화 버튼 배경",
                     contentScale = ContentScale.FillBounds
@@ -839,8 +856,8 @@ fun Decide_reset(
                 // 초기화 텍스트
                 Text(
                     text = "초기화",
-                    color = Color.Black, // 텍스트 색상 설정 (이미지 색상에 맞게 조정 필요)
-                    fontSize = 16.sp,    // 텍스트 크기 설정
+                    color = Color.Black,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
             }
