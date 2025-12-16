@@ -164,7 +164,9 @@ fun SearchScreen(modifier: Modifier = Modifier) {
             SearchResultScreen(
                 searchKeyword = searchResults!!, //보내주고자 하는 값
 
-                onMedicineClick = {},
+                onMedicineClick = {medicineId ->
+
+                },
                 onBackClick = { showSearchResultScreen = false }
             )
         }
