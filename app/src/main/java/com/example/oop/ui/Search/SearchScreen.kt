@@ -105,6 +105,7 @@ fun SearchTech(value: String,
 
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier) {
+    var showDetailScreen by remember { mutableStateOf(false) }
     var showSearchResultScreen by remember { mutableStateOf(false) }
     var showKeywordSearchScreen by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
@@ -163,9 +164,9 @@ fun SearchScreen(modifier: Modifier = Modifier) {
         searchResults != null -> {
             SearchResultScreen(
                 searchKeyword = searchResults!!, //보내주고자 하는 값
-
-                onMedicineClick = {medicineId ->
-
+                searchKeywordList = emptyList(),
+                onMedicineClick = {
+                    showDetailScreen = true
                 },
                 onBackClick = { showSearchResultScreen = false }
             )

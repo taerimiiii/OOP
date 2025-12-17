@@ -33,6 +33,7 @@ import coil.compose.AsyncImage
 import com.example.oop.R
 import com.example.oop.data.model.Medicine
 import com.example.oop.data.TempData
+import com.example.oop.ui.keyword.DetailResult
 
 // 의약품 데이터 클래스
 
@@ -40,6 +41,7 @@ import com.example.oop.data.TempData
 @Composable
 fun SearchResultScreen(
     searchKeyword: String,
+    searchKeywordList: List<DetailResult>, //리스트 받는 프로퍼티
     viewModel: SearchResultViewModel = viewModel(),
     onMedicineClick: (String) -> Unit = {},
     onBackClick: () -> Unit = {}

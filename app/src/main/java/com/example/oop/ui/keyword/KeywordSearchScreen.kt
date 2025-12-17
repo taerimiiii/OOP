@@ -106,7 +106,8 @@ fun KeywordSearchScreen1(modifier: Modifier = Modifier) {
 
         showSearchResultScreen -> {
             SearchResultScreen(
-                searchKeyword = "$selectedDetails",
+                searchKeyword = "",
+                searchKeywordList = finalResultList,
                 onMedicineClick = {
                     showDetailScreen = true
                 },
