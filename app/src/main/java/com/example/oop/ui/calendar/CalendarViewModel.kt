@@ -73,8 +73,15 @@ class CalendarViewModel : ViewModel() {
             }
 
             is CalendarEvent.OnMoveDetailButton -> {
-                // CalendarDetailScreen으로 이동하는 것은 CalendarJoinScreen에서 처리 중.
-                // onBack = 디테일에서 캘린더로 넘어오는것두 조인에 있어서 그냥 캘린더<->디테일 전부 조인에서 처리하는게 깔끔해보임(내눈에만그럴지도)
+                // CalendarDetailScreen으로 이동
+                mutableUiState.value = mutableUiState.value.copy(gotoDetailScreen = true)
+            }
+            
+            is CalendarEvent.OnDetailScreenBack -> {
+                // CalendarDetailScreen에서 CalendarScreen으로 돌아오기
+                mutableUiState.value = mutableUiState.value.copy(gotoDetailScreen = false)
+                // 출석 횟수 갱신
+                refreshCurrentMonthCount()
             }
 
             // 월 이전으로 변경 처리

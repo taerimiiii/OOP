@@ -4,4 +4,6 @@ package com.example.oop.ui.calendarDetail
 // interface로 선언 시, 핸들 이벤트 처리 할 때 else가 필수라 sealed 사용.
 sealed class CalendarDetailEvent {
     data class OnMedicineTakenChanged(val itemSeq: String, val isTaken: Boolean) : CalendarDetailEvent()
+    data class OnMedicineDetailClick(val itemSeq: String) : CalendarDetailEvent()
+    object OnMedicineDetailBack : CalendarDetailEvent()
 }

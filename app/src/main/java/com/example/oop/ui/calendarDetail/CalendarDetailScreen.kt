@@ -15,6 +15,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.oop.ui.calendarDetail.components.MedicineTakeCard
 import com.example.oop.ui.calendarDetail.components.CalendarTitleCard
 import com.example.oop.ui.calendarDetail.components.CalendarDetailTitle
+import com.example.oop.ui.medicineDetail.MedicineDetailScreen
 import java.time.LocalDate
 
 @Composable
@@ -32,6 +33,17 @@ fun CalendarDetailScreen(
     // 뷰모델에서 읽기용 UI 받아오기.
     // by : 위임. 편집 권한?은 오른쪽에게 있음. 왼쪽은 빌려 쓰기만.
     val uiState by viewModel.uiState
+
+    // 선택된 의약품이 있으면 MedicineDetailScreen 표시
+    uiState.selectedMedicineId?.let { medicineId ->
+        MedicineDetailScreen(
+            medicineId = medicineId,
+            onBackClick = {
+                viewModel.handleEvent(CalendarDetailEvent.OnMedicineDetailBack)
+            }
+        )
+        return
+    }
 
     // 스크롤 객체
     val scroll = rememberScrollState()
@@ -60,6 +72,11 @@ fun CalendarDetailScreen(
                     viewModel.handleEvent(
                         CalendarDetailEvent.OnMedicineTakenChanged(favorite.itemSeq, isTaken)
                     )
+                },
+                // 추가기능
+                onDetailClick = {
+                    // itemSeq를 medicineId로 사용하여 상세 화면으로 이동
+                    viewModel.handleEvent(CalendarDetailEvent.OnMedicineDetailClick(favorite.itemSeq))
                 },
                 modifier = Modifier.padding(vertical = 6.dp)
             )

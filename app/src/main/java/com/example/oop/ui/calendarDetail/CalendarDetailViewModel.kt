@@ -95,7 +95,7 @@ class CalendarDetailViewModel(
 
     // 의약품 정보 로드
     private fun loadMedicine(itemSeq: String) {
-        viewModelScope.launch {
+        viewModelScope.launch { // 네트워크(API) 통신을 위해 필요
             val result = repository.getMedicine(itemSeq)    // getMedicine 호출
 
             if (result.isSuccess) {
@@ -116,7 +116,7 @@ class CalendarDetailViewModel(
 
     // 의약품 복용 상태 로드 (TempData.logs에서 실제 데이터 읽기)
     private fun loadMedicineTakenStatus(itemSeq: String) {
-        viewModelScope.launch {
+        viewModelScope.launch { // 네트워크(API) 통신을 위해 필요
             val selectedDate = mutableUiState.value.selectedDate
             val dateString = CalendarDetailUtils.formatDate(selectedDate)
             val dailyLog = TempData.logs.find { it.date == dateString }
@@ -134,12 +134,18 @@ class CalendarDetailViewModel(
             is CalendarDetailEvent.OnMedicineTakenChanged -> {
                 updateMedicineTakenStatus(event.itemSeq, event.isTaken)
             }
+            is CalendarDetailEvent.OnMedicineDetailClick -> {
+                mutableUiState.value = mutableUiState.value.copy(selectedMedicineId = event.itemSeq)
+            }
+            is CalendarDetailEvent.OnMedicineDetailBack -> {
+                mutableUiState.value = mutableUiState.value.copy(selectedMedicineId = null)
+            }
         }
     }
 
     // 의약품 복용 상태 업데이트 (TempData.logs 실제 업데이트)
     private fun updateMedicineTakenStatus(itemSeq: String, isTaken: Boolean) {
-        viewModelScope.launch {
+        viewModelScope.launch { // 네트워크(API) 통신을 위해 필요
             val selectedDate = mutableUiState.value.selectedDate
             val dateString = CalendarDetailUtils.formatDate(selectedDate)
             val logIndex = TempData.logs.indexOfFirst { it.date == dateString }
