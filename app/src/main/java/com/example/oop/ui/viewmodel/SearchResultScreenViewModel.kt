@@ -119,6 +119,8 @@ class SearchResultViewModel : ViewModel() {
                     shape = shape,
                     color = color
                 )
+
+                _medicines.value = result.map { it.toMedicine() } //결과 전송
             }catch (e: Exception) {
                 _errorMessage.value = "오류 발생: ${e.message}"
             } finally {
@@ -128,6 +130,18 @@ class SearchResultViewModel : ViewModel() {
             // 3. 결과를 받아오면 _medicines.value = 결과
             // 4. 로딩 종료
         }
+    }
+
+    fun com.example.oop.data.api.MedicineItem.toMedicine(): Medicine {
+        return Medicine(
+            itemSeq = this.itemSeq,
+            itemName = this.itemName,
+            entpName = this.entpName,
+            itemEngName = this.itemEngName,
+            itemImage = this.itemImage,
+            className = this.className,
+            chart = this.chart,
+        )
     }
 
     fun clearError() {

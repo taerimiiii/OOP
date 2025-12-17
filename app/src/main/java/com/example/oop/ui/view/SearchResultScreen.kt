@@ -45,6 +45,7 @@ fun SearchResultScreen(
     onMedicineClick: (String) -> Unit = {},
     onBackClick: () -> Unit = {}
 ) {
+    //viewmodel과 temptdata의 변화를 감지
     val medicines by viewModel.medicines.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
@@ -60,18 +61,12 @@ fun SearchResultScreen(
         searchKeyword
     }
 
-
-//    LaunchedEffect(searchKeyword) {
-//        if (searchKeyword.isNotEmpty()) {
-//            viewModel.searchMedicines(searchKeyword)
-//        }
-//    }
     LaunchedEffect(searchKeyword, searchAttributes) {
         if (searchAttributes.isNotEmpty()) {
-            // 1. 속성 리스트가 있으면 -> 속성 검색 함수 호출 (ViewModel에 이 함수 필요!)
+            // 속성 리스트가 있으면 속성 검색 함수 호출
             viewModel.searchMedicinesByAttributes(searchAttributes)
         } else if (searchKeyword.isNotEmpty()) {
-            // 2. 속성이 없고 검색어만 있으면 -> 기존 검색 함수 호출
+            // 속성이 없고 검색어만 있으면 기존 검색 함수 호출
             viewModel.searchMedicines(searchKeyword)
         }
     }
