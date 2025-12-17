@@ -8,27 +8,21 @@ import java.util.Locale
 // 날짜 계산/서식 helper는 object로 관리하기.
 object CalendarUtils {
     // 한국 시간 기준으로 날짜 형식 변환
-    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.KOREA)
-    private val outYearMonthFormatter = DateTimeFormatter.ofPattern("yyyy년 M월", Locale.KOREA)
-    private val outYearMonthDateFormatter = DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREA)
-    private val outMonthDateFormatter = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREA)
-
-
     fun formatDate(date: LocalDate): String {
-        return date.format(dateFormatter)
+        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.KOREA))
     }
 
     // 월간 캘린더 타이틀에서 연도랑 월만 사용해서 일 떼어 진 거 필요.
     fun formatOutYearMonth(yearMonth: YearMonth): String {
-        return yearMonth.format(outYearMonthFormatter)
+        return yearMonth.format(DateTimeFormatter.ofPattern("yyyy년 M월", Locale.KOREA))
     }
 
     fun formatOutYearMonthDate(date: LocalDate): String {
-        return date.format(outYearMonthDateFormatter)
+        return date.format(DateTimeFormatter.ofPattern("yyyy년 M월 d일", Locale.KOREA))
     }
 
     fun formatOutMonthDate(date: LocalDate): String {
-        return date.format(outMonthDateFormatter)
+        return date.format(DateTimeFormatter.ofPattern("M월 d일", Locale.KOREA))
     }
 
     // 출석 계산할 때 쓸 지난달 이번달 년월 계산에 사용.

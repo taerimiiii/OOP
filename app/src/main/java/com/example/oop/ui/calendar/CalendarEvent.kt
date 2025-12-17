@@ -3,7 +3,7 @@ package com.example.oop.ui.calendar
 import java.time.LocalDate
 
 // UI에서 발생하는 이벤트 정의
-// interface로 선언 시, 핸들 이벤트 처리 할 때 else가 필수라 sealed 사용.
+// interface로 선언 시, 핸들 이벤트 처리 할 때 else가 필수라 sealed 사용. 수업시간에 배운 그거
 sealed class CalendarEvent {
     data class OnDateSelected(val date: LocalDate) : CalendarEvent()
     object OnMoveDetailButton : CalendarEvent()

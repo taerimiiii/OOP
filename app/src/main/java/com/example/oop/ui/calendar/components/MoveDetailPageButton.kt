@@ -22,9 +22,9 @@ import com.example.oop.ui.theme.whiteColor
 
 @Composable
 fun MoveDetailPageButton(
+    modifier: Modifier = Modifier,
     selectedDate: LocalDate?,       // 년월일, 맨 처음 캘린더 페이지 접속 시 null
     onClick: () -> Unit,            // 매개변수X, 반환값X
-    modifier: Modifier = Modifier
 ) {
 
     Button(

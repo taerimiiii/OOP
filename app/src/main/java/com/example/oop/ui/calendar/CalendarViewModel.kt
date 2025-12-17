@@ -7,7 +7,7 @@ import com.example.oop.data.TempData
 import java.time.LocalDate
 import java.time.YearMonth
 
-// ViewModel 상속
+// ViewModel 상속해서 생명주기 관리
 // 화면에 나타낼 UI 상태 관리.
 class CalendarViewModel : ViewModel() {
     
@@ -60,9 +60,7 @@ class CalendarViewModel : ViewModel() {
             currentSeeMonth = currentYearMonth, // 현재 보이는 월 초기화
             monthCount = monthCount,
             lastMonthCount = lastMonthCount,
-            todayMedicineTaken = todayMedicineTaken,
-            isLoading = false,
-            errorMessage = null
+            todayMedicineTaken = todayMedicineTaken
         )
     }
 
@@ -75,7 +73,8 @@ class CalendarViewModel : ViewModel() {
             }
 
             is CalendarEvent.OnMoveDetailButton -> {
-                // CalendarDetailScreen으로 이동하는 것은 Screen에서 처리 중. 이것도 여기서 처리하게 바꿔보기.
+                // CalendarDetailScreen으로 이동하는 것은 CalendarJoinScreen에서 처리 중.
+                // onBack = 디테일에서 캘린더로 넘어오는것두 조인에 있어서 그냥 캘린더<->디테일 전부 조인에서 처리하는게 깔끔해보임(내눈에만그럴지도)
             }
 
             // 월 이전으로 변경 처리

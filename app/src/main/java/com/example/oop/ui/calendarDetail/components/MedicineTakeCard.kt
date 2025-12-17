@@ -31,10 +31,10 @@ import com.example.oop.ui.theme.takeRedColor
 
 @Composable
 fun MedicineTakeCard(
+    modifier: Modifier = Modifier,
     medicine: Medicine?,
     isTaken: Boolean,
     onTakenChanged: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
 ) {
 
     Column(
@@ -57,7 +57,7 @@ fun MedicineTakeCard(
                     horizontalArrangement = Arrangement.spacedBy(16.dp) // Gap
                 ) {
                     // 왼쪽 이미지
-                    Box(
+                    Box( // 배경 박스
                         modifier = Modifier
                             .width(80.dp)
                             .height(120.dp)
@@ -65,6 +65,7 @@ fun MedicineTakeCard(
                             .background(backGreenColor),
                         contentAlignment = Alignment.Center, // 중앙
                     ) {
+                        // 이미지
                         if (!medicine.itemImage.isNullOrEmpty()) {
                             AsyncImage(
                                 model = medicine.itemImage,

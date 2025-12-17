@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun CalendarDetailTitle(
+    modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),

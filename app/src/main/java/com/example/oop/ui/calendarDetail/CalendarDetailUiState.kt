@@ -9,6 +9,6 @@ data class CalendarDetailUiState(
     val selectedDate: LocalDate,
     val favorites: List<Favorite> = emptyList(),
     val medicines: Map<String, Medicine> = emptyMap(),          // itemSeq -> Medicine
-    val medicineTakenStatus: Map<String, Boolean> = emptyMap(), // itemSeq -> isTaken
+    val medicineTakenStatus: Map<String, Boolean> = emptyMap(), // itemSeq -> isTaken(Screen에 있음)
     val errorMessage: String? = null
 )

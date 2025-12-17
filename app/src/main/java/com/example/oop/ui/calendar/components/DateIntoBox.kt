@@ -25,9 +25,9 @@ import java.time.LocalDate
 
 @Composable
 fun DateIntoBox(
+    modifier: Modifier = Modifier,
     title: String,
     date: LocalDate?,
-    modifier: Modifier = Modifier
 ) {
     
     Box(
