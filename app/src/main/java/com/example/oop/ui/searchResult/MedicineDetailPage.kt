@@ -1,4 +1,4 @@
-package com.example.oop.ui.view
+package com.example.oop.ui.searchResult
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.oop.R
-import com.example.oop.ui.viewmodel.MedicineDetailViewModel
+import com.example.oop.ui.medicineDetail.MedicineDetailViewModel
 import com.example.oop.data.TempData
 
 @Composable

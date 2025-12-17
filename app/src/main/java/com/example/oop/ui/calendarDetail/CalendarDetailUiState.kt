@@ -10,5 +10,6 @@ data class CalendarDetailUiState(
     val favorites: List<Favorite> = emptyList(),
     val medicines: Map<String, Medicine> = emptyMap(),          // itemSeq -> Medicine
     val medicineTakenStatus: Map<String, Boolean> = emptyMap(), // itemSeq -> isTaken(Screen에 있음)
-    val errorMessage: String? = null
+    val selectedMedicineId: String? = null,                     // 선택된 의약품 ID (의약품상세 화면 표시용)
+    val errorMessage: String? = null,
 )

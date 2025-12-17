@@ -7,6 +7,7 @@ import java.time.LocalDate
 sealed class CalendarEvent {
     data class OnDateSelected(val date: LocalDate) : CalendarEvent()
     object OnMoveDetailButton : CalendarEvent()
+    object OnDetailScreenBack : CalendarEvent()
     object OnPreviousMonth : CalendarEvent()
     object OnNextMonth : CalendarEvent()
 }

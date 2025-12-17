@@ -38,17 +38,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oop.R
-import com.example.oop.ui.keyword.KeywordSearchScreen1
-import com.example.oop.ui.medicineDetail.MedicineDetailScreen
-import com.example.oop.ui.view.SearchResultScreen
+import com.example.oop.ui.keywordSearch.KeywordSearchScreen1
+import com.example.oop.ui.searchResult.SearchResultScreen
 import androidx.compose.material3.*
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
-import com.example.oop.data.repository.MedicineRepository
-import kotlinx.coroutines.launch
 
 private const val MAX_CAPACITY = 5
 private const val TAG = "SearchFeature"

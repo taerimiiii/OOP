@@ -1,4 +1,4 @@
-package com.example.oop.ui.view
+package com.example.oop.ui.searchResult
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,7 +13,6 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
