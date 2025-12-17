@@ -9,8 +9,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,6 +40,7 @@ fun MedicineTakeCard(
     medicine: Medicine?,
     isTaken: Boolean,
     onTakenChanged: (Boolean) -> Unit,
+    onDetailClick: () -> Unit = {},
 ) {
 
     Column(
@@ -77,16 +83,35 @@ fun MedicineTakeCard(
 
                     // 오른쪽 텍스트 정보
                     Column(
-                        modifier = Modifier,
+                        modifier = Modifier.weight(1f),
                         verticalArrangement = Arrangement.spacedBy(1.dp),
                     ) {
                         // ITEM_NAME ex)가스디알정
-                        Text(
-                            text = medicine.itemName ?: "ITEM_NAME",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = blackColor
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = medicine.itemName ?: "ITEM_NAME",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = blackColor,
+                                modifier = Modifier.weight(1f)
+                            )
+                            // 돋보기 버튼
+                            IconButton(
+                                onClick = onDetailClick,
+                                modifier = Modifier.size(32.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "의약품 상세 정보 보기",
+                                    tint = blackColor,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
 
                         // ENTP_NAME(회사명) ex)일동제약
                         Row(

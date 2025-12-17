@@ -13,4 +13,5 @@ data class CalendarUiState(
     val monthCount: Int = 0,
     val lastMonthCount: Int = 0,
     val todayMedicineTaken: Boolean = false,
+    val gotoDetailScreen: Boolean = false  // 상세 화면으로 이동 여부
 )
