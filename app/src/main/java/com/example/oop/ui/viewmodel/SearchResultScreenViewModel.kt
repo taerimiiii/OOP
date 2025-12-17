@@ -106,7 +106,7 @@ class SearchResultViewModel : ViewModel() {
             _isLoading.value = true
             _errorMessage.value = null
 
-            // 2. 여기서 DB나 서버에 {각인, 제형, 모양, 색상}으로 검색 요청을 보냅니다.
+            // 2. 여기서 DB나 서버에 {각인, 제형, 모양, 색상}으로 검색 요청을 보냄
             try {
                 val print = attributes.getOrNull(0)?.ifEmpty { null }
                 val formulation = attributes.getOrNull(1)?.ifEmpty { null }
@@ -120,17 +120,17 @@ class SearchResultViewModel : ViewModel() {
                     color = color
                 )
 
+                // 3. 결과를 받아오면 _medicines.value = 결과
                 _medicines.value = result.map { it.toMedicine() } //결과 전송
             }catch (e: Exception) {
                 _errorMessage.value = "오류 발생: ${e.message}"
             } finally {
                 _isLoading.value = false
             }
-
-            // 3. 결과를 받아오면 _medicines.value = 결과
             // 4. 로딩 종료
         }
     }
+
 
     fun com.example.oop.data.api.MedicineItem.toMedicine(): Medicine {
         return Medicine(

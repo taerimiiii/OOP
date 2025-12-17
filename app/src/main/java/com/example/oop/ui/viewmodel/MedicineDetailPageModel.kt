@@ -79,7 +79,6 @@ class MedicineDetailViewModel : ViewModel() {
 
     fun toggleFavorite() {
         _isFavorite.value = !_isFavorite.value
-        // TODO: DB 저장
     }
 
     fun onBackPressed() {
