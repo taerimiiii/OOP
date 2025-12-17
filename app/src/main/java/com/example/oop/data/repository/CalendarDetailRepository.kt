@@ -9,7 +9,7 @@ class CalendarDetailRepository(
     private val apiDataSource: MedicineApiDataSource = MedicineApiDataSource()
 ) {
     // 사용자의 즐겨찾기 의약품 목록 가져오기
-    // 임시 데이터 반환 (DB 완성 전까지)
+    // 임시 데이터 반환
     suspend fun getFavorites(userId: String): List<Favorite> {
         // 임시 데이터 반환
         return TempData.favorites

@@ -1,4 +1,4 @@
-package com.example.oop.ui.keyword
+package com.example.oop.ui.keywordSearch
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -53,7 +53,7 @@ import androidx.compose.ui.unit.sp
 import com.example.oop.R
 import com.example.oop.ui.Search.SearchScreen
 import com.example.oop.ui.medicineDetail.MedicineDetailScreen
-import com.example.oop.ui.view.SearchResultScreen
+import com.example.oop.ui.searchResult.SearchResultScreen
 
 data class DetailResult(
     val letter: String = "",
