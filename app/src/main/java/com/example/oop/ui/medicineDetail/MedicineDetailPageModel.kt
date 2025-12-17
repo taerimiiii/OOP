@@ -1,5 +1,4 @@
-
-package com.example.oop.ui.viewmodel
+package com.example.oop.ui.medicineDetail
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

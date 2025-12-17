@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.oop.R
-import com.example.oop.ui.viewmodel.MedicineDetailViewModel
+import com.example.oop.ui.medicineDetail.MedicineDetailViewModel
 
 @Composable
 fun MedicineDetailScreen(
