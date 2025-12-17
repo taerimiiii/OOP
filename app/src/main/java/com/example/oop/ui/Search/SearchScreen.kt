@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oop.R
 import com.example.oop.ui.keywordSearch.KeywordSearchScreen1
+import com.example.oop.ui.keywordSearch.DetailResult
 import com.example.oop.ui.searchResult.SearchResultScreen
 import androidx.compose.material3.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -101,6 +102,7 @@ fun SearchTech(value: String,
 
 @Composable
 fun SearchScreen(modifier: Modifier = Modifier) {
+    var showDetailScreen by remember { mutableStateOf(false) }
     var showSearchResultScreen by remember { mutableStateOf(false) }
     var showKeywordSearchScreen by remember { mutableStateOf(false) }
     var searchText by remember { mutableStateOf("") }
@@ -159,9 +161,9 @@ fun SearchScreen(modifier: Modifier = Modifier) {
         searchResults != null -> {
             SearchResultScreen(
                 searchKeyword = searchResults!!, //보내주고자 하는 값
-
-                onMedicineClick = {medicineId ->
-
+                searchKeywordList = emptyList<DetailResult>(),
+                onMedicineClick = {
+                    showDetailScreen = true
                 },
                 onBackClick = { showSearchResultScreen = false }
             )
