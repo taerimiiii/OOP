@@ -32,7 +32,7 @@ import coil.compose.AsyncImage
 import com.example.oop.R
 import com.example.oop.data.model.Medicine
 import com.example.oop.data.TempData
-import com.example.oop.ui.keyword.DetailResult
+import com.example.oop.ui.keywordSearch.DetailResult
 
 // 의약품 데이터 클래스
 

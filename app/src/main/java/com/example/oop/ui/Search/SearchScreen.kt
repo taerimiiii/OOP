@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.oop.R
 import com.example.oop.ui.keywordSearch.KeywordSearchScreen1
+import com.example.oop.ui.keywordSearch.DetailResult
 import com.example.oop.ui.searchResult.SearchResultScreen
 import androidx.compose.material3.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -160,7 +161,7 @@ fun SearchScreen(modifier: Modifier = Modifier) {
         searchResults != null -> {
             SearchResultScreen(
                 searchKeyword = searchResults!!, //보내주고자 하는 값
-                searchKeywordList = emptyList(),
+                searchKeywordList = emptyList<DetailResult>(),
                 onMedicineClick = {
                     showDetailScreen = true
                 },
