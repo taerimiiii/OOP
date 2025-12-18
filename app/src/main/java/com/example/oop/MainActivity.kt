@@ -17,6 +17,7 @@ import com.example.oop.ui.BottomNavBar
 import com.example.oop.ui.PillTopBar
 import com.example.oop.ui.Search.SearchScreen
 import com.example.oop.ui.calendar.CalendarJoinScreen
+import com.example.oop.ui.home.HomeScreen
 import com.example.oop.ui.onBoarding.MainScreen
 import com.example.oop.ui.theme.OOPTheme
 
@@ -28,27 +29,38 @@ class MainActivity : ComponentActivity() {
         setContent {
             OOPTheme(darkTheme = false) {
                 val selectedBottomItem = remember { mutableStateOf(1) }
+                val isLoggedIn = remember { mutableStateOf(false) }
 
-                Scaffold(
-                    modifier = Modifier.fillMaxSize(),
-                    // 상단 바 호출
-                    topBar = {
-                        PillTopBar(
-                            useGreenBackground = true
-                        )
-                    },
-                    // 하단 바 호출
-                    bottomBar = {
-                        BottomNavBar(
+                // 로그인되지 않았을 때는 onBoarding 화면만 표시 (상단바/하단바 없음)
+                if (!isLoggedIn.value) {
+                    MainScreen(
+                        onLoginSuccess = {
+                            isLoggedIn.value = true
+                        }
+                    )
+                } else {
+                    // 로그인되었을 때는 메인 화면 표시 (상단바/하단바 있음)
+                    Scaffold(
+                        modifier = Modifier.fillMaxSize(),
+                        // 상단 바 호출
+                        topBar = {
+                            PillTopBar(
+                                useGreenBackground = true
+                            )
+                        },
+                        // 하단 바 호출
+                        bottomBar = {
+                            BottomNavBar(
+                                selectedItem = selectedBottomItem.value,
+                                onItemClick = { selectedBottomItem.value = it }
+                            )
+                        }
+                    ) { innerPadding ->
+                        Content(
                             selectedItem = selectedBottomItem.value,
-                            onItemClick = { selectedBottomItem.value = it }
+                            modifier = Modifier.padding(innerPadding)
                         )
                     }
-                ) { innerPadding ->
-                    Content(
-                        selectedItem = selectedBottomItem.value,
-                        modifier = Modifier.padding(innerPadding)
-                    )
                 }
             }
         }
@@ -64,9 +76,9 @@ fun Content(
 ) {
     when (selectedItem) {
         0 -> SearchScreen(modifier = modifier)
-        1 -> MainScreen()
+        1 -> HomeScreen(modifier = modifier)
         2 -> CalendarJoinScreen(modifier = modifier)
-        else -> MainScreen()
+        else -> HomeScreen(modifier = modifier)
     }
 }
 

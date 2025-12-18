@@ -24,7 +24,9 @@ enum class Screen {
 }
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    onLoginSuccess: () -> Unit = {}
+) {
     val navController = rememberNavController() // 화면 전환을 관리하는 컨트롤러
 
     NavHost(navController = navController, startDestination = Screen.Login.name) {
@@ -47,7 +49,10 @@ fun MainScreen() {
         composable(Screen.MainContentLoading.name) {
             // LoadingScreen.kt 파일에 있는 MainContentLoadingScreen 함수를 사용합니다.
             MainContentLoadingScreen(
-                onLoadingFinished = { /* TODO: 실제 메인 화면으로 이동 */ }
+                onLoadingFinished = {
+                    // 로그인 성공 콜백 호출하여 메인 화면으로 이동
+                    onLoginSuccess()
+                }
             )
         }
 
